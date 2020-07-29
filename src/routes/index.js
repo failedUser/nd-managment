@@ -12,7 +12,7 @@ export default [{
     name: '',
     children: [...shopRoutes,
         ...productRoutes,
-        // ...orderRoutes,
+        ...orderRoutes,
         // ...customerRoutes,
         // ...measureRoutes,
         // ...distributionRoutes,

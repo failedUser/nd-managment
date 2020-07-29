@@ -1,33 +1,47 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-import data from './data';
+import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete } from './action';
 
 
 let editConfig = [
-    { title: '条码', dataIndex: 'name1' },
-    { title: '材质', dataIndex: 'name11'},
-    { title: '款号', dataIndex: 'name2'},
-    { title: '厚度', dataIndex: 'name12'},
-    { title: '商品名称', dataIndex: 'name3' },
-    { title: '弹力', dataIndex: 'name13'},
-    { title: '性别', dataIndex: 'name14'},
-    { title: '分类', dataIndex: 'name15'},
-    { title: '成分', dataIndex: 'name16'},
-    { title: '工艺', dataIndex: 'name6'},
-    { title: '款式', dataIndex: 'name17'},
-    { title: '零售价', dataIndex: 'name4',},
-    { title: '版型', dataIndex: 'name18'},
-    { title: '置顶顺序', dataIndex: 'name7'},
-    { title: '颜色', dataIndex: 'name19'},
-    { title: '启用', dataIndex: 'name8', type: ""},
-    { title: '图片', dataIndex: 'name9', type:"images"},
-    { title: '尺码', dataIndex: 'name20'},
-    { title: '详情页', dataIndex: 'name10', type:"images"},
+    { title: '条码', dataIndex: 'barcode' },
+    { title: '材质', dataIndex: 'material'},
+    { title: '款号', dataIndex: 'section_Number'},
+    { title: '厚度', dataIndex: 'thickness'},
+    { title: '商品名称', dataIndex: 'product_Name' },
+    { title: '弹力', dataIndex: 'elasticity'},
+    { title: '性别', dataIndex: 'gender'},
+    { title: '分类', dataIndex: 'classification'},
+    { title: '成分', dataIndex: 'ingredient'},
+    { title: '工艺', dataIndex: 'crafts'},
+    { title: '款式', dataIndex: 'style'},
+    { title: '零售价', dataIndex: 'retail_Price',},
+    { title: '版型', dataIndex: 'type'},
+    { title: '置顶顺序', dataIndex: 'is_Top'},
+    { title: '颜色', dataIndex: 'color'},
+    { title: '启用', dataIndex: 'product_Status', type: ""},
+    { title: '图片', dataIndex: 'images', type:"images"},
+    { title: '尺码', dataIndex: 'size'},
+    { title: '详情页', dataIndex: 'detailImages', type:"images"},
     
 ]
 
 export default function ProductManager() {
+    const [ isInit, updateInit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        pageNumber: 1,
+        pageSize: 20,
+        paged: true,
+        sort: {
+            empty: true,
+            sorted: true,
+            unsorted: true
+        }
+    })
+    const [ tableSize, setTableSize ] = useState(0);
+    const [ modelType, setModelType ] = useState('');
+    const [ dataSource, setDataSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ editInfo, setEditInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
@@ -38,7 +52,7 @@ export default function ProductManager() {
             search[key] = value;
             return {...search}
         });
-    })
+    }, [])
 
     const startSearch = useCallback(() => {
         if (!search.code) {
@@ -49,8 +63,10 @@ export default function ProductManager() {
     }, [search])
 
     const _delete = useCallback((item) => {
-        console.log('----开始删除----', item);
-    }, [])
+        requestForProductDelete(item).then(data => {
+            message.info('删除成功');
+        })
+    }, []);
 
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
@@ -67,32 +83,90 @@ export default function ProductManager() {
         }
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
+
+    // 编辑信息
     const _edit = useCallback((item) => {
+        setModelType('edit');
         setVisible(true);
         setEditInfo({...item});
     }, []);
 
+    // 新增
+    const create = useCallback(() => {
+        setModelType('create');
+        setVisible(true);
+        setEditInfo({});
+    }, [])
+
+    // 更新编辑信息
     const updateEditInfo = useCallback((key, value) => {
-        console.log(key, value)
         setEditInfo(info => {
-            info[key] = value;
-            return {...info};
+            return {...info, [key]: value};
         })
     }, [])
 
+    const submitModal = useCallback(() => {
+        if (modelType === 'edit') {
+            requestForProductEdit(editInfo).then(data => {
+                if (data) {
+                    message.info('修改成功');
+                    setDataSource(source => {
+                        source = source.map(item => {
+                            if (item.barcode === data.barcode) {
+                                return data;
+                            }
+                            return item;
+                        });
+                        return [...source];
+                    })
+                    setVisible(false);
+                }
+                
+            })
+        }
+        if (modelType === 'create') {
+            requestForProductCreate(editInfo).then(data => {
+                message.info('新建成功');
+                setVisible(false);
+                setDataSource(source => {
+                    source = [...[data], ...source];
+                    return [...source];
+                })
+            })
+        }
+    }, [editInfo, modelType])
+
+    // 获取分页数据
+    const pageData = useCallback(() => {
+        requestForProductList(pageInfo).then(data => {
+            if (!data) return ;
+            setTableSize(data.size);
+            if (data && Array.isArray(data.content)) {
+                setDataSource([...dataSource || [], ...data.content]);
+            }
+        })
+    }, [dataSource, pageInfo])
+
+    // 初始化
+    useEffect(() => {
+        if (isInit) return ;
+        pageData();
+        updateInit(true);
+    }, [isInit, pageData])
+
     const [ columns ] = useState([
-        { title: '条码', dataIndex: 'name1', render: text => <span style={{color: '#1890ff'}}>{text}</span> },
-            { title: '款号', dataIndex: 'name2', key: 'name1',},
-            { title: '商品名称', dataIndex: 'name3', key: 'name1',},
-            { title: '零售价', dataIndex: 'name4',width: 100, key: 'name1',},
-            { title: '状态', dataIndex: 'name5', key: 'name1',},
-            { title: '工艺', dataIndex: 'name6', key: 'name1',},
-            { title: '排序', dataIndex: 'name7', width: 80, key: 'name1',},
-            { title: '显示', dataIndex: 'name8', width: 80, key: 'name1',},
-            { title: '图片', dataIndex: 'name9', width: 220, render: item => <div className="product-table-images">
+        { title: '条码', dataIndex: 'barcode', render: text => <span style={{color: '#1890ff'}}>{text}</span> },
+            { title: '款号', dataIndex: 'section_Number' },
+            { title: '商品名称', dataIndex: 'product_Name'},
+            { title: '零售价', dataIndex: 'retail_Price',width: 100},
+            { title: '状态', dataIndex: 'product_Status'},
+            { title: '工艺', dataIndex: 'crafts'},
+            { title: '排序', dataIndex: 'is_Top', width: 80},
+            { title: '显示', dataIndex: 'name8', width: 80},
+            { title: '图片', dataIndex: 'images', width: 220, render: item => <div className="product-table-images">
                 {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
             </div>},
-            { title: '详情页', dataIndex: 'name10', width: 220,render: item => <div className="product-table-images">
+            { title: '详情页', dataIndex: 'detailImages', width: 220,render: item => <div className="product-table-images">
                 {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
             </div>},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
@@ -105,7 +179,7 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">条码</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('code', e.target.value)} />
+                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('barcode', e.target.value)} />
             </div>
             <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
         </section>
@@ -117,17 +191,19 @@ export default function ProductManager() {
             }}><Button type="primary">批量导入</Button></Upload> 
             <Button onClick={_delete_batch} type="primary">批量删除</Button>
             <Button onClick={export_data} type="primary">数据导出</Button>
-            <Button type="primary">新增</Button>
+            <Button onClick={create} type="primary">新增</Button>
         </section>
         <section className="product-manager-table">
-            <Table 
+            <Table
+                rowKey="barcode"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
+                        console.log(selectedRowKeys, selectedRows);
                         setChooseItems((selectedRowKeys + '').split(','));
                       }
                 }}
-                dataSource={data} 
+                dataSource={dataSource} 
                 columns={columns} 
             />
         </section>
@@ -135,7 +211,7 @@ export default function ProductManager() {
                 title="商品编辑"
                 visible={visible}
                 width={1000}
-                onOk={() => {}}
+                onOk={submitModal}
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">

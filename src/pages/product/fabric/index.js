@@ -1,48 +1,49 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-import data from '../manager/data';
+// import data from '../manager/data';
+import { requestForFabricList,requestForFabricEdit, requestForFabricCreate, requestForFabricDelete } from './action';
 
 export default function FabricManager() {
-    const [ search, setSearch ] = useState({});
+    const [ isInit, updateInit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        pageNumber: 1,
+        pageSize: 20,
+        paged: true,
+        sort: {
+            empty: true,
+            sorted: true,
+            unsorted: true
+        }
+    })
+    const [ tableSize, setTableSize ] = useState(0);
+    const [ modelType, setModelType ] = useState('');
+    const [ dataSource, setDataSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
-    const [ chooseItems, setChooseItems ] = useState(null);
     const [ editInfo, setEditInfo ] = useState(null);
-    const _delete = useCallback((item) => {
-        console.log('去删除', item);
-    }, [])
-
-    const _edit = useCallback((item) => {
-        setVisible(true);
-        setEditInfo({...item});
-    }, []);
-
-    const addNew = useCallback((item) => {
-        setVisible(true);
-        setEditInfo({});
-    }, []);
-
-    const updateEditInfo = useCallback((key, value) => {
-        setEditInfo(info => {
-            info[key] = value;
-            return {...info};
-        })
-    }, [])
+    const [ chooseItems, setChooseItems ] = useState(null);
+    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
         setSearch(search => {
             search[key] = value;
             return {...search}
         });
-    })
+    }, [])
 
     const startSearch = useCallback(() => {
         if (!search.code) {
-            message.info('请先输入面料编号');
+            message.info('请先输入条码');
             return ;
         }
         console.log('----开始筛选----', search);
     }, [search])
-    
+
+    const _delete = useCallback((item) => {
+        requestForFabricDelete(item).then(data => {
+            message.info('删除成功');
+        })
+    }, []);
+
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再批量删除');
@@ -59,20 +60,90 @@ export default function FabricManager() {
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
 
+    // 编辑信息
+    const _edit = useCallback((item) => {
+        setModelType('edit');
+        setVisible(true);
+        setEditInfo({...item});
+    }, []);
+
+    // 新增
+    const create = useCallback(() => {
+        setModelType('create');
+        setVisible(true);
+        setEditInfo({});
+    }, [])
+
+    // 更新编辑信息
+    const updateEditInfo = useCallback((key, value) => {
+        setEditInfo(info => {
+            return {...info, [key]: value};
+        })
+    }, [])
+
+    const submitModal = useCallback(() => {
+        if (modelType === 'edit') {
+            requestForFabricEdit(editInfo).then(data => {
+                if (data) {
+                    message.info('修改成功');
+                    setDataSource(source => {
+                        source = source.map(item => {
+                            if (item.barcode === data.barcode) {
+                                return data;
+                            }
+                            return item;
+                        });
+                        return [...source];
+                    })
+                    setVisible(false);
+                }
+                
+            })
+        }
+        if (modelType === 'create') {
+            requestForFabricCreate(editInfo).then(data => {
+                message.info('新建成功');
+                setVisible(false);
+                setDataSource(source => {
+                    source = [...[data], ...source];
+                    return [...source];
+                })
+            })
+        }
+    }, [editInfo, modelType])
+
+    // 获取分页数据
+    const pageData = useCallback(() => {
+        requestForFabricList(pageInfo).then(data => {
+            if (!data) return ;
+            setTableSize(data.size);
+            if (data && Array.isArray(data.content)) {
+                setDataSource([...dataSource || [], ...data.content]);
+            }
+        })
+    }, [dataSource, pageInfo])
+
+    // 初始化
+    useEffect(() => {
+        if (isInit) return ;
+        pageData();
+        updateInit(true);
+    }, [isInit, pageData])
+
     const [ columns ] = useState([
-        { title: '面料编号', dataIndex: 'name1', render: text => <span style={{color: '#1890ff'}}>{text}</span> },
-            { title: '类别', dataIndex: 'name2', key: 'name1',},
-            { title: '颜色', dataIndex: 'name3', key: 'name1',},
-            { title: '材质', dataIndex: 'name4',width: 200, key: 'name1',},
-            { title: '厚度', dataIndex: 'name5', key: 'name1',},
-            { title: '弹力', dataIndex: 'name6', key: 'name1',},
-            { title: '图片', dataIndex: 'name10', type: "image", width: 120,render: item => <div className="product-table-images">
+        { title: '面料编号', dataIndex: 'fabric_Id', render: text => <span style={{color: '#1890ff'}}>{text}</span> },
+            { title: '类别', dataIndex: 'fabric_Classsification'},
+            { title: '颜色', dataIndex: 'fabric_Color'},
+            { title: '材质', dataIndex: 'material',width: 200},
+            { title: '厚度', dataIndex: 'thickness'},
+            { title: '弹力', dataIndex: 'elasticity'},
+            { title: '图片', dataIndex: 'fabric_Image', width: 120,render: item => <div className="product-table-images">
                 <img className="product-table-image" alt="img" src="http://alpha-2115.caibeike.com/i/db23aabcc32b698375babffd50de72c4-cXni3O-bMOMwiAMhj2@!750c445" />
             </div>},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
                <Button type="primary" size="small" onClick={() => _delete(record)}>删除</Button>
-               <Upload ><Button type="primary" size="small" onClick={() => _edit(record)} >换图</Button></Upload>
+               <Upload ><Button type="primary" size="small" >换图</Button></Upload>
             </div>},
         ])
    
@@ -92,10 +163,11 @@ export default function FabricManager() {
             }}><Button type="primary">批量导入</Button></Upload> 
             <Button onClick={_delete_batch} type="primary">批量删除</Button>
             <Button onClick={export_data} type="primary">数据导出</Button>
-            <Button onClick={addNew} type="primary">新增</Button>
+            <Button onClick={create} type="primary">新增</Button>
         </section>
         <section className="product-manager-table">
             <Table 
+                rowKey="fabric_Classsification"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
@@ -103,7 +175,7 @@ export default function FabricManager() {
                         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                       }
                 }}
-                dataSource={data} 
+                dataSource={dataSource} 
                 columns={columns} 
             />
         </section>
@@ -111,7 +183,7 @@ export default function FabricManager() {
                 title="商品编辑"
                 visible={visible}
                 width={1000}
-                onOk={() => {}}
+                onOk={submitModal}
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">

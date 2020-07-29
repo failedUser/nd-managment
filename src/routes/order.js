@@ -1,9 +1,9 @@
 export default [{
-    path: '/shop',
-    name: '店铺设置',
+    path: '/order',
+    name: '订单管理',
     children: [{
-        path: '/home',
-        name: '首页',
-        component: require('../pages/shop/home').default
+        path: '/voucher/info',
+        name: '单据信息',
+        component: require('../pages/order/voucher').default
     }]
 }]

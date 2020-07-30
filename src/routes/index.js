@@ -13,7 +13,7 @@ export default [{
     children: [...shopRoutes,
         ...productRoutes,
         ...orderRoutes,
-        // ...customerRoutes,
+        ...customerRoutes,
         // ...measureRoutes,
         // ...distributionRoutes,
         // ...bonusRoutes

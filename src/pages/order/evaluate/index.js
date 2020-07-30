@@ -70,20 +70,8 @@ export default function ProductManager() {
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">订单号</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('order_Id', e.target.value)} />
-            </div>
-            <div className="manager-search-item">
-                <div className="search-item__title">客户名称</div>
+                <div className="search-item__title">商品名称</div>
                 <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
-            </div>
-            <div className="manager-search-item">
-                <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
-            </div>
-            <div className="manager-search-item">
-                <div className="search-item__title">状态</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('order_Status', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>

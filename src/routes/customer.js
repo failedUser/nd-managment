@@ -1,9 +1,13 @@
 export default [{
-    path: '/shop',
-    name: '店铺设置',
+    path: '/customer',
+    name: '客户管理',
     children: [{
-        path: '/home',
-        name: '首页',
-        component: require('../pages/shop/home').default
+        path: '/managment',
+        name: '基本信息',
+        component: require('../pages/customer/managment').default
+    },{
+        path: '/volume',
+        name: '量体数据',
+        component: require('../pages/customer/volume').default
     }]
 }]

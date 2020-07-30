@@ -1,9 +1,29 @@
 export default [{
-    path: '/shop',
-    name: '店铺设置',
+    path: '/bonus',
+    name: '奖励发放',
     children: [{
-        path: '/home',
-        name: '首页',
-        component: require('../pages/shop/home').default
+        path: '/measure',
+        name: '量体师奖励',
+        children: [{
+            path: '/withdraw',
+            name: '提现申请',
+            component: require('../pages/bonus/measure/withdraw').default
+        },{
+            path: '/balance',
+            name: '余额查询',
+            component: require('../pages/bonus/measure/balance').default
+        },{
+            path: '/withdrawDetail',
+            name: '提现明细',
+            component: require('../pages/bonus/measure/withdrawDetail').default
+        }]
+    }, {
+        path: '/reward',
+            name: '分销奖励',
+            component: require('../pages/bonus/reward').default
+    },{
+        path: '/setting',
+            name: '提现金额设置',
+            component: require('../pages/bonus/setting').default
     }]
 }]

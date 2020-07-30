@@ -14,9 +14,9 @@ export default [{
         ...productRoutes,
         ...orderRoutes,
         ...customerRoutes,
-        // ...measureRoutes,
-        // ...distributionRoutes,
-        // ...bonusRoutes
+        ...measureRoutes,
+        ...distributionRoutes,
+        ...bonusRoutes
     ]
 }
 ]

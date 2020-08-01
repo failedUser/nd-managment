@@ -51,19 +51,17 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
-            { title: '收款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
-            { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
-            { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
+            { title: '微信ID', dataIndex: 'customerame'},
+            { title: '微信昵称', dataIndex: 'customerPhone'},
+            { title: '客户姓名', dataIndex: 'payment_Time'},
+            { title: '手机号', dataIndex: 'name5', key: 'name1',},
+            { title: '性别', dataIndex: 'volume_Name'},
+            { title: '购买次数', dataIndex: 'shipment_Id'},
+            { title: '累计消费', dataIndex: 'remarks'},
+            { title: '高校', dataIndex: 'order_Status'},
+            { title: '校区', dataIndex: 'receiver_Phone'},
+            { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
+               <Button type="primary" size="small" >删除</Button>
             </div>},
         ])
    
@@ -71,11 +69,11 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('customerame', e.target.value)} />
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <div className="search-item__title">手机号</div>
+                <Input size="small" placeholder="请输入手机号" onChange={e => updateSearch('customerPhone', e.target.value)} />
             </div>
             
             <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>

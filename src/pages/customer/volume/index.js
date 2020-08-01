@@ -2,6 +2,7 @@ import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
 import { requestOrderList } from './action';
+import VolumeModal from '../../../components/volumeModal'
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -31,6 +32,18 @@ export default function ProductManager() {
         }
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
+
+    const edit = useCallback((record) => {
+        console.log('--edit--', record);
+        setVisible(true);
+        setModalInfo({...record});
+    }, [])
+
+    const modalSubmit = useCallback((newInfo) => {
+        console.log('---modalSubmit---', modalSubmit);
+        setVisible(false);
+    }, [])
+
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);
         setModalInfo({...item});
@@ -51,22 +64,27 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
-            { title: '收款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
-            { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
+            // TODO 缺少客户姓名
+            { title: '姓名', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+            // TODO 这个电话是客户电话 不是量体师电话
+            { title: '电话', dataIndex: 'volumer_Phone'},
+            { title: '量体师', dataIndex: 'volumer_Name'},
+            { title: '量体时间', dataIndex: 'admission_Time'},
+            { title: '性别', dataIndex: 'volumer_Address', key: 'name1',},
+            { title: '身高', dataIndex: 'volumer_Birth'},
+            { title: '体重', dataIndex: 'volumer_College'},
+            { title: '胸围', dataIndex: 'volumer_Department'},
+            { title: '中腰', dataIndex: 'volumer_Gender'},
+            { title: '肩宽', dataIndex: 'volumer_Id'},
+            { title: '袖长', dataIndex: 'volumer_Major'},
+            { title: '腰围', dataIndex: 'volumer_Name'},
+            { title: '臀围', dataIndex: 'volumer_Phone'},
+            { title: '裤长', dataIndex: 'volumer_Part'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
+               <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
+               <Button type="primary" size="small" >删除</Button>
             </div>},
         ])
-   
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
@@ -96,7 +114,13 @@ export default function ProductManager() {
                 columns={columns} 
             />
         </section>
-        {modalInfo && <Modal
+        <VolumeModal 
+            showModal={visible}
+            info={modalInfo}
+            submit={modalSubmit}
+            cancel={() => setVisible(false)}
+        />
+        {/* {modalInfo && <Modal
                 title="商品编辑"
                 visible={visible}
                 width={1000}
@@ -109,7 +133,7 @@ export default function ProductManager() {
                     <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
                 </div>)}
                 </div>
-            </Modal>}
+            </Modal>} */}
         
         </div>
 }

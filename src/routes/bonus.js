@@ -18,9 +18,21 @@ export default [{
             component: require('../pages/bonus/measure/withdrawDetail').default
         }]
     }, {
-        path: '/reward',
+        path: '/distribution',
             name: '分销奖励',
-            component: require('../pages/bonus/reward').default
+            children: [{
+                path: '/withdraw',
+                name: '提现申请',
+                component: require('../pages/bonus/distribution/withdraw').default
+            },{
+                path: '/balance',
+                name: '余额查询',
+                component: require('../pages/bonus/distribution/balance').default
+            },{
+                path: '/withdrawDetail',
+                name: '提现明细',
+                component: require('../pages/bonus/distribution/withdrawDetail').default
+            }]
     },{
         path: '/setting',
             name: '提现金额设置',

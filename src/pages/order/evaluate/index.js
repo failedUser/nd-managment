@@ -4,7 +4,7 @@ import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
 import { requestOrderList } from './action';
 const { RangePicker } = DatePicker;
 
-export default function ProductManager() {
+export default function OrderEvaluate() {
     const [ isInit, setIsinit ] = useState(false);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
@@ -51,27 +51,27 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
-            { title: '收款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
-            { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
-            { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
-            </div>},
+        { title: '评价商品', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+        { title: '商品条码', dataIndex: 'customerame'},
+        { title: '评价时间', dataIndex: 'customerPhone'},
+        { title: '客户', dataIndex: 'payment_Time',width: 100},
+        { title: '评价选项1', dataIndex: 'name5', key: 'name1',},
+        { title: '评价选项2', dataIndex: 'volume_Name'},
+        { title: '评价选项3', dataIndex: 'shipment_Id',},
+        { title: '评价选项4', dataIndex: 'remarks' },
+        { title: '评价选项5', dataIndex: 'order_Status'},
+        { title: '评价内容', dataIndex: 'receiver_Phone'},
+        { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
+           <Button type="primary" size="small" >订单</Button>
+           <Button type="primary" size="small" >删除</Button>
+        </div>},
         ])
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">商品名称</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入商品名称" onChange={e => updateSearch('customerame', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>

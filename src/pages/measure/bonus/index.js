@@ -31,7 +31,7 @@ export default function ProductManager() {
         }
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
-    const showOrderVoucher = useCallback((item) => {
+    const edit = useCallback((item) => {
         setVisible(true);
         setModalInfo({...item});
     }, []);
@@ -51,30 +51,28 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
-            { title: '收款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
-            { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
-            { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
+        { title: '量体师姓名', dataIndex: 'order_Id'},
+            { title: '订单号', dataIndex: 'customerame'},
+            { title: '订单金额', dataIndex: 'customerPhone'},
+            { title: '下单时间', dataIndex: 'payment_Time'},
+            { title: '量体时间', dataIndex: 'name5', key: 'name1',},
+            { title: '完成情况', dataIndex: 'volume_Name'},
+            { title: '奖励金额', dataIndex: 'shipment_Id'},
+            { title: '返修扣款', dataIndex: 'remarks' },
+            { title: '实际奖励', dataIndex: 'order_Status'},
+            { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
+               <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
             </div>},
         ])
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">客户名称</div>
+                <div className="search-item__title">量体师姓名</div>
                 <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">电话</div>
+                <div className="search-item__title">所属高校</div>
                 <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
             </div>
             

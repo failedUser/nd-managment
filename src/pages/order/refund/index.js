@@ -4,7 +4,7 @@ import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
 import { requestOrderList } from './action';
 const { RangePicker } = DatePicker;
 
-export default function ProductManager() {
+export default function OrderRefund() {
     const [ isInit, setIsinit ] = useState(false);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
@@ -51,19 +51,16 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
+        { title: '单品编号', dataIndex: 'customerame2'},
         { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
-            { title: '收款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
-            { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
+            { title: '订单状态', dataIndex: 'customerame'},
+            { title: '申请时间', dataIndex: 'customerPhone'},
+            { title: '退款商品', dataIndex: 'payment_Time',width: 100},
+            { title: '退款金额', dataIndex: 'name5', key: 'name1',},
+            { title: '退款状态', dataIndex: 'volume_Name'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
+               <Button type="primary" size="small" >同意</Button>
+               <Button type="primary" size="small" >驳回</Button>
             </div>},
         ])
    
@@ -71,7 +68,7 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">订单号</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('order_Id', e.target.value)} />
+                <Input size="small" placeholder="请输入订单号" onChange={e => updateSearch('order_Id', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>

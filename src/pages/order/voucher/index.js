@@ -1,11 +1,16 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestOrderList, requestOrderDetail } from './action';
 const { RangePicker } = DatePicker;
 
 export default function OrderVoucher() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 0,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -32,17 +37,28 @@ export default function OrderVoucher() {
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
-        setVisible(true);
-        setModalInfo({...item});
+        requestOrderDetail({orderId:item.order_Id}).then(data => {
+            console.log(data)
+            setVisible(true);
+            setModalInfo({...item});
+        })
+        
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestOrderList(pageInfo).then(data => {
+            setTableSize(data.totalElements);
+            updateSource(data.content)
         })
-    }, [])
+    }, [pageInfo])
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -108,6 +124,11 @@ export default function OrderVoucher() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {modalInfo && <Modal

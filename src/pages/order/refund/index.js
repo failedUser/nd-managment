@@ -1,12 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestOrderRefundList, requestRefundDetail } from './action';
 const { RangePicker } = DatePicker;
 
 export default function OrderRefund() {
     const [ isInit, setIsinit ] = useState(false);
     const [ dataSource, updateSource ] = useState(null);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 0,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
@@ -32,17 +37,27 @@ export default function OrderRefund() {
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
+        requestRefundDetail({refundStatus: item.item_Id})
         setVisible(true);
         setModalInfo({...item});
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestOrderRefundList(pageInfo).then(data => {
+            // setTableSize(data.totalElements);
+            console.log(data);
+            updateSource(data)
         })
-    }, [])
+    }, [pageInfo])
+
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -51,11 +66,11 @@ export default function OrderRefund() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '单品编号', dataIndex: 'customerame2'},
+        { title: '单品编号', dataIndex: 'barcode'},
         { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '订单状态', dataIndex: 'customerame'},
+            { title: '订单状态', dataIndex: 'refund_Status'},
             { title: '申请时间', dataIndex: 'customerPhone'},
-            { title: '退款商品', dataIndex: 'payment_Time',width: 100},
+            { title: '退款商品', dataIndex: 'name',width: 100},
             { title: '退款金额', dataIndex: 'name5', key: 'name1',},
             { title: '退款状态', dataIndex: 'volume_Name'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
@@ -84,7 +99,7 @@ export default function OrderRefund() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="order_Id"
+                rowKey="barcode"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

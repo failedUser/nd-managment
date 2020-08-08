@@ -1,12 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestWithDrawList } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
-    const [ dataSource, updateSource ] = useState(null);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
+    const [ dataSource, setDataSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
@@ -37,12 +42,22 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestWithDrawList(pageInfo).then(data => {
+            if (!data) return ;
+            setTableSize(data.totalElements);
+            if (data && Array.isArray(data.content)) {
+                setDataSource(data.content);
+            }
         })
-    }, [])
+    }, [pageInfo])
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -90,7 +105,12 @@ export default function ProductManager() {
                       }
                 }}
                 dataSource={dataSource} 
-                columns={columns} 
+                columns={columns}
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }} 
             />
         </section>
         {modalInfo && <Modal

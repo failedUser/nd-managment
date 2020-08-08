@@ -1,19 +1,18 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-// import data from '../manager/data';
-import { requestForFabricList,requestForFabricEdit, requestForFabricCreate, requestForFabricDelete } from './action';
+import {exportFile } from '../../../assets/js/common';
+
+import { 
+    requestForFabricList,requestForFabricEdit, 
+    requestForFabricCreate, requestForFabricDelete,
+    requestForFabricExport
+ } from './action';
 
 export default function FabricManager() {
     const [ isInit, updateInit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
-        pageNumber: 1,
-        pageSize: 20,
-        paged: true,
-        sort: {
-            empty: true,
-            sorted: true,
-            unsorted: true
-        }
+        page: 0,
+        size: 10
     })
     const [ tableSize, setTableSize ] = useState(0);
     const [ modelType, setModelType ] = useState('');
@@ -29,6 +28,16 @@ export default function FabricManager() {
             return {...search}
         });
     }, [])
+    // 获取分页数据
+    const pageData = useCallback(() => {
+        requestForFabricList(pageInfo).then(data => {
+            if (!data) return ;
+            setTableSize(data.size);
+            if (data && Array.isArray(data.content)) {
+                setDataSource([...data.content]);
+            }
+        })
+    }, [pageInfo])
 
     const startSearch = useCallback(() => {
         if (!search.code) {
@@ -39,25 +48,30 @@ export default function FabricManager() {
     }, [search])
 
     const _delete = useCallback((item) => {
-        requestForFabricDelete(item).then(data => {
+        requestForFabricDelete([item.fabric_Id]).then(data => {
             message.info('删除成功');
-        })
-    }, []);
+        }).then(pageData)
+    }, [pageData]);
 
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再批量删除');
             return ;
         }
-        console.log('----开始批量删除-----', chooseItems)
-    }, [chooseItems])
+        requestForFabricDelete(chooseItems).then(data => {
+            message.info('删除成功');
+        }).then(pageData)
+    }, [chooseItems, pageData])
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestForFabricExport(chooseItems).then(data => {
+            message.info('导出成功');
+            exportFile(data, '商品导出');
+        })
     }, [chooseItems])
 
     // 编辑信息
@@ -80,6 +94,14 @@ export default function FabricManager() {
             return {...info, [key]: value};
         })
     }, [])
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     const submitModal = useCallback(() => {
         if (modelType === 'edit') {
@@ -104,24 +126,10 @@ export default function FabricManager() {
             requestForFabricCreate(editInfo).then(data => {
                 message.info('新建成功');
                 setVisible(false);
-                setDataSource(source => {
-                    source = [...[data], ...source];
-                    return [...source];
-                })
+                pageData();
             })
         }
-    }, [editInfo, modelType])
-
-    // 获取分页数据
-    const pageData = useCallback(() => {
-        requestForFabricList(pageInfo).then(data => {
-            if (!data) return ;
-            setTableSize(data.size);
-            if (data && Array.isArray(data.content)) {
-                setDataSource([...dataSource || [], ...data.content]);
-            }
-        })
-    }, [dataSource, pageInfo])
+    }, [editInfo, modelType, pageData])
 
     // 初始化
     useEffect(() => {
@@ -167,7 +175,7 @@ export default function FabricManager() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="fabric_Classsification"
+                rowKey="fabric_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
@@ -177,6 +185,11 @@ export default function FabricManager() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {editInfo && <Modal

@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete } from './action';
+import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete, requestForProductExport } from './action';
+import {exportFile } from '../../../assets/js/common';
 
 
 let editConfig = [
@@ -30,14 +31,8 @@ let editConfig = [
 export default function ProductManager() {
     const [ isInit, updateInit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
-        pageNumber: 1,
-        pageSize: 20,
-        paged: true,
-        sort: {
-            empty: true,
-            sorted: true,
-            unsorted: true
-        }
+        page: 1,
+        size: 10
     })
     const [ tableSize, setTableSize ] = useState(0);
     const [ modelType, setModelType ] = useState('');
@@ -55,33 +50,56 @@ export default function ProductManager() {
     }, [])
 
     const startSearch = useCallback(() => {
-        if (!search.code) {
+        if (!search.barcode) {
             message.info('请先输入条码');
             return ;
         }
+        message.info('暂时没有筛选');
         console.log('----开始筛选----', search);
     }, [search])
 
+    // 获取分页数据
+    const pageData = useCallback(() => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestForProductList(_pageInfo).then(data => {
+            if (!data) return ;
+            setTableSize(data.totalElements);
+            if (data && Array.isArray(data.content)) {
+                setDataSource(data.content);
+            }
+        });
+    }, [pageInfo])
+
     const _delete = useCallback((item) => {
-        requestForProductDelete(item).then(data => {
+        requestForProductDelete([item.barcode])
+        .then(() => {
             message.info('删除成功');
         })
-    }, []);
+        .then(pageData)
+    }, [pageData]);
 
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再批量删除');
             return ;
         }
-        console.log('----开始批量删除-----', chooseItems)
-    }, [chooseItems])
+        requestForProductDelete(chooseItems)
+        .then(() => {
+            message.info('删除成功');
+        })
+        .then(pageData)
+    }, [chooseItems, pageData])
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestForProductExport(chooseItems).then(res => {
+            message.info('导出成功');
+            exportFile(res, '商品导出');
+        })
     }, [chooseItems])
 
     // 编辑信息
@@ -97,6 +115,14 @@ export default function ProductManager() {
         setVisible(true);
         setEditInfo({});
     }, [])
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     // 更新编辑信息
     const updateEditInfo = useCallback((key, value) => {
@@ -128,24 +154,14 @@ export default function ProductManager() {
             requestForProductCreate(editInfo).then(data => {
                 message.info('新建成功');
                 setVisible(false);
-                setDataSource(source => {
-                    source = [...[data], ...source];
-                    return [...source];
-                })
+                pageData();
+                // setDataSource(source => {
+                //     source = [...[data], ...source];
+                //     return [...source];
+                // })
             })
         }
-    }, [editInfo, modelType])
-
-    // 获取分页数据
-    const pageData = useCallback(() => {
-        requestForProductList(pageInfo).then(data => {
-            if (!data) return ;
-            setTableSize(data.size);
-            if (data && Array.isArray(data.content)) {
-                setDataSource([...dataSource || [], ...data.content]);
-            }
-        })
-    }, [dataSource, pageInfo])
+    }, [editInfo, modelType, pageData])
 
     // 初始化
     useEffect(() => {
@@ -162,7 +178,6 @@ export default function ProductManager() {
             { title: '状态', dataIndex: 'product_Status'},
             { title: '工艺', dataIndex: 'crafts'},
             { title: '排序', dataIndex: 'is_Top', width: 80},
-            { title: '显示', dataIndex: 'name8', width: 80},
             { title: '图片', dataIndex: 'images', width: 220, render: item => <div className="product-table-images">
                 {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
             </div>},
@@ -205,6 +220,11 @@ export default function ProductManager() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {editInfo && <Modal

@@ -1,11 +1,16 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestDistributionRewardList } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -37,12 +42,19 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestDistributionRewardList().then(data => {
+            if (!data) return ;
+            setTableSize(data.totalElements);
+            updateSource(data.content)
         })
     }, [])
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -92,6 +104,11 @@ export default function ProductManager() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {modalInfo && <Modal

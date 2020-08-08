@@ -1,6 +1,10 @@
 
-import { dataSource } from './data';
+import request from '../../../../assets/js/request';
 
-export function requestOrderList(data) {
-    return Promise.resolve(dataSource);
+export function requestWithDrawList(data) {
+    return request({
+        method: 'get',
+        url: '/withdrawConfig',
+        params: data
+    })
 }

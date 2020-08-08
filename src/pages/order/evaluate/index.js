@@ -1,11 +1,16 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestEvaluateList } from './action';
 const { RangePicker } = DatePicker;
 
 export default function OrderEvaluate() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 0,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -37,13 +42,21 @@ export default function OrderEvaluate() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestEvaluateList(pageInfo).then(data => {
+            setTableSize(data.totalElements);
+            updateSource(data.content);
         })
-    }, [])
+    }, [pageInfo])
 
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
+    
     useEffect(() => {
         if (isInit) return;
         pageData();
@@ -51,16 +64,16 @@ export default function OrderEvaluate() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '评价商品', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-        { title: '商品条码', dataIndex: 'customerame'},
-        { title: '评价时间', dataIndex: 'customerPhone'},
-        { title: '客户', dataIndex: 'payment_Time',width: 100},
+        { title: '评价商品', dataIndex: 'name', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+        { title: '商品条码', dataIndex: 'productMain'},
+        { title: '评价时间', dataIndex: 'evaluation_Time'},
+        { title: '客户', dataIndex: 'customerName',width: 100},
         { title: '评价选项1', dataIndex: 'name5', key: 'name1',},
         { title: '评价选项2', dataIndex: 'volume_Name'},
         { title: '评价选项3', dataIndex: 'shipment_Id',},
         { title: '评价选项4', dataIndex: 'remarks' },
         { title: '评价选项5', dataIndex: 'order_Status'},
-        { title: '评价内容', dataIndex: 'receiver_Phone'},
+        { title: '评价内容', dataIndex: 'evaluation_Content'},
         { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
            <Button type="primary" size="small" >订单</Button>
            <Button type="primary" size="small" >删除</Button>
@@ -96,6 +109,11 @@ export default function OrderEvaluate() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page+1,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {modalInfo && <Modal

@@ -51,15 +51,15 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-            { title: '微信ID', dataIndex: 'customerame'},
+            { title: '微信ID', dataIndex: 'customer_Wechat_Id'},
             { title: '微信昵称', dataIndex: 'customerPhone'},
-            { title: '客户姓名', dataIndex: 'payment_Time'},
-            { title: '手机号', dataIndex: 'name5', key: 'name1',},
+            { title: '客户姓名', dataIndex: 'name'},
+            { title: '手机号', dataIndex: 'phone',},
             { title: '性别', dataIndex: 'volume_Name'},
-            { title: '购买次数', dataIndex: 'shipment_Id'},
-            { title: '累计消费', dataIndex: 'remarks'},
-            { title: '高校', dataIndex: 'order_Status'},
-            { title: '校区', dataIndex: 'receiver_Phone'},
+            { title: '购买次数', dataIndex: 'purchase_Count'},
+            { title: '累计消费', dataIndex: 'total_Consumption'},
+            { title: '高校', dataIndex: 'gender'},
+            { title: '校区', dataIndex: 'college'},
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" >删除</Button>
             </div>},

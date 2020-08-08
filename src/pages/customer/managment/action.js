@@ -1,6 +1,11 @@
 
-import { dataSource } from './data';
+import request from '../../../assets/js/request';
 
 export function requestOrderList(data) {
-    return Promise.resolve(dataSource);
+    return request({
+        method: 'get',
+        url: '/backCustomer/customerInfo',
+        params: data
+    })
+
 }

@@ -1,28 +1,30 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestAppointList, requestForAppointDelete, requestForAppointCreate, requestForAppointEdit } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10,
+        name: '',
+        phone: '',
+        college: ''
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
-    const [ modalInfo, updateModalInfo ] = useState(null);
+    const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
-
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
@@ -32,51 +34,72 @@ export default function ProductManager() {
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
 
+
+
     const edit = useCallback((item) => {
         setVisible('edit');
-        updateModalInfo({...item});
+        setModalInfo({...item});
     }, []);
 
-    const create = useCallback((item) => {
+    const create = useCallback(() => {
         setVisible('create');
-        updateModalInfo({});
+        setModalInfo({});
     }, []);
 
+    const updateModalInfo = useCallback((key, value) => {
+        setModalInfo(info => ({...info, ...{[key]: value}}));
+    }, [])
+
+    const pageData = useCallback(() => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestAppointList(_pageInfo).then(data => {
+            setTableSize(data.totalElements)
+            updateSource(data.content)
+        })
+    }, [pageInfo])
 
     const submit = useCallback(() => {
         if (visible === 'create') {
-            console.log('---新增--', modalInfo)
+            requestForAppointCreate(modalInfo).then(res => {
+                message.info('新建成功');
+                setVisible(false);
+                pageData()
+            })
         }
         if (visible === 'edit') {
-            console.log('---修改--', modalInfo)
+            requestForAppointEdit(modalInfo).then(res => {
+                message.info('修改成功');
+                setVisible(false);
+                pageData()
+            })
         }
         
-    }, [modalInfo, visible])
+    }, [modalInfo, pageData, visible])
 
-    const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
-        })
-    }, [])
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
-
     const [ columns ] = useState([
-            { title: '客户名称', dataIndex: 'customerame'},
-            { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '性别', dataIndex: 'customerPhone'},
-            { title: '订单号', dataIndex: 'payment_Time'},
-            { title: '预约时间', dataIndex: 'name5', key: 'name1',},
-            { title: '量体地点', dataIndex: 'volume_Name'},
+            { title: '客户名称', dataIndex: 'name'},
+            { title: '客户电话', dataIndex: 'phone'},
+            { title: '性别', dataIndex: 'gender'},
+            { title: '订单号', dataIndex: 'volume_Id'}, // TODO: 订单号字段是不是这个
+            { title: '预约时间', dataIndex: 'time'}, // TODO 预约时间和量体时间只有一个time字段
+            { title: '量体地点', dataIndex: 'adress'},
             { title: '量体时间', dataIndex: 'shipment_Id'},
-            { title: '量体师', dataIndex: 'remarks'},
-            { title: '完成情况', dataIndex: 'order_Status'},
+            { title: '量体师', dataIndex: 'volumer_Name'},
+            { title: '完成情况', dataIndex: 'reservation_Status'},
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                 <Button type="primary" size="small" >派单</Button>
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
@@ -88,25 +111,26 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">量体地点</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('address', e.target.value)} />
             </div>
 
             <div className="manager-search-item">
                 <div className="search-item__title">量体时间</div>
                 <RangePicker onChange={(date, dateString) => {
-                    updateSearch('order_Status', dateString.join('-'));
+                    updateSearch('startTime', dateString[0]);
+                    updateSearch('endTime', dateString[1]);
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
@@ -123,6 +147,11 @@ export default function ProductManager() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {modalInfo && <Modal

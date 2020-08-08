@@ -67,3 +67,16 @@ export function requestForProductExport(data) {
         params: data
     })
 }
+
+
+/**
+ * 导入
+ * @param {} data 
+ */
+export function requestForProductImport(data) {
+    return request({
+        method: 'get',
+        url: '/productInfo/importExcel',
+        params: data
+    })
+}

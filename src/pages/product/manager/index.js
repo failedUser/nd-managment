@@ -40,23 +40,13 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ editInfo, setEditInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        updatePageInfo(pageInfo => {
+            pageInfo[key] = value;
+            return {...pageInfo}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        if (!search.barcode) {
-            message.info('请先输入条码');
-            return ;
-        }
-        message.info('暂时没有筛选');
-        console.log('----开始筛选----', search);
-    }, [search])
 
     // 获取分页数据
     const pageData = useCallback(() => {
@@ -98,6 +88,7 @@ export default function ProductManager() {
         }
         requestForProductExport(chooseItems).then(res => {
             message.info('导出成功');
+            // TODO： 导出文件乱码
             exportFile(res, '商品导出');
         })
     }, [chooseItems])
@@ -194,12 +185,16 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">条码</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('barcode', e.target.value)} />
+                <Input size="small" placeholder="输入条码" onChange={e => updateSearch('barcode', e.target.value)} />
             </div>
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
-            <Upload onChange={({ file, fileList }) => {
+            <Upload 
+            action="/productInfo/importExcel"
+            method="post"
+            onChange={({ file, fileList }) => {
+                // TODO 导入之后没有反应，显示上传成功了
                 if (file.status !== 'uploading') {
                     console.log(file, fileList);
                 }

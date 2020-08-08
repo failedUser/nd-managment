@@ -11,7 +11,7 @@ import {
 export default function FabricManager() {
     const [ isInit, updateInit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
-        page: 0,
+        page: 1,
         size: 10
     })
     const [ tableSize, setTableSize ] = useState(0);
@@ -20,17 +20,19 @@ export default function FabricManager() {
     const [ visible, setVisible ] = useState(false);
     const [ editInfo, setEditInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        // TODO 面料编号搜索失败
+        updatePageInfo(info => {
+            info[key] = value;
+            return {...info}
         });
     }, [])
     // 获取分页数据
     const pageData = useCallback(() => {
-        requestForFabricList(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestForFabricList(_pageInfo).then(data => {
             if (!data) return ;
             setTableSize(data.size);
             if (data && Array.isArray(data.content)) {
@@ -38,14 +40,6 @@ export default function FabricManager() {
             }
         })
     }, [pageInfo])
-
-    const startSearch = useCallback(() => {
-        if (!search.code) {
-            message.info('请先输入条码');
-            return ;
-        }
-        console.log('----开始筛选----', search);
-    }, [search])
 
     const _delete = useCallback((item) => {
         requestForFabricDelete([item.fabric_Id]).then(data => {
@@ -159,12 +153,15 @@ export default function FabricManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">面料编号</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('code', e.target.value)} />
+                <Input size="small" placeholder="输入面料编号" onChange={e => updateSearch('fabricId', e.target.value)} />
             </div>
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
-        <Upload onChange={({ file, fileList }) => {
+        <Upload
+        action="/fabric/importExcel"
+        method="post"
+        onChange={({ file, fileList }) => {
                 if (file.status !== 'uploading') {
                     console.log(file, fileList);
                 }

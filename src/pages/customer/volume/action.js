@@ -8,3 +8,24 @@ export function requestCustomeVolumeList(data) {
         params: data
     })
 }
+
+
+
+export function requestCustomeVolumeExport(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backCustomer/exportSizeInfo',
+        params: data
+    })
+}
+
+
+
+
+export function requestCustomeVolumeUpdate(data) {
+    return request({
+        method: 'post',
+        url: '/newdreamer/backCustomer/updateSizeInfo',
+        data: data
+    })
+}

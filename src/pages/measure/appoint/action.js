@@ -25,12 +25,12 @@ export function requestForAppointEdit(data) {
 
 export function requestForAppointCreate(data) {
     // TODO: 预约单创建
-    // return request({
-    //     method: 'put',
-    //     url: '/newdreamer/volumer',
-    //     data: data,
-    //     type: 'json'
-    // })
+    return request({
+        method: 'put',
+        url: '/newdreamer/volumer',
+        data: data,
+        type: 'json'
+    })
 }
 
 export function requestForAppointDelete(data) {

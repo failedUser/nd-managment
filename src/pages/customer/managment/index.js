@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestOrderList, requestOrderExport } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -32,8 +32,12 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+        requestOrderExport({
+            ...pageInfo,
+            ids: chooseItems
+        })
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems])
+    }, [chooseItems, pageInfo])
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);
         setModalInfo({...item});
@@ -95,7 +99,7 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="order_Id"
+                rowKey="customer_Wechat_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

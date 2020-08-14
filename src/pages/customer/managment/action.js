@@ -9,3 +9,14 @@ export function requestOrderList(data) {
     })
 
 }
+
+
+
+export function requestOrderExport(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backCustomer/exportCustomer',
+        params: data
+    })
+
+}

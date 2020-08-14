@@ -4,6 +4,7 @@ import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
 import { requestDistributionRewardList } from './action';
 const { RangePicker } = DatePicker;
 
+// 分销没有数据， model也不对
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({

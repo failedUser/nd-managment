@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestCustomeVolumeList } from './action';
+import { requestCustomeVolumeList, requestCustomeVolumeExport, requestCustomeVolumeUpdate } from './action';
 import VolumeModal from '../../../components/volumeModal'
 const { RangePicker } = DatePicker;
 
@@ -30,8 +30,13 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+
+        requestCustomeVolumeExport({
+            ...pageInfo,
+            ids: chooseItems
+        })
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems])
+    }, [chooseItems, pageInfo])
 
     const edit = useCallback((record) => {
         console.log('--edit--', record);
@@ -39,10 +44,6 @@ export default function ProductManager() {
         setModalInfo({...record});
     }, [])
 
-    const modalSubmit = useCallback((newInfo) => {
-        console.log('---modalSubmit---', modalSubmit);
-        setVisible(false);
-    }, [])
 
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);
@@ -66,6 +67,15 @@ export default function ProductManager() {
         }
     }, [pageData, pageInfo])
 
+
+    const modalSubmit = useCallback((newInfo) => {
+        requestCustomeVolumeUpdate(newInfo).then(() => {
+            message.info('修改成功');
+        }).then(pageData);
+        console.log('---modalSubmit---', modalSubmit);
+        setVisible(false);
+    }, [pageData])
+
     useEffect(() => {
         if (isInit) return;
         pageData();
@@ -74,21 +84,21 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             // TODO 缺少客户姓名
-            { title: '姓名', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+            { title: '姓名', dataIndex: 'customer_Name', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
             // TODO 这个电话是客户电话 不是量体师电话
-            { title: '电话', dataIndex: 'volumer_Phone'},
+            { title: '电话', dataIndex: 'customer_Phone'},
             { title: '量体师', dataIndex: 'volumer_Name'},
-            { title: '量体时间', dataIndex: 'admission_Time'},
-            { title: '性别', dataIndex: 'volumer_Address', key: 'name1',},
-            { title: '身高', dataIndex: 'volumer_Birth'},
-            { title: '体重', dataIndex: 'volumer_College'},
-            { title: '胸围', dataIndex: 'volumer_Department'},
-            { title: '中腰', dataIndex: 'volumer_Gender'},
-            { title: '肩宽', dataIndex: 'volumer_Id'},
-            { title: '袖长', dataIndex: 'volumer_Major'},
-            { title: '腰围', dataIndex: 'volumer_Name'},
-            { title: '臀围', dataIndex: 'volumer_Phone'},
-            { title: '裤长', dataIndex: 'volumer_Part'},
+            { title: '量体时间', dataIndex: 'volume_Time'},
+            { title: '性别', dataIndex: 'volumer_Gender', key: 'name1',},
+            { title: '身高', dataIndex: 'height'},
+            { title: '体重', dataIndex: 'weight'},
+            { title: '胸围', dataIndex: 'bust'},
+            { title: '中腰', dataIndex: 'middle_Waist'},
+            { title: '肩宽', dataIndex: 'shoulder_Width'},
+            { title: '袖长', dataIndex: 'sleeve_Length'},
+            { title: '腰围', dataIndex: 'waistline'},
+            { title: '臀围', dataIndex: 'hips'},
+            { title: '裤长', dataIndex: 'pants_Length'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
                <Button type="primary" size="small" >删除</Button>
@@ -134,20 +144,6 @@ export default function ProductManager() {
             submit={modalSubmit}
             cancel={() => setVisible(false)}
         />
-        {/* {modalInfo && <Modal
-                title="商品编辑"
-                visible={visible}
-                width={1000}
-                onOk={() => {}}
-                onCancel={() => setVisible(false)}
-            >
-                <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
-                    <span className="edit-item__title">{col.title}</span>
-                    <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
-                </div>)}
-                </div>
-            </Modal>} */}
         
         </div>
 }

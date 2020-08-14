@@ -2,46 +2,97 @@ import React, {useState, useEffect, useCallback} from 'react';
 import { Modal, Radio, Button, Input } from 'antd';
 import './index.less';
 
+// belly_Shape	string
+// allowEmptyValue: false
+// 胸型
+
+
+// body_Shape_Back	string
+// allowEmptyValue: false
+// 背面
+
+// body_Shape_Front	string
+// allowEmptyValue: false
+// 正面
+
+// body_Shape_Remark	string
+// allowEmptyValue: false
+// 体型备注
+
+// body_Shape_Side	string
+// allowEmptyValue: false
+// 侧面
+
+// buttocks	string
+// allowEmptyValue: false
+// 臀部
+
+
+// chest_Back	string
+// allowEmptyValue: false
+// 胸背部
+
+
+// customer_Gender	string
+// allowEmptyValue: false
+// 性别
+
+
+// customer_Wechat_Id	string
+// allowEmptyValue: false
+// 客户微信
+
+
+
+// shoulder_Shape	string
+// allowEmptyValue: false
+// 肩型
+
+// volumer_Id	string
+// allowEmptyValue: false
+// 量体师id
+
 
 
 const customerInfo = [
-    {title: '客户', key: 'customer'},
-    {title: '电话', key: 'phone'},
-    {title: '量体时间', key: 'time'},
+    {title: '客户', key: 'customer_Name'},
+    {title: '电话', key: 'customer_Phone'},
+    {title: '量体时间', key: 'volume_Time'},
     {title: '量体师', key: 'volumer_Name'},
     {title: '性别', key: 'volumer_Gender'},
     {title: '身高CM', key: 'height'},
     {title: '体重', key: 'weight'},
-    {title: '量体地址', key: 'volumer_Address'}
+    {title: '量体地址', key: 'volume_Adress'}
 ]
 
 const pureSize = [
-    {title: '胸围', key: 'customer'},
-    {title: '腰围', key: 'phone'},
-    {title: '腰节', key: 'time'},
-    {title: '臀围', key: 'volumer_Name'},
-    {title: '中腰', key: 'volumer_Gender'},
-    {title: '裤长', key: 'height'},
-    {title: '下摆', key: 'weight'},
-    {title: '横档', key: 'volumer_Address'},
-    {title: '肩宽', key: 'customer'},
-    {title: '中裆', key: 'phone'},
-    {title: '袖长', key: 'time'},
-    {title: '小腿围', key: 'volumer_Name'},
-    {title: '大臂围', key: 'volumer_Gender'},
-    {title: '脚口', key: 'height'},
-    {title: '小臂围', key: 'weight'},
-    {title: '通裆', key: 'volumer_Address'},
-    {title: '袖口', key: 'volumer_Address'},
-    {title: '前胸', key: 'customer'},
-    {title: '衣长', key: 'phone'},
-    {title: '后背', key: 'time'},
-    {title: '领围', key: 'volumer_Name'},
-    {title: '胸高', key: 'volumer_Gender'},
-    {title: '备注', key: 'volumer_Gender'},
+    {title: '胸围', key: 'bust'},
+    {title: '腰围', key: 'waistline'},
+    {title: '腰节', key: 'waist'},
+    {title: '臀围', key: 'hips'},
+    {title: '中腰', key: 'middle_Waist'},
+    {title: '裤长', key: 'pants_Length'},
+    {title: '下摆', key: 'hem'},
+    {title: '横档', key: 'rung'},
+    {title: '肩宽', key: 'shoulder_Width'},
+    {title: '中裆', key: 'mid_Range'},
+    {title: '袖长', key: 'sleeve_Length'},
+    {title: '小腿围', key: 'calf_Circumference'},
+    {title: '大臂围', key: 'big_Arm_Circumference'}, 
+    {title: '脚口', key: 'foot_Mouth'},
+    {title: '小臂围', key: 'small_Arm_Circumference'},
+    {title: '通裆', key: 'full_Crotch'},
+    {title: '袖口', key: 'cuff'},
+    {title: '前胸', key: 'front_Chest'},
+    {title: '衣长', key: 'clothe_Length'},
+    {title: '后背', key: 'back'},
+    {title: '领围', key: 'collar'},
+    {title: '胸高', key: 'chest_Height'},
+    {title: '备注', key: 'volume_Data_Remark'},
 ]
 
 
+// 下面的枚举值是什么
 const Figure = [
     {
         title: '肩型',

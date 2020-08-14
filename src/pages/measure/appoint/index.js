@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestAppointList, requestForAppointDelete, requestForAppointCreate, requestForAppointEdit } from './action';
+import { requestAppointList, requestForAppointCreate, requestForAppointEdit } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -85,11 +85,20 @@ export default function ProductManager() {
         }
     }, [pageData, pageInfo])
 
+    const updateStatus = useCallback((item) => {
+        requestForAppointEdit(item).then(res => {
+            message.info('修改成功');
+            setVisible(false);
+            pageData()
+        })
+    }, [pageData])
+
     useEffect(() => {
         if (isInit) return;
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
+     // TODO 修改有问题
     const [ columns ] = useState([
             { title: '客户名称', dataIndex: 'name'},
             { title: '客户电话', dataIndex: 'phone'},
@@ -99,11 +108,20 @@ export default function ProductManager() {
             { title: '量体地点', dataIndex: 'adress'},
             { title: '量体时间', dataIndex: 'shipment_Id'},
             { title: '量体师', dataIndex: 'volumer_Name'},
-            { title: '完成情况', dataIndex: 'reservation_Status'},
+            { title: '完成情况', dataIndex: 'reservation_Status'}, 
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
-                <Button type="primary" size="small" >派单</Button>
+                <Button onClick={() => {
+                    let _record = {...record};
+                    _record.reservation_Status = '派单'
+                    updateStatus(_record);
+                }} type="primary" size="small" >派单</Button>
+                
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
-               <Button type="primary" size="small" >取消</Button>
+               <Button onClick={() => {
+                    let _record = {...record};
+                    _record.reservation_Status = '取消'
+                    updateStatus(_record);
+                }}  type="primary" size="small" >取消</Button>
             </div>},
         ])
    
@@ -134,7 +152,7 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
-            <Button onClick={create} type="primary">新增</Button>
+            {/* <Button onClick={create} type="primary">新增</Button> */}
         </section>
         <section className="product-manager-table">
             <Table 

@@ -15,7 +15,7 @@ export function requestMeasureList(data) {
  */
 export function requestForMeasureEdit(data) {
     return request({
-        method: 'post',
+        method: 'post ',
         url: '/newdreamer/volumer',
         data: data,
         type: 'json'
@@ -39,3 +39,13 @@ export function requestForMeasureDelete(data) {
         type: 'json'
     })
 }
+
+
+export function requestForMeasureExport(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/volumer/exportExcel',
+        params: data
+    })
+}
+

@@ -1,11 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestBonusSettingList } from './action';
 const { RangePicker } = DatePicker;
 
+// TODO 这里交互有点问题，要改的话2个应该都可以同时改，但是数据怎么会有2条
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
     const [ editable, setEditable ] = useState(false);
@@ -19,12 +25,13 @@ export default function ProductManager() {
     }, [chooseItems])
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestBonusSettingList(pageInfo).then(data => {
+            setTableSize(data.totalElements)
+            updateSource(data.content);
         })
-    }, [])
+    }, [pageInfo])
 
     const submit = useCallback(() => {
         console.log('提交了')
@@ -36,14 +43,25 @@ export default function ProductManager() {
         setIsinit(true);
     }, [isInit, pageData])
 
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
+
     const [ columns ] = useState([
-            { title: '设置编号', dataIndex: 'customerame'},
-            { title: '设置时间', dataIndex: 'customerPhone'},
-            { title: '设置内容', dataIndex: 'payment_Time'},
+            { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
+            { title: '设置时间', dataIndex: 'reward_Setting_Time'},
+            { title: '设置内容', dataIndex: 'reward_Price'},
             { title: '设置方式', dataIndex: 'name5'},
-            { title: '设置人', dataIndex: 'volume_Name'},
-            { title: '设置参数', dataIndex: 'shipment_Id'}
+            { title: '设置人', dataIndex: 'reward_Setting_Person'},
+            { title: '设置参数', dataIndex: 'reward_Percentage'}
     ])
+
+
+    
    
     return <div className="product-manager">
         <section className="product-manager-operation">
@@ -105,6 +123,11 @@ export default function ProductManager() {
                 rowKey="order_Id"
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
     </div>

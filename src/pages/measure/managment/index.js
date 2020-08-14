@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestMeasureList,  requestForMeasureEdit, requestForMeasureCreate, requestForMeasureDelete } from './action';
+import { requestMeasureList,  requestForMeasureEdit, requestForMeasureCreate, requestForMeasureDelete, requestForMeasureExport } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -31,8 +31,13 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+
+        requestForMeasureExport({
+            ...pageInfo,
+            ids: chooseItems
+        })
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems])
+    }, [chooseItems, pageInfo])
 
 
 

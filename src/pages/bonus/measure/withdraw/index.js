@@ -42,7 +42,9 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestWithDrawList(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestWithDrawList(_pageInfo).then(data => {
             if (!data) return ;
             setTableSize(data.totalElements);
             if (data && Array.isArray(data.content)) {

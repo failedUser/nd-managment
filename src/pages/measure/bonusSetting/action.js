@@ -1,6 +1,13 @@
 
-import { dataSource } from './data';
+import request from '../../../assets/js/request';
 
-export function requestOrderList(data) {
-    return Promise.resolve(dataSource);
+export function requestBonusSettingList(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/volumeRewardConfig',
+        params: data
+    })
 }
+
+
+

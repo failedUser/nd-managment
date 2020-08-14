@@ -102,17 +102,17 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="量体师" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">所属高校</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('college', e.target.value)} />
+                <Input size="small" placeholder="高校" onChange={e => updateSearch('college', e.target.value)} />
             </div>
             
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
-            <Button onClick={export_data} type="primary">数据导出</Button>
+            <Button onClick={export_data} type="primary">数据导出</Button> {/**奖励金导出没有 */}
         </section>
         <section className="product-manager-table">
             <Table 

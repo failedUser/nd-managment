@@ -16,18 +16,13 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        updatePageInfo(info => {
+            info[key] = value;
+            return {...info}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
 
     const export_data = useCallback(() => {
@@ -103,14 +98,14 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="输入客户名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="输入电话" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

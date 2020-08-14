@@ -1,13 +1,14 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList, requestOrderDetail } from './action';
+import { requestOrderList, requestOrderDetail, requestForOrderExport, requestForOrdrStatusUpdate } from './action';
+import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
 
 export default function OrderVoucher() {
     const [ isInit, setIsinit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
-        page: 0,
+        page: 1,
         size: 10
     })
     const [ tableSize, setTableSize ] = useState(0);
@@ -15,38 +16,50 @@ export default function OrderVoucher() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        updatePageInfo(info => {
+            info[key] = value;
+            return {...info}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
-
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems])
+
+        requestForOrderExport({
+            ...pageInfo,
+            orderIds: chooseItems
+        }).then((data) => {
+            exportFile(data, '订单导出')
+        })
+    }, [chooseItems, pageInfo])
+
+
     const showOrderVoucher = useCallback((item) => {
         requestOrderDetail({orderId:item.order_Id}).then(data => {
-            console.log(data)
             setVisible(true);
+            item.dataSource = data;
             setModalInfo({...item});
         })
         
     }, []);
 
+    const updateOrderStatus = function (record, status) {
+        // TODO Required List parameter 'ids' is not presen 
+        requestForOrdrStatusUpdate({
+            ids: [record.order_Id],
+            status
+        }).then(pageData);
+    }
+
     const pageData = useCallback(() => {
-        requestOrderList(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+;        requestOrderList(_pageInfo).then(data => {
             setTableSize(data.totalElements);
             updateSource(data.content)
         })
@@ -70,45 +83,63 @@ export default function OrderVoucher() {
         { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
             { title: '客户名称', dataIndex: 'customerame'},
             { title: '客户电话', dataIndex: 'customerPhone'},
-            { title: '付款时间', dataIndex: 'payment_Time',width: 100},
+            { title: '付款时间', dataIndex: 'payment_Time'},
             { title: '收款金额', dataIndex: 'name5', key: 'name1',},
             { title: '量体师', dataIndex: 'volume_Name'},
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
             { title: '备注', dataIndex: 'remarks', width: 80 },
-            { title: '状态', dataIndex: 'order_Status', width: 220},
-            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 220},
+            { title: '状态', dataIndex: 'order_Status', width: 80},
+            { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >备货</Button>
-               <Button type="primary" size="small" >撤销</Button>
+               <Button onClick={() => {
+                   updateOrderStatus(record, true);
+               }} type="primary" size="small" >备货</Button>
+               <Button onClick={() => {
+                   updateOrderStatus(record, false);
+               }} type="primary" size="small" >撤销</Button>
             </div>},
         ])
+        const [ ModalColumns ] = useState([
+            { title: '单品编号', dataIndex: 'item_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+                { title: '商品', dataIndex: 'name'},
+                { title: '条码', dataIndex: 'barcode'},
+                { title: '颜色', dataIndex: 'style'},
+                { title: '尺码', dataIndex: 'size', },
+                { title: '数量', dataIndex: 'amounts'},
+                { title: '单价', dataIndex: 'retail_Price'},
+                { title: '折扣', dataIndex: 'discount'},
+                { title: '折后价', dataIndex: 'order_Status'},
+                { title: '折后总金额', dataIndex: 'receiver_Phone'},
+                { title: '状态', dataIndex: 'item_Status'},
+            ])
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">订单号</div>
-                <Input size="small" placeholder="请输入订单号" onChange={e => updateSearch('order_Id', e.target.value)} />
+                <Input size="small" placeholder="请输入订单号" onChange={e => updateSearch('orderId', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('customerName', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入电话" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="请输入电话" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
-                <Input size="small" placeholder="请选择状态" onChange={e => updateSearch('order_Status', e.target.value)} />
+                <Input size="small" placeholder="请选择状态" onChange={e => updateSearch('status', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
-                    updateSearch('order_Status', dateString.join('-'));
+                    updateSearch('startTime', dateString[0])
+                    updateSearch('endTime', dateString[1])
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
@@ -132,17 +163,23 @@ export default function OrderVoucher() {
             />
         </section>
         {modalInfo && <Modal
-                title="商品编辑"
+                title={`单据信息-${modalInfo.order_Id}-${modalInfo.customerame}`}
                 visible={visible}
                 width={1000}
                 onOk={() => {}}
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
+                {columns.map(col => <div className="order-edit-item">
                     <span className="edit-item__title">{col.title}</span>
                     <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
                 </div>)}
+                <Table 
+                rowKey="order_Id"
+                dataSource={modalInfo.dataSource} 
+                columns={ModalColumns} 
+                pagination={false}
+            />
                 </div>
             </Modal>}
         

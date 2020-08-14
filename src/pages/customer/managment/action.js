@@ -4,7 +4,7 @@ import request from '../../../assets/js/request';
 export function requestOrderList(data) {
     return request({
         method: 'get',
-        url: '/backCustomer/customerInfo',
+        url: '/newdreamer/backCustomer/customerInfo',
         params: data
     })
 

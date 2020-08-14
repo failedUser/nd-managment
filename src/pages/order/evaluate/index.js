@@ -1,8 +1,10 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestEvaluateList } from './action';
+import { requestEvaluateList, requestEvaluateDelete, requestEvaluateExport } from './action';
+import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
+
 
 export default function OrderEvaluate() {
     const [ isInit, setIsinit ] = useState(false);
@@ -15,18 +17,13 @@ export default function OrderEvaluate() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        updatePageInfo(info => {
+            info[key] = value;
+            return {...info}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
 
     const export_data = useCallback(() => {
@@ -34,8 +31,14 @@ export default function OrderEvaluate() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems])
+
+        // TODO 导出怎么传参数
+        requestEvaluateExport({
+            ...pageInfo,
+            ids: chooseItems
+        }).then(exportFile)
+    }, [chooseItems, pageInfo])
+
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);
         setModalInfo({...item});
@@ -49,6 +52,21 @@ export default function OrderEvaluate() {
     }, [pageInfo])
 
 
+    const _delete = useCallback((ids) => {
+        requestEvaluateDelete(ids).then(() => {
+            message.info('删除成功');
+
+        }).then(pageData);
+    }, [pageData])
+
+
+    const delete_data = useCallback(() => {
+        if (!chooseItems || chooseItems.length <= 0) {
+            message.info('先选择要删除的评价');
+            return ;
+        }
+        _delete(chooseItems);
+    }, [_delete, chooseItems])
     const onPageChange = useCallback((page) => {
         if (page !== pageInfo.page) {
             pageInfo.page = page;
@@ -76,31 +94,36 @@ export default function OrderEvaluate() {
         { title: '评价内容', dataIndex: 'evaluation_Content'},
         { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
            <Button type="primary" size="small" >订单</Button>
-           <Button type="primary" size="small" >删除</Button>
+           <Button onClick={() => {
+               _delete([record.evaluation_Id])
+           }} type="primary" size="small" >删除</Button>
         </div>},
         ])
+        // TODO 评价没有删除 和订单功能，导出 删除都没有
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">商品名称</div>
-                <Input size="small" placeholder="请输入商品名称" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入商品名称" onChange={e => updateSearch('productName', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
-                    updateSearch('order_Status', dateString.join('-'));
+                    updateSearch('startTime', dateString[0]);
+                    updateSearch('endTime', dateString[1]);
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
+            <Button onClick={delete_data} type="primary">批量删除</Button>
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="order_Id"
+                rowKey="evaluation_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

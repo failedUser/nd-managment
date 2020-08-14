@@ -1,34 +1,34 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderRefundList, requestRefundDetail } from './action';
+import { requestOrderRefundList, requestRefundDetail, requestRefundStatusUpdate } from './action';
 const { RangePicker } = DatePicker;
 
+
+/**
+ * TODO: 退款用退款状态搜索还是订单号和时间
+ */
 export default function OrderRefund() {
     const [ isInit, setIsinit ] = useState(false);
     const [ dataSource, updateSource ] = useState(null);
     const [ pageInfo, updatePageInfo ] = useState({
-        page: 0,
+        page: 1,
         size: 10
     })
     const [ tableSize, setTableSize ] = useState(0);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
     }, [])
 
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
-
+    // TODO: 缺少退款订单导出
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
@@ -36,20 +36,28 @@ export default function OrderRefund() {
         }
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
+
     const showOrderVoucher = useCallback((item) => {
-        requestRefundDetail({refundStatus: item.item_Id})
         setVisible(true);
         setModalInfo({...item});
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderRefundList(pageInfo).then(data => {
-            // setTableSize(data.totalElements);
-            console.log(data);
-            updateSource(data)
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestOrderRefundList(_pageInfo).then(data => {
+            setTableSize(data.totalElements);
+            updateSource(data.content)
         })
     }, [pageInfo])
 
+    const updateRefundStatue = useCallback((item, status) => {
+        console.log('---item', item);
+        requestRefundStatusUpdate({
+            itemId: item.item_Id,
+            status: '已量体' // TODO 这个status枚举是什么
+        }).then(pageData);
+    }, [pageData])
 
     const onPageChange = useCallback((page) => {
         if (page !== pageInfo.page) {
@@ -74,8 +82,13 @@ export default function OrderRefund() {
             { title: '退款金额', dataIndex: 'name5', key: 'name1',},
             { title: '退款状态', dataIndex: 'volume_Name'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >同意</Button>
-               <Button type="primary" size="small" >驳回</Button>
+               <Button  onClick={() => {
+                   updateRefundStatue(record, true);
+               }} type="primary" size="small" >同意</Button>
+               <Button  onClick={() => {
+                updateRefundStatue(record, false);
+            }}
+             type="primary" size="small" >驳回</Button>
             </div>},
         ])
    
@@ -92,7 +105,7 @@ export default function OrderRefund() {
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

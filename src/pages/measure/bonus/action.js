@@ -4,7 +4,7 @@ import request from '../../../assets/js/request';
 export function requestBonusList(data) {
     return request({
         method: 'get',
-        url: '/backVolumer/reward',
+        url: '/newdreamer/backVolumer/reward',
         params: data
     })
 }
@@ -17,7 +17,7 @@ export function requestForBonusEdit(data) {
     // TODO:奖励金修改接口
     return request({
         method: 'put',
-        url: '/backVolumer/updateDeduction',
+        url: '/newdreamer/backVolumer/updateDeduction',
         data: data,
         type: 'json'
     })

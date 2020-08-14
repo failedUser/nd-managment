@@ -1,7 +1,8 @@
 export function exportFile(stream, name) {
     const blob = new Blob([stream], {
-        type: 'application/ms-excel',
+        type: 'application/ms-excel;charset=UTF-8',
     });
+    console.log(blob);
     const reader = new FileReader();
     reader.readAsDataURL(blob);
     reader.onload = e => {

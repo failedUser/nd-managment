@@ -110,7 +110,7 @@ export default function ProductManager() {
             { title: '电话', dataIndex: 'volumer_Phone'},
             { title: '性别', dataIndex: 'volumer_Gender'},
             { title: '身份证号', dataIndex: 'volumer_Address'},
-            { title: '学生证号', dataIndex: 'volumer_Id'},
+            // { title: '学生证号', dataIndex: 'volumer_Id'},
             { title: '出生年月', dataIndex: 'volumer_Birth'},
             { title: '所属高校', dataIndex: 'volumer_College'},
             { title: '校区', dataIndex: 'volumer_Part' },
@@ -126,15 +126,15 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入要筛选的客户名称" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">手机号</div>
-                <Input size="small" placeholder="请输入要筛选的手机号" onChange={e => updateSearch('phone', e.target.value)} />
+                <Input size="small" placeholder="请输入手机号" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">所属高校</div>
-                <Input size="small" placeholder="请输入要筛选的高校" onChange={e => updateSearch('college', e.target.value)} />
+                <Input size="small" placeholder="请输入高校" onChange={e => updateSearch('college', e.target.value)} />
             </div>
             
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>

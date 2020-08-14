@@ -4,7 +4,7 @@ import request from '../../../assets/js/request';
 export function requestMeasureList(data) {
     return request({
         method: 'get',
-        url: '/volumer',
+        url: '/newdreamer/volumer',
         params: data
     })
 }
@@ -16,7 +16,7 @@ export function requestMeasureList(data) {
 export function requestForMeasureEdit(data) {
     return request({
         method: 'post',
-        url: '/volumer',
+        url: '/newdreamer/volumer',
         data: data,
         type: 'json'
     })
@@ -25,7 +25,7 @@ export function requestForMeasureEdit(data) {
 export function requestForMeasureCreate(data) {
     return request({
         method: 'put',
-        url: '/volumer',
+        url: '/newdreamer/volumer',
         data: data,
         type: 'json'
     })
@@ -34,7 +34,7 @@ export function requestForMeasureCreate(data) {
 export function requestForMeasureDelete(data) {
     return request({
         method: 'delete',
-        url: '/volumer',
+        url: '/newdreamer/volumer',
         data: data,
         type: 'json'
     })

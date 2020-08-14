@@ -9,7 +9,7 @@ import request from '../../../assets/js/request';
 export function requestForFabricList(data) {
     return request({
         method: 'get',
-        url: '/fabric',
+        url: '/newdreamer/fabric',
         params: data
     })
 }
@@ -21,7 +21,7 @@ export function requestForFabricList(data) {
 export function requestForFabricEdit(data) {
     return request({
         method: 'post',
-        url: '/fabric',
+        url: '/newdreamer/fabric',
         data: data,
         type: 'json'
     })
@@ -35,7 +35,7 @@ export function requestForFabricEdit(data) {
 export function requestForFabricCreate(data) {
     return request({
         method: 'put',
-        url: '/fabric',
+        url: '/newdreamer/fabric',
         data: data,
         type: 'json'
     })
@@ -48,7 +48,7 @@ export function requestForFabricCreate(data) {
 export function requestForFabricDelete(data) {
     return request({
         method: 'delete',
-        url: '/fabric',
+        url: '/newdreamer/fabric',
         data: data,
         type: 'json'
     })
@@ -62,7 +62,7 @@ export function requestForFabricDelete(data) {
 export function requestForFabricExport(data) {
     return request({
         method: 'get',
-        url: '/fabric/exportExcel',
+        url: '/newdreamer/fabric/exportExcel',
         params: data
     })
 }

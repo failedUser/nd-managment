@@ -9,7 +9,7 @@ import request from '../../../assets/js/request';
 export function requestForProductList(data) {
     return request({
         method: 'get',
-        url: '/productInfo',
+        url: '/newdreamer/productInfo',
         params: data
     })
 }
@@ -21,7 +21,7 @@ export function requestForProductList(data) {
 export function requestForProductEdit(data) {
     return request({
         method: 'post',
-        url: '/productInfo',
+        url: '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -35,7 +35,7 @@ export function requestForProductEdit(data) {
 export function requestForProductCreate(data) {
     return request({
         method: 'put',
-        url: '/productInfo',
+        url: '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -48,7 +48,7 @@ export function requestForProductCreate(data) {
 export function requestForProductDelete(data) {
     return request({
         method: 'delete',
-        url: '/productInfo',
+        url: '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -63,7 +63,7 @@ export function requestForProductDelete(data) {
 export function requestForProductExport(data) {
     return request({
         method: 'get',
-        url: '/productInfo/exportExcel',
+        url: '/newdreamer/productInfo/exportExcel',
         params: data
     })
 }
@@ -76,7 +76,7 @@ export function requestForProductExport(data) {
 export function requestForProductImport(data) {
     return request({
         method: 'get',
-        url: '/productInfo/importExcel',
+        url: '/newdreamer/productInfo/importExcel',
         params: data
     })
 }

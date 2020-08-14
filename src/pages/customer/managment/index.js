@@ -6,6 +6,13 @@ const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10,
+        name: '',
+        phone: ''
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -13,15 +20,11 @@ export default function ProductManager() {
     const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
-            search[key] = value;
-            return {...search}
+        updatePageInfo(info => {
+            info[key] = value;
+            return {...info}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
 
     const export_data = useCallback(() => {
@@ -37,12 +40,21 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestOrderList(_pageInfo).then(data => {
+            setTableSize(data.totalElements)
+            updateSource(data.content)
         })
-    }, [])
+    }, [pageInfo])
+
+    const onPageChange = useCallback((page) => {
+        if (page !== pageInfo.page) {
+            pageInfo.page = page;
+            updatePageInfo({...pageInfo});
+            pageData();
+        }
+    }, [pageData, pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -60,23 +72,23 @@ export default function ProductManager() {
             { title: '累计消费', dataIndex: 'total_Consumption'},
             { title: '高校', dataIndex: 'gender'},
             { title: '校区', dataIndex: 'college'},
-            { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >删除</Button>
-            </div>},
+            // { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
+            //    <Button type="primary" size="small" >删除</Button>
+            // </div>},
         ])
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入客户名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">手机号</div>
-                <Input size="small" placeholder="请输入手机号" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="请输入手机号" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
@@ -92,6 +104,11 @@ export default function ProductManager() {
                 }}
                 dataSource={dataSource} 
                 columns={columns} 
+                pagination={{
+                    current: pageInfo.page,
+                    total: tableSize,
+                    onChange: onPageChange
+                }}
             />
         </section>
         {modalInfo && <Modal

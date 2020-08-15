@@ -32,12 +32,9 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        requestOrderExport({
-            ...pageInfo,
-            ids: chooseItems
-        })
+        requestOrderExport(chooseItems)
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems, pageInfo])
+    }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);
         setModalInfo({...item});

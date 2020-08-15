@@ -1,9 +1,9 @@
 export function exportFile(url, data) {
     let params = Object.entries(data).reduce((Result, [key, value], index) => {
         if (index === 0) {
-            Result += `${key}=${value}`
+            Result += `ids=${value}`
         } else {
-            Result += `&${key}=${value}`
+            Result += `&ids=${value}`
         }
         return Result;
         

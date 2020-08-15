@@ -33,11 +33,8 @@ export default function OrderEvaluate() {
         }
 
         // TODO 导出怎么传参数
-        requestEvaluateExport({
-            ...pageInfo,
-            ids: chooseItems
-        }).then(exportFile)
-    }, [chooseItems, pageInfo])
+        requestEvaluateExport(chooseItems);
+    }, [chooseItems])
 
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);

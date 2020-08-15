@@ -31,12 +31,9 @@ export default function ProductManager() {
             return ;
         }
 
-        requestCustomeVolumeExport({
-            ...pageInfo,
-            ids: chooseItems
-        })
+        requestCustomeVolumeExport(chooseItems)
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems, pageInfo])
+    }, [chooseItems])
 
     const edit = useCallback((record) => {
         console.log('--edit--', record);

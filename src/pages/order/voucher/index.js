@@ -30,13 +30,8 @@ export default function OrderVoucher() {
             return ;
         }
 
-        requestForOrderExport({
-            ...pageInfo,
-            orderIds: chooseItems
-        }).then((data) => {
-            exportFile(data, '订单导出')
-        })
-    }, [chooseItems, pageInfo])
+        requestForOrderExport(chooseItems);
+    }, [chooseItems])
 
 
     const showOrderVoucher = useCallback((item) => {

@@ -86,11 +86,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        requestForProductExport(chooseItems).then(res => {
-            message.info('导出成功');
-            // TODO： 导出文件乱码
-            exportFile(res, '商品导出');
-        })
+        requestForProductExport(chooseItems);
     }, [chooseItems])
 
     // 编辑信息

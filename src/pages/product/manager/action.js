@@ -61,6 +61,7 @@ export function requestForProductDelete(data) {
  * @param {} data 
  */
 export function requestForProductExport(data) {
+    console.log('---data----', data);
     let params = Object.entries(data).reduce((Result, [key, value], index) => {
         if (index === 0) {
             Result += `${key}=${value}`

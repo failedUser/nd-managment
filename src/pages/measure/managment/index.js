@@ -32,12 +32,9 @@ export default function ProductManager() {
             return ;
         }
 
-        requestForMeasureExport({
-            ...pageInfo,
-            ids: chooseItems
-        })
+        requestForMeasureExport(chooseItems)
         console.log('----开始批量导出-----', chooseItems)
-    }, [chooseItems, pageInfo])
+    }, [chooseItems])
 
 
 

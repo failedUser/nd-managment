@@ -52,20 +52,15 @@ export default function FabricManager() {
             message.info('请先选择商品, 再批量删除');
             return ;
         }
-        requestForFabricDelete(chooseItems).then(data => {
-            message.info('删除成功');
-        }).then(pageData)
-    }, [chooseItems, pageData])
+        requestForFabricDelete(chooseItems);
+    }, [chooseItems])
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        requestForFabricExport(chooseItems).then(data => {
-            message.info('导出成功');
-            exportFile(data, '商品导出');
-        })
+        requestForFabricExport(chooseItems);
     }, [chooseItems])
 
     // 编辑信息

@@ -13,5 +13,6 @@ export function requestOrderList(data) {
 
 
 export function requestOrderExport(data) {
+    console.log('---data----', data);
     return exportFile('/newdreamer/backCustomer/exportCustomer', data);
 }

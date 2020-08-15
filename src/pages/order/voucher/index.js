@@ -96,10 +96,10 @@ export default function OrderVoucher() {
             { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button onClick={() => {
-                   updateOrderStatus(record, '备货中').then(pageData);
+                   updateOrderStatus(record, '备货中');
                }} type="primary" size="small" >备货</Button>
                <Button onClick={() => {
-                   updateOrderStatus(record, '待发货').then(pageData);
+                   updateOrderStatus(record, '待发货');
                }} type="primary" size="small" >撤销</Button>
             </div>},
         ])

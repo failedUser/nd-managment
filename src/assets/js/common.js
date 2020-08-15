@@ -9,6 +9,7 @@ export function exportFile(url, data) {
         
     }, '')
     const link = document.createElement('a');
+    link.target ='_blank';
     link.href = `http://newdreamer.cn:8080/newdreamer/productInfo/exportExcel?${params}`;
     link.click();
     return Promise.resolve();

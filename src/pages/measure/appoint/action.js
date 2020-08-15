@@ -23,6 +23,18 @@ export function requestForAppointEdit(data) {
     })
 }
 
+
+export function requestForAppointUpdateStatus(data) {
+    // TODO: 预约单修改接口
+    return request({
+        method: 'post',
+        url: '/newdreamer/backVolumer/updateReservation',
+        data: data,
+    })
+}
+
+
+
 export function requestForAppointCreate(data) {
     // TODO: 预约单创建
     return request({

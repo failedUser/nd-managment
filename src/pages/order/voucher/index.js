@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList, requestOrderDetail, requestForOrderExport, requestForOrdrStatusUpdate } from './action';
+import { requestOrderList, requestOrderDetail, requestForOrderExport, requestForOrdrStatusUpdate, requestForOrdrShip } from './action';
 import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
 
@@ -46,7 +46,7 @@ export default function OrderVoucher() {
     const updateOrderStatus = function (record, status) {
         // TODO Required List parameter 'ids' is not presen 
         requestForOrdrStatusUpdate({
-            ids: [record.order_Id],
+            id: record.order_Id,
             status
         }).then(pageData);
     }
@@ -81,16 +81,25 @@ export default function OrderVoucher() {
             { title: '付款时间', dataIndex: 'payment_Time'},
             { title: '收款金额', dataIndex: 'name5', key: 'name1',},
             { title: '量体师', dataIndex: 'volume_Name'},
-            { title: '物流单号', dataIndex: 'shipment_Id', width: 80},
+            { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
+                if (!text) {
+                    return <Button type="primary" onClick={() => {
+                        // 去发货
+                        requestForOrdrShip({orderId: record.order_Id}).then(pageData);
+                    }} >发货</Button>
+                } else {
+                    return <span>{text}</span>
+                }
+            }},
             { title: '备注', dataIndex: 'remarks', width: 80 },
             { title: '状态', dataIndex: 'order_Status', width: 80},
             { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button onClick={() => {
-                   updateOrderStatus(record, true);
+                   updateOrderStatus(record, '备货中').then(pageData);
                }} type="primary" size="small" >备货</Button>
                <Button onClick={() => {
-                   updateOrderStatus(record, false);
+                   updateOrderStatus(record, '待发货').then(pageData);
                }} type="primary" size="small" >撤销</Button>
             </div>},
         ])
@@ -146,7 +155,7 @@ export default function OrderVoucher() {
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
                         setChooseItems((selectedRowKeys + '').split(',').filter(item => item));
-                      }
+                    }
                 }}
                 dataSource={dataSource} 
                 columns={columns} 

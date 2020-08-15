@@ -44,3 +44,17 @@ export function requestForOrdrStatusUpdate(data) {
         data: data
     })
 }
+
+
+
+/**
+ * 发货
+ * @param {} data 
+ */
+export function requestForOrdrShip(data) {
+    return request({
+        method: 'POST',
+        url: '/newdreamer/deliver',
+        data: data
+    })
+}

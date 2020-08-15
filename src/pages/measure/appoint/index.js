@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestAppointList, requestForAppointCreate, requestForAppointEdit } from './action';
+import { requestAppointList, requestForAppointCreate, requestForAppointEdit, requestForAppointUpdateStatus } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -86,7 +86,7 @@ export default function ProductManager() {
     }, [pageData, pageInfo])
 
     const updateStatus = useCallback((item) => {
-        requestForAppointEdit(item).then(res => {
+        requestForAppointUpdateStatus(item).then(res => {
             message.info('修改成功');
             setVisible(false);
             pageData()
@@ -112,14 +112,14 @@ export default function ProductManager() {
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                 <Button onClick={() => {
                     let _record = {...record};
-                    _record.reservation_Status = '派单'
+                    _record.reservation_Status = '派单中'
                     updateStatus(_record);
                 }} type="primary" size="small" >派单</Button>
                 
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
                <Button onClick={() => {
                     let _record = {...record};
-                    _record.reservation_Status = '取消'
+                    _record.reservation_Status = '已取消'
                     updateStatus(_record);
                 }}  type="primary" size="small" >取消</Button>
             </div>},

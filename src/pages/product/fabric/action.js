@@ -1,6 +1,6 @@
 import request from '../../../assets/js/request';
 
-
+import { exportFile } from '../../../assets/js/common'
 
 /**
  * 获取商品列表
@@ -60,9 +60,5 @@ export function requestForFabricDelete(data) {
  * @param {} data 
  */
 export function requestForFabricExport(data) {
-    return request({
-        method: 'get',
-        url: '/newdreamer/fabric/exportExcel',
-        params: data
-    })
+    return exportFile('/newdreamer/fabric/exportExcel', data);
 }

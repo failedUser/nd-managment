@@ -1,6 +1,6 @@
 
 import request from '../../../assets/js/request';
-
+import { exportFile } from '../../../assets/js/common'
 export function requestOrderList(data) {
     return request({
         method: 'get',
@@ -13,10 +13,5 @@ export function requestOrderList(data) {
 
 
 export function requestOrderExport(data) {
-    return request({
-        method: 'get',
-        url: '/newdreamer/backCustomer/exportCustomer',
-        params: data
-    })
-
+    return exportFile('/newdreamer/backCustomer/exportCustomer', data);
 }

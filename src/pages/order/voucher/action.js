@@ -1,5 +1,6 @@
 
 import request from '../../../assets/js/request';
+import { exportFile } from '../../../assets/js/common'
 
 
 export function requestOrderList(data) {
@@ -29,14 +30,8 @@ export function requestOrderDetail(data) {
  * @param {} data 
  */
 export function requestForOrderExport(data) {
-    return request({
-        method: 'get',
-        type: 'json',
-        url: '/newdreamer/backOrder/exportOrder',
-        data: data
-    })
+    return exportFile('/newdreamer/backOrder/exportOrder', data);
 }
-
 
 /**
  * 修改状态

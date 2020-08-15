@@ -1,5 +1,6 @@
 
 import request from '../../../assets/js/request';
+import { exportFile } from '../../../assets/js/common'
 
 export function requestCustomeVolumeList(data) {
     return request({
@@ -12,11 +13,7 @@ export function requestCustomeVolumeList(data) {
 
 
 export function requestCustomeVolumeExport(data) {
-    return request({
-        method: 'get',
-        url: '/newdreamer/backCustomer/exportSizeInfo',
-        params: data
-    })
+    return  exportFile('/newdreamer/backCustomer/exportSizeInfo', data);
 }
 
 

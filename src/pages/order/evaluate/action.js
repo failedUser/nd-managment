@@ -1,6 +1,8 @@
 
 import request from '../../../assets/js/request';
 
+import { exportFile } from '../../../assets/js/common'
+
 export function requestEvaluateList(data) {
     return request({
         method: 'get',
@@ -25,10 +27,5 @@ export function requestEvaluateDelete(data) {
 
 
 export function requestEvaluateExport(data) {
-    return request({
-        method: 'get',
-        // type: 'json',
-        url: '/newdreamer/backOrder/exportEvaluation',
-         params:data
-    })
+    return exportFile('/newdreamer/backOrder/exportEvaluation', data);
 }

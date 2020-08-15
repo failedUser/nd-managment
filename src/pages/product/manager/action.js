@@ -1,5 +1,5 @@
 import request from '../../../assets/js/request';
-
+import Url from '../../../env';
 
 
 /**
@@ -9,7 +9,7 @@ import request from '../../../assets/js/request';
 export function requestForProductList(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/productInfo',
+        url: Url + '/newdreamer/productInfo',
         params: data
     })
 }
@@ -21,7 +21,7 @@ export function requestForProductList(data) {
 export function requestForProductEdit(data) {
     return request({
         method: 'post',
-        url: '/newdreamer/productInfo',
+        url: Url +  '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -35,7 +35,7 @@ export function requestForProductEdit(data) {
 export function requestForProductCreate(data) {
     return request({
         method: 'put',
-        url: '/newdreamer/productInfo',
+        url: Url + '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -48,7 +48,7 @@ export function requestForProductCreate(data) {
 export function requestForProductDelete(data) {
     return request({
         method: 'delete',
-        url: '/newdreamer/productInfo',
+        url: Url + '/newdreamer/productInfo',
         data: data,
         type: 'json'
     })
@@ -61,11 +61,19 @@ export function requestForProductDelete(data) {
  * @param {} data 
  */
 export function requestForProductExport(data) {
-    return request({
-        method: 'get',
-        url: '/newdreamer/productInfo/exportExcel',
-        params: data
-    })
+    let params = Object.entries(data).reduce((Result, [key, value], index) => {
+        if (index === 0) {
+            Result += `${key}=${value}`
+        } else {
+            Result += `&${key}=${value}`
+        }
+        return Result;
+        
+    }, '')
+    const link = document.createElement('a');
+    link.href = `http://newdreamer.cn:8080/newdreamer/productInfo/exportExcel?${params}`;
+    link.click();
+    return Promise.resolve();
 }
 
 
@@ -76,7 +84,7 @@ export function requestForProductExport(data) {
 export function requestForProductImport(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/productInfo/importExcel',
+        url: Url + '/newdreamer/productInfo/importExcel',
         params: data
     })
 }

@@ -1,5 +1,6 @@
 
 import request from '../../../assets/js/request';
+import { exportFile } from '../../../assets/js/common'
 
 export function requestMeasureList(data) {
     return request({
@@ -42,10 +43,6 @@ export function requestForMeasureDelete(data) {
 
 
 export function requestForMeasureExport(data) {
-    return request({
-        method: 'get',
-        url: '/newdreamer/volumer/exportExcel',
-        params: data
-    })
+    return  exportFile('/newdreamer/volumer/exportExcel', data);
 }
 

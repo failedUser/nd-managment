@@ -187,10 +187,17 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-operation">
             <Upload 
-            action="/productInfo/importExcel"
+            action="/newdreamer/productInfo/importExcel"
             method="post"
             onChange={({ file, fileList }) => {
                 // TODO 导入之后没有反应，显示上传成功了
+                console.log(file);
+                if (file.status === 'done') {
+                    message.info('导入成功');
+                    pageData();
+                } else {
+                    message.info('导入失败');
+                }
                 if (file.status !== 'uploading') {
                     console.log(file, fileList);
                 }

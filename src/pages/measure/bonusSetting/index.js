@@ -83,11 +83,11 @@ export default function ProductManager() {
                     {
                      editable
                      ? <React.Fragment>
-                         <div className="setting-content-item"><Input placeholder="请设置参数" /></div>
+                         <div className="setting-content-item"><Input placeholder="请设置参数" addonAfter="元" /></div>
                         
                      </React.Fragment>
                      : <React.Fragment>
-                        <div className="setting-content-item">10</div>
+                        <div className="setting-content-item">10 元</div>
                      </React.Fragment>
                     }
 
@@ -97,10 +97,10 @@ export default function ProductManager() {
                     {
                      editable
                      ? <React.Fragment>
-                          <div className="setting-content-item"><Input placeholder="请设置参数" /></div>
+                          <div className="setting-content-item"><Input placeholder="请设置参数" addonAfter="%" /></div>
                      </React.Fragment>
                      : <React.Fragment>
-                        <div className="setting-content-item">10</div>
+                        <div className="setting-content-item">10 %</div>
                      </React.Fragment>
                     }
                 </div>

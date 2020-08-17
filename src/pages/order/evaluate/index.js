@@ -83,11 +83,11 @@ export default function OrderEvaluate() {
         { title: '商品条码', dataIndex: 'productMain'},
         { title: '评价时间', dataIndex: 'evaluation_Time'},
         { title: '客户', dataIndex: 'customerName',width: 100},
-        { title: '评价选项1', dataIndex: 'name5', key: 'name1',},
-        { title: '评价选项2', dataIndex: 'volume_Name'},
-        { title: '评价选项3', dataIndex: 'shipment_Id',},
-        { title: '评价选项4', dataIndex: 'remarks' },
-        { title: '评价选项5', dataIndex: 'order_Status'},
+        { title: '评价选项1(尺寸)', dataIndex: 'size'},
+        { title: '评价选项(面料)', dataIndex: 'fabric'},
+        { title: '评价选项(做工)', dataIndex: 'work',},
+        { title: '评价选项(物流)', dataIndex: 'shipment' },
+        { title: '评价选项(星级)', dataIndex: 'star'},
         { title: '评价内容', dataIndex: 'evaluation_Content'},
         { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
            <Button type="primary" size="small" >订单</Button>

@@ -123,7 +123,8 @@ export default function ProductManager() {
                <Button type="primary" size="small" >停用</Button>
             </div>},
         ])
-   
+    const createConfig = columns.slice(0, columns.length - 1);
+    createConfig.push({title: '微信号', dataIndex: 'volumer_Wechat_Id'})
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
@@ -172,7 +173,7 @@ export default function ProductManager() {
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
+                {createConfig.map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
                     <Input value={modalInfo[col.dataIndex]} onChange={e => updateModalInfo(col.dataIndex, e.target.value)} />
                 </div>)}

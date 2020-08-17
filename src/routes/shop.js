@@ -4,11 +4,6 @@ export default [{
     children: [{
         path: '/home',
         name: '首页',
-        // component: require('../pages/shop/home').default,
-        children: [{
-            path: '/home2',
-            name: '首页2',
-            component: require('../pages/shop/home').default,
-        }]
+        component: require('../pages/shop/home').default
     }]
 }]

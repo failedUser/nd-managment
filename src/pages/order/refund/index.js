@@ -76,11 +76,11 @@ export default function OrderRefund() {
     const [ columns ] = useState([
         { title: '单品编号', dataIndex: 'barcode'},
         { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
-            { title: '订单状态', dataIndex: 'refund_Status'},
+            { title: '单品状态', dataIndex: 'item_Status'},
             { title: '申请时间', dataIndex: 'customerPhone'},
             { title: '退款商品', dataIndex: 'name',width: 100},
             { title: '退款金额', dataIndex: 'name5', key: 'name1',},
-            { title: '退款状态', dataIndex: 'volume_Name'},
+            { title: '退款状态', dataIndex: 'refund_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button  onClick={() => {
                    updateRefundStatue(record, true);

@@ -53,8 +53,8 @@ export function requestForOrdrStatusUpdate(data) {
  */
 export function requestForOrdrShip(data) {
     return request({
-        method: 'POST',
+        method: 'get',
         url: '/newdreamer/deliver',
-        data: data
+        params: data
     })
 }

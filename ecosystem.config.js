@@ -15,11 +15,11 @@ module.exports = {
         { 
             production: 
             { 
-                user: 'user',//服务器用户名 
-                host: 'ip',//服务器ip 
+                user: 'root',//服务器用户名 
+                host: '106.15.230.101',//服务器ip 
                 ref: 'origin/master', 
-                repo: 'git@github.com:test/test.git', 
-                path: '/var/www/test',//项目部署到服务器目录 
+                repo: 'https://github.com/failedUser/nd-managment.git', 
+                path: '/dev/fe/nd-managment',//项目部署到服务器目录 
                 ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
              } 
         } 

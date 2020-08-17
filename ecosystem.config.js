@@ -19,7 +19,7 @@ module.exports = {
                 host: '106.15.230.101',//服务器ip 
                 ref: 'origin/master', 
                 repo: 'https://github.com/failedUser/nd-managment.git', 
-                path: '/dev/fe/nd-managment',//项目部署到服务器目录 
+                path: '/dev/deploy/nd-managment',//项目部署到服务器目录 
                 ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
              } 
         } 

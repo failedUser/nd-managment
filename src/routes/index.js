@@ -8,7 +8,7 @@ import productRoutes from './product';
 
 
 export default [{
-    path: '/',
+    path: '/nd/',
     name: '',
     children: [...shopRoutes,
         ...productRoutes,

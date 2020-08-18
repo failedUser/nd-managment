@@ -20,7 +20,7 @@ module.exports = {
                 ref: 'origin/master', 
                 repo: 'https://github.com/failedUser/nd-managment.git', 
                 path: '/dev/deploy/nd-managment',//项目部署到服务器目录 
-                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
+                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'yarn install && pm2 reload ecosystem.config.js --env production'
              } 
         } 
     };

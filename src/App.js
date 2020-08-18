@@ -13,7 +13,7 @@ let defaultKeys = pathName.split('/').slice(1).reduce((result, item) => {
         return result;
     } 
     let last = result[result.length - 1];
-    result.push(`${last}/${item}`);
+    result.push(`/nd/${last}/${item}`);
     return result;
 }, [])
 console.log(defaultKeys);
@@ -42,11 +42,17 @@ function renderRoute(routes, parent) {
 
 
 function renderMenu(routes) {
+    let startRoutes = routes[0].children;
+    let global = routes[0].path;
+    startRoutes = startRoutes.map(item => {
+        item.path+=global;
+        return item;
+    })
     const renderSubMenu = function(route, index) {
         route.bread = route.bread || [route.name];
         return <Menu.SubMenu key={route.path} title={<Link style={{color: '#fff'}} to={route.path}>{route.name}</Link>}>
         {route.children && route.children.map((child, index2) =>  {
-            child.path = route.path + child.path;
+            child.path =  route.path + child.path;
             child.bread = [...route.bread || [], ...[child.name]]
             if (!child.children) {
                 return <Menu.Item key={child.path}> 
@@ -57,7 +63,7 @@ function renderMenu(routes) {
         })}
     </Menu.SubMenu>
     }
-    return routes.map(renderSubMenu);
+    return startRoutes.map(renderSubMenu);
 }
 
 function App() {
@@ -77,7 +83,7 @@ function App() {
                         mode="inline"
                         theme="dark"
                         >
-                             {renderMenu(Routes[0].children)}
+                             {renderMenu(Routes)}
                         </Menu>
                    
                 </Sider>

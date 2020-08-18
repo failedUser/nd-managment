@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         { 
             name: 'new-dream', 
-            script: 'yarn', 
+            script: 'npm', 
             args: 'run start:production', // cluster mode 根据cpu个数启动最大进程数量 
             instances: 0 , 
             autorestart: true,
@@ -20,7 +20,7 @@ module.exports = {
                 ref: 'origin/master', 
                 repo: 'https://github.com/failedUser/nd-managment.git', 
                 path: '/dev/deploy/nd-managment',//项目部署到服务器目录 
-                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'yarn install && pm2 reload ecosystem.config.js --env production'
+                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
              } 
         } 
     };

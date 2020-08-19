@@ -5,7 +5,7 @@ module.exports = function (app) {
         proxy([
         '/newdreamer',
     ],{
-            "target": "https://newdreamer.cn:8080",
+            "target": "https://newdreamer.cn",
             changeOrigin: true,
         })
     );

@@ -187,7 +187,7 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-operation">
             <Upload 
-            action="http://newdreamer.cn/newdreamer/productInfo/importExcel"
+            action="//newdreamer.cn/newdreamer/productInfo/importExcel"
             method="post"
             onChange={({ file, fileList }) => {
                 // TODO 导入之后没有反应，显示上传成功了

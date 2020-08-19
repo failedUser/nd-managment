@@ -18,8 +18,9 @@
   "scripts": {
     "start": "craco start",
     "start:production": "npm run build && npm run start:prod",
-    "start:prod": "NODE_ENV=production PUBLIC_URL=/nd serve build -s -p 3000",
-    "build": "PUBLIC_URL=/nd craco build",
+    "start:prod": "NODE_ENV=production PUBLIC_URL=/nd node server.js",
+    "build": "PUBLIC_URL=/nd/res craco build",
+    "lc": "craco build",
     "test": "craco test",
     "eject": "craco eject"
   },

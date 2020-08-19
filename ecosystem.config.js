@@ -20,7 +20,7 @@ module.exports = {
                 ref: 'origin/master', 
                 repo: 'https://github.com/failedUser/nd-managment.git', 
                 path: '/var/www/nd',//项目部署到服务器目录 
-                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
+                ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'git pull origin master && npm install && pm2 reload ecosystem.config.js --env production'
              } 
         } 
     };

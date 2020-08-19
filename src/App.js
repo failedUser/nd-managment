@@ -45,7 +45,7 @@ function renderMenu(routes) {
     let startRoutes = routes[0].children;
     let global = routes[0].path;
     startRoutes = startRoutes.map(item => {
-        item.path+=global;
+        item.path=global + item.path;
         return item;
     })
     const renderSubMenu = function(route, index) {

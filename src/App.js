@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import Routes from './routes';
+import Login from './pages/user/login/login'
 import './App.less';
 
 const { Sider } = Layout;
@@ -16,7 +17,6 @@ let defaultKeys = pathName.split('/').slice(1).reduce((result, item) => {
     result.push(`${last}/${item}`);
     return result;
 }, [])
-console.log(defaultKeys);
 function renderRoute(routes, parent) {
     return routes.map((route, index) => {
         return <React.Fragment key={route.path + index}>
@@ -67,6 +67,14 @@ function renderMenu(routes) {
 }
 
 function App() {
+    console.log(defaultKeys);
+    if (defaultKeys.indexOf('/nd/user/login')>=0) {
+        return <div className="App">
+         <BrowserRouter >
+            <Route path="/nd/user/login"><Login /> </Route>
+        </BrowserRouter>
+        </div>
+    }
     return (
         <div className="App">
             <BrowserRouter >

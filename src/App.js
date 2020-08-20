@@ -13,7 +13,7 @@ let defaultKeys = pathName.split('/').slice(1).reduce((result, item) => {
         return result;
     } 
     let last = result[result.length - 1];
-    result.push(`/nd/${last}/${item}`);
+    result.push(`${last}/${item}`);
     return result;
 }, [])
 console.log(defaultKeys);

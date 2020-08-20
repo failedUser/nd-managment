@@ -153,12 +153,16 @@ export default function FabricManager() {
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
-        <Upload
-        action="/fabric/importExcel"
-        method="post"
-        onChange={({ file, fileList }) => {
-                if (file.status !== 'uploading') {
-                    console.log(file, fileList);
+        <Upload 
+            action="//newdreamer.cn/newdreamer/fabric/importExcel"
+            method="post"
+            onChange={({ file, fileList }) => {
+                // TODO 导入之后没有反应，显示上传成功了
+                if (file.status === 'done') {
+                    message.info('导入成功');
+                    pageData();
+                } else if (file.status === 'error') {
+                    message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
             <Button onClick={_delete_batch} type="primary">批量删除</Button>

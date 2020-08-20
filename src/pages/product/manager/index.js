@@ -191,15 +191,11 @@ export default function ProductManager() {
             method="post"
             onChange={({ file, fileList }) => {
                 // TODO 导入之后没有反应，显示上传成功了
-                console.log(file);
                 if (file.status === 'done') {
                     message.info('导入成功');
                     pageData();
-                } else {
+                } else if (file.status === 'error') {
                     message.info('导入失败');
-                }
-                if (file.status !== 'uploading') {
-                    console.log(file, fileList);
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
             <Button onClick={_delete_batch} type="primary">批量删除</Button>

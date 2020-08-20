@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderRefundList, requestRefundDetail, requestRefundStatusUpdate } from './action';
+import { requestOrderRefundList, requestRefundExport, requestRefundStatusUpdate } from './action';
 const { RangePicker } = DatePicker;
 
 
@@ -31,10 +31,10 @@ export default function OrderRefund() {
     // TODO: 缺少退款订单导出
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
-            message.info('请先选择商品, 再导出数据');
+            message.info('请先选择, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestRefundExport(chooseItems);
     }, [chooseItems])
 
     const showOrderVoucher = useCallback((item) => {

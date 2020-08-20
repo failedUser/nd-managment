@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestDistributionRewardList } from './action';
+import { requestDistributionRewardList, requestDistributionRewardExport } from './action';
 const { RangePicker } = DatePicker;
 
 // 分销没有数据， model也不对
@@ -35,7 +35,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestDistributionRewardExport(chooseItems);
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
         setVisible(true);

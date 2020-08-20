@@ -2,7 +2,6 @@ import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
 import { requestOrderList, requestOrderDetail, requestForOrderExport, requestForOrdrStatusUpdate, requestForOrdrShip } from './action';
-import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
 
 export default function OrderVoucher() {

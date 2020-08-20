@@ -1,5 +1,10 @@
 
 import request from '../../../assets/js/request';
+import { exportFile } from '../../../assets/js/common'
+
+export function requestForAppointExport() {
+    alert('没有预约导出接口');
+}
 
 export function requestAppointList(data) {
     return request({

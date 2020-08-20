@@ -1,5 +1,6 @@
 
 import request from '../../../assets/js/request';
+import { exportFile } from '../../../assets/js/common'
 
 export function requestBonusList(data) {
     return request({
@@ -21,4 +22,9 @@ export function requestForBonusEdit(data) {
         data: data,
         type: 'json'
     })
+}
+
+
+export function requestForBonusExport(data) {
+    exportFile('/newdreamer/backVolumer/exportReward', data);
 }

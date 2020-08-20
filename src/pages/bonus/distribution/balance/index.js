@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestOrderList, requestOrderExport } from './action';
+
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -29,6 +30,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+        requestOrderExport(chooseItems)
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {

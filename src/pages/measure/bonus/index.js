@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestBonusList, requestForBonusEdit } from './action';
+import { requestBonusList, requestForBonusEdit, requestForBonusExport } from './action';
 
 
 const editChat = ['deduction_Fee'];
@@ -33,7 +33,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestForBonusExport(chooseItems);
     }, [chooseItems])
 
 

@@ -74,7 +74,7 @@ export default function OrderRefund() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '单品编号', dataIndex: 'barcode'},
+        { title: '单品编号', dataIndex: 'item_Id'},
         { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
             { title: '单品状态', dataIndex: 'item_Status'},
             { title: '申请时间', dataIndex: 'customerPhone'},
@@ -112,7 +112,7 @@ export default function OrderRefund() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="barcode"
+                rowKey="item_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

@@ -1,6 +1,7 @@
 
 import request from '../../../assets/js/request';
 import { exportFile } from '../../../assets/js/common'
+import Url from '../../../env';
 
 
 export function requestRefundExport(data) {
@@ -11,7 +12,7 @@ export function requestRefundExport(data) {
 export function requestOrderRefundList(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/backOrder/refundDetails',
+        url: Url+ '/newdreamer/backOrder/refundDetails',
         params: data
     })
 }
@@ -19,7 +20,7 @@ export function requestOrderRefundList(data) {
 export function requestRefundDetail(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/backOrder/refundDetails',
+        url: Url + '/newdreamer/backOrder/refundDetails',
         params: data
     })
     
@@ -35,7 +36,7 @@ export function requestRefundDetail(data) {
 export function requestRefundStatusUpdate(data) {
     return request({
         method: 'put',
-        url: '/newdreamer/backOrder/updateRefundStatus',
+        url: Url + '/newdreamer/backOrder/updateRefundStatus',
         params: data
     })
     

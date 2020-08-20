@@ -92,6 +92,15 @@ export default function ProductManager() {
         
     }, [modalInfo, pageData, visible])
 
+    const updateStatus = useCallback((record) => {
+        record = {...record};
+        record.volumer_Status = '停用';
+        requestForMeasureEdit(record).then(res => {
+            message.info('修改成功');
+            pageData()
+        })
+    }, [pageData])
+
     const onPageChange = useCallback((page) => {
         if (page !== pageInfo.page) {
             pageInfo.page = page;
@@ -99,6 +108,7 @@ export default function ProductManager() {
             pageData();
         }
     }, [pageData, pageInfo])
+
 
     useEffect(() => {
         if (isInit) return;
@@ -112,7 +122,7 @@ export default function ProductManager() {
             { title: '电话', dataIndex: 'volumer_Phone'},
             { title: '性别', dataIndex: 'volumer_Gender'},
             { title: '身份证号', dataIndex: 'volumer_Address'},
-            // { title: '学生证号', dataIndex: 'volumer_Id'},
+            { title: '量体师微信', dataIndex: 'volumer_Wechat_Id'},
             { title: '出生年月', dataIndex: 'volumer_Birth'},
             { title: '所属高校', dataIndex: 'volumer_College'},
             { title: '校区', dataIndex: 'volumer_Part' },
@@ -120,7 +130,7 @@ export default function ProductManager() {
             { title: '状态', dataIndex: 'volumer_Status'},
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
-               <Button type="primary" size="small" >停用</Button>
+               <Button type="primary" onClick={() => updateStatus(record)} size="small" >停用</Button>
             </div>},
         ])
     const createConfig = columns.slice(0, columns.length - 1);

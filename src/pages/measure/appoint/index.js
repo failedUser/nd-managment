@@ -1,7 +1,10 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestAppointList, requestForAppointCreate, requestForAppointEdit, requestForAppointUpdateStatus, requestForAppointExport } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover, Radio } from 'antd';
+import { requestAppointList, requestForAppointCreate, requestForAppointEdit,
+     requestForAppointUpdateStatus, requestForAppointExport,
+     requestForVolumerList
+    } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -18,6 +21,9 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
+    const [ volumerList, setVolumerList ] = useState(null);
+    const [ dispatchOrder, setDispatchOrder ] = useState(null);
+    const [ selectedVolumer, setSelectedVolumer ] = useState(null);
 
     const updateSearch = useCallback((key, value) => {
         updatePageInfo(search => {
@@ -93,13 +99,20 @@ export default function ProductManager() {
         })
     }, [pageData])
 
+    const showVolumerList = useCallback((record) => {
+        requestForVolumerList().then(data => {
+            setVolumerList(data);
+            setDispatchOrder(record);
+        })
+    }, [])
+
     useEffect(() => {
         if (isInit) return;
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
      // TODO 修改有问题
-    const [ columns ] = useState([
+    const [ columns, updateColumns ] = useState([
             { title: '客户名称', dataIndex: 'name'},
             { title: '客户电话', dataIndex: 'phone'},
             { title: '性别', dataIndex: 'gender'},
@@ -111,10 +124,9 @@ export default function ProductManager() {
             { title: '完成情况', dataIndex: 'reservation_Status'}, 
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                 <Button onClick={() => {
-                    let _record = {...record};
-                    _record.reservation_Status = '派单中'
-                    updateStatus(_record);
-                }} type="primary" size="small" >派单</Button>
+                        showVolumerList(record);
+                }} type="primary" size="small" >派单{volumerList && volumerList.length}</Button>
+
                 
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
                <Button onClick={() => {
@@ -129,15 +141,19 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">客户名称</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="输入客户名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">电话</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('phone', e.target.value)} />
+                <Input size="small" placeholder="输入电话" onChange={e => updateSearch('phone', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">量体地点</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('address', e.target.value)} />
+                <Input size="small" placeholder="输入量体地点" onChange={e => updateSearch('address', e.target.value)} />
+            </div>
+            <div className="manager-search-item">
+                <div className="search-item__title">状态</div>
+                <Input size="small" placeholder="输入状态" onChange={e => updateSearch('status', e.target.value)} />
             </div>
 
             <div className="manager-search-item">
@@ -186,6 +202,40 @@ export default function ProductManager() {
                 </div>)}
                 </div>
             </Modal>}
-        
+            {volumerList && <Modal
+                title="选择量体师"
+                visible={volumerList && volumerList.length > 0}
+                width={1000}
+                onOk={() => {
+                    if (!selectedVolumer) {
+                        message.error('先选择量体师再提交');
+                        return ;
+                    }
+                    let _record = {...dispatchOrder};
+                    _record.volume_Id = selectedVolumer.volume_Id;
+                    _record.volumer_Name = selectedVolumer.volumer_Name;
+                    _record.volumer_Id = selectedVolumer.volumer_Id;
+                    _record.reservation_Status = '派单中'
+                    updateStatus(_record);
+                    setVolumerList(null)
+                }}
+                onCancel={() => setVolumerList(null)}
+            >
+                <div className="pm-edit-container">
+                    <Radio.Group
+                        onChange={(e) => {
+                            let value = e.target.value;
+                            if (!value) {
+                                message.info('这个量体师Id异常, 请检查');
+                                return ;
+                            }
+                            let volumer = volumerList.find(item => item.volumer_Id === value);
+                            setSelectedVolumer(volumer);
+                        }}
+                    >
+                        {volumerList && volumerList.map(vol =>  <Radio value={vol.volumer_Id}>{vol.volumer_Name}</Radio>)}
+                    </Radio.Group>
+                </div>
+            </Modal>}
         </div>
 }

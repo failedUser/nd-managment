@@ -1,13 +1,12 @@
 
 import request from '../../../assets/js/request';
-
-
+import Url from '../../../env';
 import { exportFile } from '../../../assets/js/common'
 
 export function requestEvaluateList(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/backOrder/evaluation',
+        url: Url + '/newdreamer/backOrder/evaluation',
         params: data
     })
 }
@@ -20,7 +19,7 @@ export function requestEvaluateList(data) {
 export function requestEvaluateDelete(data) {
     return request({
         method: 'delete',
-        url: '/newdreamer/backOrder/deleteEvaluation',
+        url: Url + '/newdreamer/backOrder/deleteEvaluation',
         data: data
     })
 }

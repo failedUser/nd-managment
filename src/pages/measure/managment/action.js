@@ -1,11 +1,12 @@
 
 import request from '../../../assets/js/request';
 import { exportFile } from '../../../assets/js/common'
+import Url from '../../../env';
 
 export function requestMeasureList(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/volumer',
+        url: Url + '/newdreamer/volumer',
         params: data
     })
 }
@@ -16,8 +17,8 @@ export function requestMeasureList(data) {
  */
 export function requestForMeasureEdit(data) {
     return request({
-        method: 'post ',
-        url: '/newdreamer/volumer',
+        method: 'post',
+        url: Url + '/newdreamer/volumer',
         data: data,
         type: 'json'
     })
@@ -26,7 +27,7 @@ export function requestForMeasureEdit(data) {
 export function requestForMeasureCreate(data) {
     return request({
         method: 'put',
-        url: '/newdreamer/volumer',
+        url: Url + '/newdreamer/volumer',
         data: data,
         type: 'json'
     })
@@ -35,7 +36,7 @@ export function requestForMeasureCreate(data) {
 export function requestForMeasureDelete(data) {
     return request({
         method: 'delete',
-        url: '/newdreamer/volumer',
+        url: Url + '/newdreamer/volumer',
         data: data,
         type: 'json'
     })

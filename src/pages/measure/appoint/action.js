@@ -39,6 +39,12 @@ export function requestForAppointUpdateStatus(data) {
 }
 
 
+export function requestForVolumerList() {
+    return request({
+        method: 'get',
+        url: '/newdreamer/volumer/list'
+    })
+}
 
 export function requestForAppointCreate(data) {
     // TODO: 预约单创建

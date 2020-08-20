@@ -44,10 +44,6 @@ import './index.less';
 
 
 
-// shoulder_Shape	string
-// allowEmptyValue: false
-// 肩型
-
 // volumer_Id	string
 // allowEmptyValue: false
 // 量体师id
@@ -96,32 +92,36 @@ const pureSize = [
 const Figure = [
     {
         title: '肩型',
+        key: 'shoulder_Shape',
         children: [
-            { title:'溜肩', key: 'name1' },
-            { title:'前冲肩', key: 'name1' },
-            { title:'耸肩', key: 'name1' },
+            { title:'溜肩', key: '溜肩' },
+            { title:'前冲肩', key: '前冲肩' },
+            { title:'耸肩', key: '耸肩' },
         ]
     },
     {
         title: '肚型',
+        key: 'belly_Shape',
         children: [
-            { title:'啤酒肚', key: 'name1' },
-            { title:'小蛮腰', key: 'name1' },
-            { title:'小腹凸', key: 'name1' },
+            { title:'啤酒肚', key: '啤酒肚' },
+            { title:'小蛮腰', key: '小蛮腰' },
+            { title:'小腹凸', key: '小腹凸' },
         ]
     },
     {
         title: '胸背部',
+        key: 'chest_Back',
         children: [
-            { title:'挺胸体', key: 'name1' },
-            { title:'后背高', key: 'name1' }
+            { title:'挺胸体', key: '挺胸体' },
+            { title:'后背高', key: '后背高' }
         ]
     },
     {
         title: '臀部',
+        key: 'buttocks',
         children: [
-            { title:'翘臀', key: 'name1' },
-            { title:'平臀', key: 'name1' }
+            { title:'翘臀', key: '翘臀' },
+            { title:'平臀', key: '平臀' }
         ]
     }
 ]
@@ -146,7 +146,7 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal 
         width={1000}
         footer={<div>
             <Button type="primary" onClick={() => setEditable(!_editable)} size="small" >{_editable ? '取消修改' : '修改'}</Button>
-            <Button type="primary" onClick={() => submit(_info)} size="small" >保存</Button>
+            <Button type="primary" onClick={() => {submit(_info);setEditable(!_editable)}} size="small" >保存</Button>
             <Button type="primary" onClick={cancel} size="small" >取消</Button>
         </div>}
     >
@@ -201,8 +201,9 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal 
                                     </div>
                                     <div className="modal-size-item">
                                         <div className="size-item__title">{child.title}</div>
-                                        <div className="size-item__value"><Radio 
-                                            defaultChecked={_info[child.key]} 
+                                        <div className="size-item__value"><Radio
+                                            onChange={() => updateForm(size.key, child.key)} 
+                                            checked={_info[size.key] === child.key} 
                                             disabled={!_editable}
                                         /></div>
                                     </div>

@@ -177,12 +177,17 @@ export default function OrderVoucher() {
                     <span className="edit-item__title">{col.title}</span>
                     <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
                 </div>)}
+                
                 <Table 
                 rowKey="order_Id"
                 dataSource={modalInfo.dataSource} 
                 columns={ModalColumns} 
                 pagination={false}
-            />
+                />
+                <div className="order-edit-item">
+                    <span className="edit-item__title">面料编号</span>
+                    <span className="edit-item__value">{modalInfo.fabric_Id}</span>
+                </div>
                 </div>
             </Modal>}
         

@@ -122,7 +122,7 @@ export default function ProductManager() {
             { title: '电话', dataIndex: 'volumer_Phone'},
             { title: '性别', dataIndex: 'volumer_Gender'},
             { title: '身份证号', dataIndex: 'volumer_Address'},
-            { title: '量体师微信', dataIndex: 'volumer_Wechat_Id'},
+            // { title: '量体师微信', dataIndex: 'volumer_Wechat_Id'},
             { title: '出生年月', dataIndex: 'volumer_Birth'},
             { title: '所属高校', dataIndex: 'volumer_College'},
             { title: '校区', dataIndex: 'volumer_Part' },
@@ -134,7 +134,7 @@ export default function ProductManager() {
             </div>},
         ])
     const createConfig = columns.slice(0, columns.length - 1);
-    createConfig.push({title: '微信号', dataIndex: 'volumer_Wechat_Id'})
+    createConfig.push({ title: '量体师微信', dataIndex: 'volumer_Wechat_Id'})
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">

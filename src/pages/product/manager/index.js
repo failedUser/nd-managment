@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message,Select } from 'antd';
 import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete, requestForProductExport } from './action';
-import {exportFile, dealOssImageUrl, UploadImages, upload } from '../../../assets/js/common';
+import {exportFile, dealOssImageUrl, UploadImages, previewImage } from '../../../assets/js/common';
 
 let UploadImage = new UploadImages();
 
@@ -154,6 +154,7 @@ export default function ProductManager() {
         }
     }, [editInfo, modelType, pageData])
 
+
     // 初始化
     useEffect(() => {
         if (isInit) return ;
@@ -170,10 +171,14 @@ export default function ProductManager() {
             { title: '工艺', dataIndex: 'crafts'},
             { title: '排序', dataIndex: 'is_Top', width: 80},
             { title: '图片', dataIndex: 'images', render: item => <div className="product-table-images">
-                {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
+                {Array.isArray(item) && item.map(_img => <img onClick={() => {
+                    previewImage(_img);
+                }} className="product-table-image" alt="img" src={_img} />)}
             </div>},
             { title: '详情页', dataIndex: 'detailImages', render: item => <div className="product-table-images">
-                {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
+                {Array.isArray(item) && item.map(_img => <img onClick={() => {
+                    previewImage(_img);
+                }} className="product-table-image" alt="img" src={_img} />)}
             </div>},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>

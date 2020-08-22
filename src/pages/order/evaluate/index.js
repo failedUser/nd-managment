@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestEvaluateList, requestEvaluateDelete, requestEvaluateExport, requestOrderDetail } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover } from 'antd';
+import { requestEvaluateList, requestEvaluateDelete, requestEvaluateExport, requestOrderDetail, } from './action';
 import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
 
@@ -96,12 +96,14 @@ export default function OrderEvaluate() {
         { title: '商品条码', dataIndex: 'productMain'},
         { title: '评价时间', dataIndex: 'evaluation_Time'},
         { title: '客户', dataIndex: 'customerName',width: 100},
-        { title: '评价选项1(尺寸)', dataIndex: 'size'},
-        { title: '评价选项(面料)', dataIndex: 'fabric'},
-        { title: '评价选项(做工)', dataIndex: 'work',},
-        { title: '评价选项(物流)', dataIndex: 'shipment' },
-        { title: '评价选项(星级)', dataIndex: 'star'},
-        { title: '评价内容', dataIndex: 'evaluation_Content'},
+        { title: '尺寸', dataIndex: 'size'},
+        { title: '面料', dataIndex: 'fabric'},
+        { title: '做工', dataIndex: 'work',},
+        { title: '物流', dataIndex: 'shipment' },
+        { title: '星级', dataIndex: 'star'},
+        { title: '评价内容', width:200, dataIndex: 'evaluation_Content', render: (text, record) => <Popover trigger="hover" content={text} title="Title">
+           {text.substr(0, 10)}
+        </Popover>,},
         { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
            <Button onClick={() => {
                 requestOrderDetail({orderId:record.order_Id}).then(data => {

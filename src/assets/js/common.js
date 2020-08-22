@@ -1,5 +1,7 @@
 import request from './request';
-
+import React from 'react';
+import { Modal } from 'antd';
+const { confirm } = Modal;
 export function exportFile(url, data) {
     let params = Object.entries(data).reduce((Result, [key, value], index) => {
         if (index === 0) {
@@ -70,4 +72,11 @@ export function upload (data) {
         url:'/newdreamer/file/upload?FileDirectorEnum=PRODUCT',
         params: data
     })
+}
+
+export function previewImage (img) {
+    confirm({
+        title:"预览",
+        content: <div><img alt="preview" style={{ width: '100%' }} src={img} /></div>,
+      });
 }

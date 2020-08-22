@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-import { exportFile, dealOssImageUrl } from '../../../assets/js/common';
+import { exportFile, dealOssImageUrl, previewImage } from '../../../assets/js/common';
 
 import { 
     requestForFabricList,requestForFabricEdit, 
@@ -131,7 +131,9 @@ export default function FabricManager() {
             { title: '厚度', dataIndex: 'thickness'},
             { title: '弹力', dataIndex: 'elasticity'},
             { title: '图片', dataIndex: 'fabric_Image', type:"image", width: 120,render: (item, record) => <div className="product-table-images">
-                {record.fabric_Image && <img className="product-table-image" alt="img" src={record.fabric_Image} />}
+                {record.fabric_Image && <img onClick={() => {
+                    previewImage(record.fabric_Image);
+                }} className="product-table-image" alt="img" src={record.fabric_Image} />}
             </div>},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>

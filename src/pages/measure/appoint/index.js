@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover, Radio } from 'antd';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover, Radio, Select } from 'antd';
 import { requestAppointList, requestForAppointCreate, requestForAppointEdit,
      requestForAppointUpdateStatus, requestForAppointExport,
      requestForVolumerList
@@ -123,17 +123,25 @@ export default function ProductManager() {
             { title: '量体师', dataIndex: 'volumer_Name'},
             { title: '完成情况', dataIndex: 'reservation_Status'}, 
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
-                <Button onClick={() => {
+                {
+                   record.reservation_Status === '预约中' && <Button onClick={() => {
                         showVolumerList(record);
                 }} type="primary" size="small" >派单{volumerList && volumerList.length}</Button>
+                }
 
-                
-               <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
-               <Button onClick={() => {
-                    let _record = {...record};
-                    _record.reservation_Status = '已取消'
-                    updateStatus(_record);
-                }}  type="primary" size="small" >取消</Button>
+                {
+                    record.reservation_Status !== '已量体' && record.reservation_Status !== '已取消' && 
+                    <React.Fragment>
+                         <Button onClick={() => {
+                            let _record = {...record};
+                            _record.reservation_Status = '已取消'
+                            updateStatus(_record);
+                        }}  type="primary" size="small" >取消</Button>
+                        <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
+                    </React.Fragment>
+                }
+               
+              
             </div>},
         ])
    
@@ -153,7 +161,17 @@ export default function ProductManager() {
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
-                <Input size="small" placeholder="输入状态" onChange={e => updateSearch('status', e.target.value)} />
+                <Select 
+                    style={{ width: 200 }}
+                    defaultValue=""
+                    onChange={value => updateSearch('status', value)}>
+                        <Select.Option value="">全部</Select.Option>
+                        <Select.Option value="预约中">预约中</Select.Option>
+                        <Select.Option value="派单中">派单中</Select.Option>
+                        <Select.Option value="待量体">待量体</Select.Option>
+                        <Select.Option value="已量体">已量体</Select.Option>
+                        <Select.Option value="已取消">已取消</Select.Option>
+                    </Select>
             </div>
 
             <div className="manager-search-item">

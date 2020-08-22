@@ -4,6 +4,7 @@ import { Button, Table, Modal, Input, Upload, message, DatePicker, Select } from
 import { requestOrderRefundList, requestRefundExport, requestRefundStatusUpdate, requestRefundOperation } from './action';
 const { RangePicker } = DatePicker;
 
+const {  confirm } = Modal;
 
 /**
  * TODO: 退款用退款状态搜索还是订单号和时间
@@ -52,10 +53,19 @@ export default function OrderRefund() {
     }, [pageInfo])
 
     const updateRefundStatue = useCallback((item, status) => {
-        requestRefundStatusUpdate({
-            itemId: item.item_Id,
-            status: '已驳回' // TODO 这个status枚举是什么
-        }).then(pageData);
+        confirm({
+            title: '驳回确认',
+            content: "是否驳回退款",
+            onOk: () => {
+                requestRefundStatusUpdate({
+                    itemId: item.item_Id,
+                    status: '已驳回' // TODO 这个status枚举是什么
+                })
+                .then(() => message.info('已驳回'))
+                .then(pageData)
+            }
+          });
+        
     }, [pageData])
 
     const onPageChange = useCallback((page) => {
@@ -67,11 +77,20 @@ export default function OrderRefund() {
     }, [pageData, pageInfo])
 
     const authority = useCallback((record, status) => {
-        requestRefundOperation({
-            OrderId: record.order_Id,
-            ItemId: record.item_Id,
-            refundRemark: ''
-        }).then(pageData)
+        confirm({
+            title: '退款确认',
+            content: "再次确认退款",
+            onOk: () => {
+                requestRefundOperation({
+                    OrderId: record.order_Id,
+                    ItemId: record.item_Id,
+                    refundRemark: ''
+                })
+                .then(() => message.info('已同意退款'))
+                .then(pageData)
+            }
+          });
+        
     }, [pageData])
 
     useEffect(() => {
@@ -96,7 +115,7 @@ export default function OrderRefund() {
                  record.refund_Status === '退款中' &&  <Button  onClick={() => {
                     updateRefundStatue(record, false);
                 }}
-             type="primary" size="small" >驳回</Button>
+                    type="primary" size="small" >驳回</Button>
               }
             </div>},
         ])

@@ -72,9 +72,12 @@ export default function ProductManager() {
     }, [pageInfo])
 
     const _delete = useCallback((item) => {
-        requestForProductDelete([item.barcode])
+        requestForProductDelete({
+            id: item.barcode,
+            enable: item.enable === '禁用' ? '启用' : '禁用'
+        })
         .then(() => {
-            message.info('禁用成功');
+            message.info('操作成功');
         })
         .then(pageData)
     }, [pageData]);
@@ -182,7 +185,7 @@ export default function ProductManager() {
             </div>},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
-               <Button type="primary" size="small" onClick={() => _delete(record)}>禁用</Button>
+               <Button type="primary" size="small" onClick={() => _delete(record)}>{record.enable === '禁用' ? '启用' : '禁用'}</Button>
             </div>},
         ])
    
@@ -207,7 +210,7 @@ export default function ProductManager() {
                     message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
-            <Button onClick={_delete_batch} type="primary">批量禁用</Button>
+            {/* <Button onClick={_delete_batch} type="primary">批量禁用</Button> */}
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>

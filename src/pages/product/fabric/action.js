@@ -47,10 +47,9 @@ export function requestForFabricCreate(data) {
  */
 export function requestForFabricDelete(data) {
     return request({
-        method: 'delete',
-        url: '/newdreamer/fabric',
-        data: data,
-        type: 'json'
+        method: 'post',
+        url: '/newdreamer/batchUpdate',
+        data: data
     })
 }
 

@@ -41,8 +41,11 @@ export default function FabricManager() {
         })
     }, [pageInfo])
 
-    const _delete = useCallback((item) => {
-        requestForFabricDelete([item.fabric_Id]).then(data => {
+    const _delete = useCallback((record) => {
+        requestForFabricDelete({
+            id: record.fabric_Id,
+            enable: record.enable
+        }).then(data => {
             message.info('禁用成功');
         }).then(pageData)
     }, [pageData]);
@@ -180,7 +183,7 @@ export default function FabricManager() {
                     message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
-            <Button onClick={_delete_batch} type="primary">批量禁用</Button>
+            {/* <Button onClick={_delete_batch} type="primary">批量禁用</Button> */}
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>

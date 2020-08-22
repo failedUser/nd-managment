@@ -29,7 +29,7 @@ export function requestRefundDetail(data) {
 export function requestRefundOperation(data) {
     return request({
         method: 'get',
-        url: Url + '/api/refund/authority',
+        url: Url + '/newdreamer/refund/authority',
         params: data
     })
     

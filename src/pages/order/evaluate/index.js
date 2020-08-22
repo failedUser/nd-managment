@@ -92,7 +92,7 @@ export default function OrderEvaluate() {
         ])
 
     const [ columns ] = useState([
-        { title: '评价商品', dataIndex: 'itme_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+        { title: '单品编号', dataIndex: 'item_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
         { title: '商品条码', dataIndex: 'productMain'},
         { title: '评价时间', dataIndex: 'evaluation_Time'},
         { title: '客户', dataIndex: 'customerName',width: 100},

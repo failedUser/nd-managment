@@ -141,7 +141,8 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal 
     }, [info])
     if (!_info) return null;
     return <Modal
-        title={`量体数据-${_info.name}`}
+    closable={false}
+        title={`量体数据-${_info.customer_Name}`}
         visible={showModal}
         width={1000}
         footer={<div>

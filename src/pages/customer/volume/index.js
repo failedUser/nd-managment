@@ -98,7 +98,7 @@ export default function ProductManager() {
             { title: '裤长', dataIndex: 'pants_Length'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
-               <Button type="primary" size="small" >删除</Button>
+               {/* <Button type="primary" size="small" >删除</Button> */}
             </div>},
         ])
     return <div className="product-manager">

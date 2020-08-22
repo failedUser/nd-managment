@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Select } from 'antd';
 import { requestMeasureList,  requestForMeasureEdit, requestForMeasureCreate, requestForMeasureDelete, requestForMeasureExport } from './action';
 const { RangePicker } = DatePicker;
 
@@ -94,7 +94,7 @@ export default function ProductManager() {
 
     const updateStatus = useCallback((record) => {
         record = {...record};
-        record.volumer_Status = '停用';
+        record.volumer_Status = record.volumer_Status === '停用' ? '启用' : '停用';
         requestForMeasureEdit(record).then(res => {
             message.info('修改成功');
             pageData()
@@ -130,7 +130,7 @@ export default function ProductManager() {
             { title: '状态', dataIndex: 'volumer_Status'},
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
-               <Button type="primary" onClick={() => updateStatus(record)} size="small" >停用</Button>
+               <Button type="primary" onClick={() => updateStatus(record)} size="small" >{record.volumer_Status === '停用' ? '启用' : '停用'}</Button>
             </div>},
         ])
     const createConfig = columns.slice(0, columns.length - 1);
@@ -153,7 +153,7 @@ export default function ProductManager() {
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
-        <Button onClick={_delete_batch} type="primary">批量删除</Button>
+        {/* <Button onClick={_delete_batch} type="primary">批量删除</Button> */}
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>
@@ -185,7 +185,13 @@ export default function ProductManager() {
                 <div className="pm-edit-container">
                 {createConfig.map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
-                    <Input value={modalInfo[col.dataIndex]} onChange={e => updateModalInfo(col.dataIndex, e.target.value)} />
+                    {
+                        col.dataIndex === 'volumer_Status' && <Select defaultValue={modalInfo[col.dataIndex]} >
+                            <Select.Option value="停用">停用</Select.Option>
+                            <Select.Option value="启用">启用</Select.Option>
+                        </Select>
+                    }
+                    {col.dataIndex !== 'volumer_Status' && <Input value={modalInfo[col.dataIndex]} onChange={e => updateModalInfo(col.dataIndex, e.target.value)} />} 
                 </div>)}
                 </div>
             </Modal>}

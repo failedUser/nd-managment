@@ -69,7 +69,8 @@ export default function OrderRefund() {
     const authority = useCallback((record, status) => {
         requestRefundOperation({
             OrderId: record.order_Id,
-            ItemId: record.item_Id
+            ItemId: record.item_Id,
+            refundRemark: ''
         }).then(pageData)
     }, [pageData])
 

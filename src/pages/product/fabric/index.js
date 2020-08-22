@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
-import {exportFile } from '../../../assets/js/common';
+import { exportFile, dealOssImageUrl } from '../../../assets/js/common';
 
 import { 
     requestForFabricList,requestForFabricEdit, 
@@ -92,24 +92,20 @@ export default function FabricManager() {
         }
     }, [pageData, pageInfo])
 
+    const submitUpdate = useCallback((info) => {
+        requestForFabricEdit(info).then(data => {
+            if (data) {
+                message.info('修改成功');
+                pageData();
+                setVisible(false);
+            }
+            
+        })
+    }, [pageData])
+
     const submitModal = useCallback(() => {
         if (modelType === 'edit') {
-            requestForFabricEdit(editInfo).then(data => {
-                if (data) {
-                    message.info('修改成功');
-                    setDataSource(source => {
-                        source = source.map(item => {
-                            if (item.barcode === data.barcode) {
-                                return data;
-                            }
-                            return item;
-                        });
-                        return [...source];
-                    })
-                    setVisible(false);
-                }
-                
-            })
+            submitUpdate(editInfo)
         }
         if (modelType === 'create') {
             requestForFabricCreate(editInfo).then(data => {
@@ -118,7 +114,7 @@ export default function FabricManager() {
                 pageData();
             })
         }
-    }, [editInfo, modelType, pageData])
+    }, [editInfo, modelType, pageData, submitUpdate])
 
     // 初始化
     useEffect(() => {
@@ -134,13 +130,30 @@ export default function FabricManager() {
             { title: '材质', dataIndex: 'material',width: 200},
             { title: '厚度', dataIndex: 'thickness'},
             { title: '弹力', dataIndex: 'elasticity'},
-            { title: '图片', dataIndex: 'fabric_Image', width: 120,render: item => <div className="product-table-images">
-                <img className="product-table-image" alt="img" src="http://alpha-2115.caibeike.com/i/db23aabcc32b698375babffd50de72c4-cXni3O-bMOMwiAMhj2@!750c445" />
+            { title: '图片', dataIndex: 'fabric_Image', type:"image", width: 120,render: (item, record) => <div className="product-table-images">
+                {record.fabric_Image && <img className="product-table-image" alt="img" src={record.fabric_Image} />}
             </div>},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
                <Button type="primary" size="small" onClick={() => _delete(record)}>删除</Button>
-               <Upload ><Button type="primary" size="small" >换图</Button></Upload>
+               <Upload
+                    action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
+                    method="post"
+                    data={(file) => {
+                        return {
+                            fileDirectorEnum: 'FABRIC',
+                            files: file
+                        }
+                    }}
+                    onChange={({ file, fileList }) => {
+                        if (file.response) {
+                            let _record = {...record};
+                            _record.fabric_Image = dealOssImageUrl(file.response[0])
+                            submitUpdate(_record);
+                        }
+                        
+                    }}
+                ><Button type="primary" size="small">换图</Button></Upload>
             </div>},
         ])
    
@@ -201,7 +214,22 @@ export default function FabricManager() {
                     {(col.type === 'image') 
                         && <div className="pm-edit__images">
                             {editInfo[col.dataIndex] &&  <img className="pm-edit__image" alt="edit" src={editInfo[col.dataIndex]} />}
-                            <Upload ><Button type="primary">替换</Button></Upload>
+                            <Upload
+                                action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
+                                method="post"
+                                data={(file) => {
+                                    return {
+                                        fileDirectorEnum: 'FABRIC',
+                                        files: file
+                                    }
+                                }}
+                                onChange={({ file, fileList }) => {
+                                    if (file.response) {
+                                        updateEditInfo(col.dataIndex, dealOssImageUrl(file.response[0]))
+                                    }
+                                    
+                                }}
+                            ><Button type="primary" size="small">替换</Button></Upload>
                         </div>
                     }
                     {!col.type && <Input 

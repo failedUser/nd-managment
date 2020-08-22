@@ -83,7 +83,10 @@ export default function OrderVoucher() {
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
                 if (!text) {
                     return <Button type="primary" onClick={() => {
-                        // 去发货
+                        if (record.order_Status === '备货中') {
+                            message.info('请先备货，再发货哦');
+                            return ;
+                        }
                         requestForOrdrShip({orderId: record.order_Id}).then(pageData);
                     }} >发货</Button>
                 } else {
@@ -94,12 +97,17 @@ export default function OrderVoucher() {
             { title: '状态', dataIndex: 'order_Status', width: 80},
             { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button onClick={() => {
-                   updateOrderStatus(record, '备货中');
-               }} type="primary" size="small" >备货</Button>
-               <Button onClick={() => {
-                   updateOrderStatus(record, '待发货');
-               }} type="primary" size="small" >撤销</Button>
+               {
+                   record.order_Status === '备货中' && <Button onClick={() => {
+                    updateOrderStatus(record, '待发货');
+                }} type="primary" size="small" >备货</Button>
+               }
+               {
+                 !record.shipment_Id && <Button onClick={() => {
+                    updateOrderStatus(record, '备货中');
+                }} type="primary" size="small" >撤销</Button>
+               }
+               
             </div>},
         ])
         const [ ModalColumns ] = useState([

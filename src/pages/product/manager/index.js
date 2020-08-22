@@ -2,8 +2,9 @@ import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message } from 'antd';
 import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete, requestForProductExport } from './action';
-import {exportFile } from '../../../assets/js/common';
+import {exportFile, dealOssImageUrl, UploadImages, upload } from '../../../assets/js/common';
 
+let UploadImage = new UploadImages();
 
 let editConfig = [
     { title: '条码', dataIndex: 'barcode' },
@@ -27,6 +28,7 @@ let editConfig = [
     { title: '详情页', dataIndex: 'detailImages', type:"images"},
     
 ]
+
 
 export default function ProductManager() {
     const [ isInit, updateInit ] = useState(false);
@@ -54,9 +56,17 @@ export default function ProductManager() {
         _pageInfo.page -= 1;
         requestForProductList(_pageInfo).then(data => {
             if (!data) return ;
+
             setTableSize(data.totalElements);
             if (data && Array.isArray(data.content)) {
-                setDataSource(data.content);
+                let content = Array.from(data.content, item => {
+                    if (item.images) {
+                        item.images = JSON.parse(item.images).filter(item => item);
+                        item.detailImages = JSON.parse(item.detailImages).filter(item => item);
+                    }
+                    return item;
+                })
+                setDataSource(content);
             }
         });
     }, [pageInfo])
@@ -93,7 +103,10 @@ export default function ProductManager() {
     const _edit = useCallback((item) => {
         setModelType('edit');
         setVisible(true);
-        setEditInfo({...item});
+        let obj = JSON.parse(JSON.stringify(item));
+        obj.images = UploadImage.imageToUploadImages(obj.images);
+        obj.detailImages = UploadImage.imageToUploadImages(obj.detailImages);
+        setEditInfo(obj);
     }, []);
 
     // 新增
@@ -119,33 +132,24 @@ export default function ProductManager() {
     }, [])
 
     const submitModal = useCallback(() => {
+        let _editInfo = {...editInfo};
+        _editInfo.images = JSON.stringify(UploadImage.uploadImageToImages(_editInfo.images));
+        _editInfo.detailImages = JSON.stringify(UploadImage.uploadImageToImages(_editInfo.detailImages));
         if (modelType === 'edit') {
-            requestForProductEdit(editInfo).then(data => {
+            requestForProductEdit(_editInfo).then(data => {
                 if (data) {
                     message.info('修改成功');
-                    setDataSource(source => {
-                        source = source.map(item => {
-                            if (item.barcode === data.barcode) {
-                                return data;
-                            }
-                            return item;
-                        });
-                        return [...source];
-                    })
                     setVisible(false);
+                    pageData();
                 }
                 
             })
         }
         if (modelType === 'create') {
-            requestForProductCreate(editInfo).then(data => {
+            requestForProductCreate(_editInfo).then(data => {
                 message.info('新建成功');
                 setVisible(false);
                 pageData();
-                // setDataSource(source => {
-                //     source = [...[data], ...source];
-                //     return [...source];
-                // })
             })
         }
     }, [editInfo, modelType, pageData])
@@ -165,10 +169,10 @@ export default function ProductManager() {
             { title: '状态', dataIndex: 'product_Status'},
             { title: '工艺', dataIndex: 'crafts'},
             { title: '排序', dataIndex: 'is_Top', width: 80},
-            { title: '图片', dataIndex: 'images', width: 220, render: item => <div className="product-table-images">
+            { title: '图片', dataIndex: 'images', render: item => <div className="product-table-images">
                 {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
             </div>},
-            { title: '详情页', dataIndex: 'detailImages', width: 220,render: item => <div className="product-table-images">
+            { title: '详情页', dataIndex: 'detailImages', render: item => <div className="product-table-images">
                 {Array.isArray(item) && item.map(_img => <img className="product-table-image" alt="img" src={_img} />)}
             </div>},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
@@ -233,8 +237,23 @@ export default function ProductManager() {
                     <span className="edit-item__title">{col.title}</span>
                     {(col.type === 'images') 
                         && <div className="pm-edit__images">
-                            {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)}
-                            <Upload ><Button type="primary">替换</Button></Upload>
+                            {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
+                            <Upload
+                                action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
+                                method="post"
+                                multiple
+                                listType="picture-card"
+                                fileList={editInfo[col.dataIndex]||[]}
+                                data={(file) => {
+                                    return {
+                                        fileDirectorEnum: 'PRODUCT',
+                                        files: file
+                                    }
+                                }}
+                                onChange={({ file, fileList }) => {
+                                    updateEditInfo(col.dataIndex, fileList);
+                                }}
+                            >{editInfo[col.dataIndex] && editInfo[col.dataIndex].length >= 3 ? null : '上传'}</Upload>
                         </div>
                     }
                     {!col.type && <Input 

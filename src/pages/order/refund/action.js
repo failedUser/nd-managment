@@ -26,6 +26,16 @@ export function requestRefundDetail(data) {
     
 }
 
+export function requestRefundOperation(data) {
+    return request({
+        method: 'get',
+        url: Url + '/api/refund/authority',
+        params: data
+    })
+    
+}
+
+
 
 /**
  * 更改订单状态

@@ -237,6 +237,7 @@ export default function ProductManager() {
                     <span className="edit-item__title">{col.title}</span>
                     {
                         col.dataIndex === 'product_Status' && <Select 
+                        style={{ width: 300 }}
                         defaultValue={editInfo[col.dataIndex]} 
                         onChange={value => updateEditInfo(col.dataIndex, value)}>
                         <Select.Option value="显示">显示</Select.Option>

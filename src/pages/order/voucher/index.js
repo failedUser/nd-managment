@@ -153,7 +153,9 @@ export default function OrderVoucher() {
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
                 <Select 
+                        style={{ width: 200 }}
                         onChange={value => updateSearch('status', value)}>
+                            <Select.Option value="">全部</Select.Option>
                             <Select.Option value="备货中">备货中</Select.Option>
                             <Select.Option value="待发货">待发货</Select.Option>
                             <Select.Option value="已发货">已发货</Select.Option>

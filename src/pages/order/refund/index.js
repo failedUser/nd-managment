@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderRefundList, requestRefundExport, requestRefundStatusUpdate } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Select } from 'antd';
+import { requestOrderRefundList, requestRefundExport, requestRefundStatusUpdate, requestRefundOperation } from './action';
 const { RangePicker } = DatePicker;
 
 
@@ -52,10 +52,9 @@ export default function OrderRefund() {
     }, [pageInfo])
 
     const updateRefundStatue = useCallback((item, status) => {
-        console.log('---item', item);
         requestRefundStatusUpdate({
             itemId: item.item_Id,
-            status: '已量体' // TODO 这个status枚举是什么
+            status: '已驳回' // TODO 这个status枚举是什么
         }).then(pageData);
     }, [pageData])
 
@@ -66,6 +65,13 @@ export default function OrderRefund() {
             pageData();
         }
     }, [pageData, pageInfo])
+
+    const authority = useCallback((record, status) => {
+        requestRefundOperation({
+            OrderId: record.order_Id,
+            ItemId: record.item_Id
+        }).then(pageData)
+    }, [pageData])
 
     useEffect(() => {
         if (isInit) return;
@@ -82,13 +88,15 @@ export default function OrderRefund() {
             { title: '退款金额', dataIndex: 'name5', key: 'name1',},
             { title: '退款状态', dataIndex: 'refund_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button  onClick={() => {
-                   updateRefundStatue(record, true);
-               }} type="primary" size="small" >同意</Button>
-               <Button  onClick={() => {
-                updateRefundStatue(record, false);
-            }}
+               {
+                  record.refund_Status === '退款中' && <Button  onClick={() => authority(record, 'agree')} type="primary" size="small" >同意</Button>
+               }
+              {
+                 record.refund_Status === '退款中' &&  <Button  onClick={() => {
+                    updateRefundStatue(record, false);
+                }}
              type="primary" size="small" >驳回</Button>
+              }
             </div>},
         ])
    
@@ -103,6 +111,17 @@ export default function OrderRefund() {
                 <RangePicker onChange={(date, dateString) => {
                     updateSearch('order_Status', dateString.join('-'));
                 }} />
+            </div>
+            <div className="manager-search-item">
+                <div className="search-item__title">状态</div>
+                <Select 
+                        style={{ width: 200 }}
+                        onChange={value => updateSearch('status', value)}>
+                            <Select.Option value="">全部</Select.Option>
+                            <Select.Option value="备货中">退款中</Select.Option>
+                            <Select.Option value="待发货">已驳回</Select.Option>
+                            <Select.Option value="已发货">已退款</Select.Option>
+                      </Select>
             </div>
             
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>

@@ -207,7 +207,7 @@ export default function ProductManager() {
                     message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
-            {/* <Button onClick={_delete_batch} type="primary">批量禁用</Button> */}
+            <Button onClick={_delete_batch} type="primary">批量禁用</Button>
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>

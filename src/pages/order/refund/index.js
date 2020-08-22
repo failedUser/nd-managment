@@ -135,12 +135,13 @@ export default function OrderRefund() {
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
                 <Select 
+                    defaultValue=""
                         style={{ width: 200 }}
                         onChange={value => updateSearch('status', value)}>
                             <Select.Option value="">全部</Select.Option>
-                            <Select.Option value="备货中">退款中</Select.Option>
-                            <Select.Option value="待发货">已驳回</Select.Option>
-                            <Select.Option value="已发货">已退款</Select.Option>
+                            <Select.Option value="退款中">退款中</Select.Option>
+                            <Select.Option value="已驳回">已驳回</Select.Option>
+                            <Select.Option value="已退款">已退款</Select.Option>
                       </Select>
             </div>
             

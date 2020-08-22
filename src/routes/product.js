@@ -8,7 +8,7 @@ export default [{
     },
     {
         path: '/fabric',
-        name: '面料',
+        name: '面料管理',
         component: require('../pages/product/fabric').default
     }
 ]

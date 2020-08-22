@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestEvaluateList, requestEvaluateDelete, requestEvaluateExport } from './action';
+import { requestEvaluateList, requestEvaluateDelete, requestEvaluateExport, requestOrderDetail } from './action';
 import {exportFile} from '../../../assets/js/common';
 const { RangePicker } = DatePicker;
 
@@ -77,9 +77,22 @@ export default function OrderEvaluate() {
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
+    const [ ModalColumns ] = useState([
+        { title: '单品编号', dataIndex: 'item_Id' },
+            { title: '商品', dataIndex: 'name'},
+            { title: '条码', dataIndex: 'barcode'},
+            { title: '颜色', dataIndex: 'style'},
+            { title: '尺码', dataIndex: 'size', },
+            { title: '数量', dataIndex: 'amounts'},
+            { title: '单价', dataIndex: 'retail_Price'},
+            { title: '折扣', dataIndex: 'discount'},
+            { title: '折后价', render: (item, record) => <span>{record.received_Amount / record.amounts}</span>},
+            { title: '折后总金额', dataIndex: 'received_Amount'},
+            { title: '状态', dataIndex: 'item_Status'},
+        ])
 
     const [ columns ] = useState([
-        { title: '评价商品', dataIndex: 'name', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+        { title: '评价商品', dataIndex: 'itme_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
         { title: '商品条码', dataIndex: 'productMain'},
         { title: '评价时间', dataIndex: 'evaluation_Time'},
         { title: '客户', dataIndex: 'customerName',width: 100},
@@ -90,7 +103,13 @@ export default function OrderEvaluate() {
         { title: '评价选项(星级)', dataIndex: 'star'},
         { title: '评价内容', dataIndex: 'evaluation_Content'},
         { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-           <Button type="primary" size="small" >订单</Button>
+           <Button onClick={() => {
+                requestOrderDetail({orderId:record.order_Id}).then(data => {
+                    setVisible(true);
+                    setModalInfo(data);
+                })
+
+           }} type="primary" size="small" >订单</Button>
            <Button onClick={() => {
                _delete([record.evaluation_Id])
            }} type="primary" size="small" >删除</Button>
@@ -137,17 +156,19 @@ export default function OrderEvaluate() {
             />
         </section>
         {modalInfo && <Modal
-                title="商品编辑"
+                title="单品信息"
                 visible={visible}
                 width={1000}
-                onOk={() => {}}
+                onOk={() => setVisible(false)}
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
-                    <span className="edit-item__title">{col.title}</span>
-                    <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
-                </div>)}
+                    <Table 
+                        rowKey="order_Id"
+                        dataSource={modalInfo} 
+                        columns={ModalColumns} 
+                        pagination={false}
+                    />
                 </div>
             </Modal>}
         

@@ -12,7 +12,7 @@ export function exportFile(url, data) {
     }, '')
     const link = document.createElement('a');
     link.target ='_blank';
-    link.href = `https://newdreamer.cn/newdreamer/productInfo/exportExcel?${params}`;
+    link.href = `https://newdreamer.cn${url}?${params}`;
     link.click();
     return Promise.resolve();
 }
@@ -40,8 +40,8 @@ export class UploadImages {
         if (!Array.isArray(images) || images.length === 0) {
             return [];
         } 
-        return Array.from(images, item => ({
-            uid: '-1',
+        return Array.from(images, (item, index) => ({
+            uid: index,
             name: matchNameFromImage(item),
             status: 'done',
             url: item

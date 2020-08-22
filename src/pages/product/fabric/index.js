@@ -209,7 +209,7 @@ export default function FabricManager() {
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
+                {columns.slice(0, columns.length - 1).map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
                     {(col.type === 'image') 
                         && <div className="pm-edit__images">

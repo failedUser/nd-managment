@@ -124,10 +124,10 @@ export default function OrderRefund() {
             />
         </section>
         {modalInfo && <Modal
-                title="商品编辑"
+                title="商品信息"
                 visible={visible}
                 width={1000}
-                onOk={() => {}}
+                onOk={() => setVisible(false)}
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">

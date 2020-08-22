@@ -11,6 +11,14 @@ export function requestEvaluateList(data) {
     })
 }
 
+export function requestOrderDetail(data) {
+    return request({
+        method: 'get',
+        url: Url+ '/newdreamer/backOrder/orderDetails',
+        params: data
+    })
+    
+}
 
 /**
  * 删除

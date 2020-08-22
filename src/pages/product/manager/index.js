@@ -1,13 +1,13 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message } from 'antd';
+import { Button, Table, Modal, Input, Upload, message,Select } from 'antd';
 import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete, requestForProductExport } from './action';
 import {exportFile, dealOssImageUrl, UploadImages, upload } from '../../../assets/js/common';
 
 let UploadImage = new UploadImages();
 
 let editConfig = [
-    { title: '条码', dataIndex: 'barcode' },
+    { title: '条码', dataIndex: 'barcode', onlyRead: true,  },
     { title: '材质', dataIndex: 'material'},
     { title: '款号', dataIndex: 'section_Number'},
     { title: '厚度', dataIndex: 'thickness'},
@@ -235,6 +235,14 @@ export default function ProductManager() {
                 <div className="pm-edit-container">
                 {editConfig.map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
+                    {
+                        col.dataIndex === 'product_Status' && <Select 
+                        defaultValue={editInfo[col.dataIndex]} 
+                        onChange={value => updateEditInfo(col.dataIndex, value)}>
+                        <Select.Option value="显示">显示</Select.Option>
+                        <Select.Option value="隐藏">隐藏</Select.Option>
+                      </Select>
+                    }
                     {(col.type === 'images') 
                         && <div className="pm-edit__images">
                             {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
@@ -256,8 +264,10 @@ export default function ProductManager() {
                             >{editInfo[col.dataIndex] && editInfo[col.dataIndex].length >= 3 ? null : '上传'}</Upload>
                         </div>
                     }
-                    {!col.type && <Input 
+
+                    {(!col.type && col.dataIndex!=='product_Status') && <Input 
                             placeholder="输入你的数据" 
+                            disabled={col.onlyRead}
                             value={editInfo && editInfo[col.dataIndex]}
                             onChange={e => updateEditInfo(col.dataIndex, e.target.value)}
                         />}

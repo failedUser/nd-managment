@@ -83,7 +83,7 @@ export default function OrderVoucher() {
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
                 if (!text) {
                     return <Button type="primary" onClick={() => {
-                        if (record.order_Status === '备货中') {
+                        if (record.order_Status === '待发货') {
                             message.info('请先备货，再发货哦');
                             return ;
                         }

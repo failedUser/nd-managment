@@ -74,19 +74,19 @@ export default function ProductManager() {
     const _delete = useCallback((item) => {
         requestForProductDelete([item.barcode])
         .then(() => {
-            message.info('删除成功');
+            message.info('禁用成功');
         })
         .then(pageData)
     }, [pageData]);
 
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
-            message.info('请先选择商品, 再批量删除');
+            message.info('请先选择商品, 再批量禁用');
             return ;
         }
         requestForProductDelete(chooseItems)
         .then(() => {
-            message.info('删除成功');
+            message.info('禁用成功');
         })
         .then(pageData)
     }, [chooseItems, pageData])
@@ -182,7 +182,7 @@ export default function ProductManager() {
             </div>},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
-               <Button type="primary" size="small" onClick={() => _delete(record)}>删除</Button>
+               <Button type="primary" size="small" onClick={() => _delete(record)}>禁用</Button>
             </div>},
         ])
    
@@ -207,7 +207,7 @@ export default function ProductManager() {
                     message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
-            <Button onClick={_delete_batch} type="primary">批量删除</Button>
+            {/* <Button onClick={_delete_batch} type="primary">批量禁用</Button> */}
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>
@@ -273,7 +273,7 @@ export default function ProductManager() {
 
                     {(!col.type && col.dataIndex!=='product_Status') && <Input 
                             placeholder="输入你的数据" 
-                            disabled={col.onlyRead}
+                            disabled={col.onlyRead && modelType === 'edit'}
                             value={editInfo && editInfo[col.dataIndex]}
                             onChange={e => updateEditInfo(col.dataIndex, e.target.value)}
                         />}

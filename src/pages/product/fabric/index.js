@@ -43,13 +43,13 @@ export default function FabricManager() {
 
     const _delete = useCallback((item) => {
         requestForFabricDelete([item.fabric_Id]).then(data => {
-            message.info('删除成功');
+            message.info('禁用成功');
         }).then(pageData)
     }, [pageData]);
 
     const _delete_batch = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
-            message.info('请先选择商品, 再批量删除');
+            message.info('请先选择商品, 再批量禁用');
             return ;
         }
         requestForFabricDelete(chooseItems);
@@ -124,7 +124,7 @@ export default function FabricManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '面料编号', dataIndex: 'fabric_Id', render: text => <span style={{color: '#1890ff'}}>{text}</span> },
+        { title: '面料编号', dataIndex: 'fabric_Id', onRead: true, render: text => <span style={{color: '#1890ff'}}>{text}</span> },
             { title: '类别', dataIndex: 'fabric_Classsification'},
             { title: '颜色', dataIndex: 'fabric_Color'},
             { title: '材质', dataIndex: 'material',width: 200},
@@ -137,8 +137,8 @@ export default function FabricManager() {
             </div>},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
-               <Button type="primary" size="small" onClick={() => _delete(record)}>删除</Button>
-               <Upload
+               <Button type="primary" size="small" onClick={() => _delete(record)}>禁用</Button>
+               {/* <Upload
                     action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
                     method="post"
                     data={(file) => {
@@ -155,7 +155,7 @@ export default function FabricManager() {
                         }
                         
                     }}
-                ><Button type="primary" size="small">换图</Button></Upload>
+                ><Button type="primary" size="small">换图</Button></Upload> */}
             </div>},
         ])
    
@@ -180,7 +180,7 @@ export default function FabricManager() {
                     message.info('导入失败');
                 }
             }}><Button type="primary">批量导入</Button></Upload> 
-            <Button onClick={_delete_batch} type="primary">批量删除</Button>
+            <Button onClick={_delete_batch} type="primary">批量禁用</Button>
             <Button onClick={export_data} type="primary">数据导出</Button>
             <Button onClick={create} type="primary">新增</Button>
         </section>
@@ -236,6 +236,7 @@ export default function FabricManager() {
                     }
                     {!col.type && <Input 
                             placeholder="输入你的数据" 
+                            disabled={col.onRead && modelType === 'edit'}
                             value={editInfo && editInfo[col.dataIndex]}
                             onChange={e => updateEditInfo(col.dataIndex, e.target.value)}
                         />}

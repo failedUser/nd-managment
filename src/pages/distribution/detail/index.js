@@ -64,19 +64,17 @@ export default function ProductManager() {
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
-
     const [ columns ] = useState([
-            { title: '微信ID', dataIndex: 'customerame'},
-            { title: '商品条码', dataIndex: 'customerPhone'},
+            { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
             { title: '单品编号', dataIndex: 'payment_Time',width: 100},
             { title: '销售金额', dataIndex: 'name5', key: 'name1',},
             { title: '下单时间', dataIndex: 'volume_Name'},
-            { title: '订单情况', dataIndex: 'shipment_Id', width: 80},
-            { title: '分销奖励', dataIndex: 'remarks', width: 80 },
+            { title: '订单情况', dataIndex: 'order_Id', width: 80},
+            { title: '分销奖励', dataIndex: 'reward_Price', width: 80 },
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                
                <Button type="primary" size="small" >撤销</Button>
-               <Button type="primary" size="small" >删除</Button>
+               {/* <Button type="primary" size="small" >删除</Button> */}
             </div>},
         ])
    
@@ -84,7 +82,7 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('distributor_Wechat_Id', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">所属高校</div>

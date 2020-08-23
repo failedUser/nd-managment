@@ -87,8 +87,8 @@ export default function ProductManager() {
         { title: '量体师姓名', dataIndex: 'volumer_Name'},
             { title: '订单号', dataIndex: 'order_Id'},
             { title: '订单金额', dataIndex: 'total_Received_Amount'},
-            { title: '下单时间', dataIndex: 'creation_time'},
-            { title: '量体时间', dataIndex: 'name5'}, // TODO:量体时间
+            { title: '下单时间', dataIndex: 'creation_Time'},
+            { title: '量体时间', dataIndex: 'volume_Time'},
             { title: '完成情况', dataIndex: 'order_Status'},
             { title: '奖励金额', dataIndex: 'reward_Price'},
             { title: '返修扣款', dataIndex: 'deduction_Fee' },
@@ -105,8 +105,8 @@ export default function ProductManager() {
                 <Input size="small" placeholder="量体师" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">所属高校</div>
-                <Input size="small" placeholder="高校" onChange={e => updateSearch('college', e.target.value)} />
+                <div className="search-item__title">订单号</div>
+                <Input size="small" placeholder="高校" onChange={e => updateSearch('orderId', e.target.value)} />
             </div>
             
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
@@ -130,7 +130,6 @@ export default function ProductManager() {
                     total: tableSize,
                     onChange: onPageChange
                 }}
-            />
             />
         </section>
         {modalInfo && <Modal

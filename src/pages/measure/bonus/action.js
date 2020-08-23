@@ -19,12 +19,11 @@ export function requestForBonusEdit(data) {
     return request({
         method: 'put',
         url: '/newdreamer/backVolumer/updateDeduction',
-        data: data,
-        type: 'json'
+        params: data
     })
 }
 
 
 export function requestForBonusExport(data) {
-    exportFile('/newdreamer/backVolumer/exportReward', data);
+    exportFile('/newdreamer/volumeRewardConfig/exportExcel', data);
 }

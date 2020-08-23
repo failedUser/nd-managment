@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestBonusSettingList } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker,Select } from 'antd';
+import { requestBonusSettingList, requestBonusSettingCreate, requestBonusSettingExport } from './action';
 const { RangePicker } = DatePicker;
 
 // TODO 这里交互有点问题，要改的话2个应该都可以同时改，但是数据怎么会有2条
@@ -15,27 +15,47 @@ export default function ProductManager() {
     const [ dataSource, updateSource ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
     const [ editable, setEditable ] = useState(false);
+    const [ currentInfo, setCurrentInfo ] = useState({});
+    const [ setInfo, updateSetInfo ] = useState({
+        reward_Percentage: 0,
+        reward_Price: 0,
+        reward_Setting_Person: '',
+        reward_Setting_Time: '',
+        reward_Setting_Type: '金额设置'
+    })
+
+    const updateInfo = useCallback((key, value) => {
+        updateSetInfo(info => ({...info, ...{[key]: value}}));
+    }, [])
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-        console.log('----开始批量导出-----', chooseItems)
+        requestBonusSettingExport(chooseItems);
     }, [chooseItems])
 
     const pageData = useCallback(() => {
         let _pageInfo = {...pageInfo};
         _pageInfo.page -= 1;
         requestBonusSettingList(pageInfo).then(data => {
-            setTableSize(data.totalElements)
-            updateSource(data.content);
+            if (data.content.length) {
+                setTableSize(data.totalElements)
+                updateSource(data.content);
+                setCurrentInfo(data.content[0])
+            }
+            
         })
     }, [pageInfo])
 
     const submit = useCallback(() => {
-        console.log('提交了')
-    }, [])
+        requestBonusSettingCreate(setInfo).then(e => {
+            message.info('修改成功');
+            setEditable(false);
+            pageData();
+        })
+    }, [pageData, setInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -55,7 +75,7 @@ export default function ProductManager() {
             { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
             { title: '设置时间', dataIndex: 'reward_Setting_Time'},
             { title: '设置内容', dataIndex: 'reward_Price'},
-            { title: '设置方式', dataIndex: 'name5'},
+            { title: '设置方式', dataIndex: 'reward_Setting_Type'},
             { title: '设置人', dataIndex: 'reward_Setting_Person'},
             { title: '设置参数', dataIndex: 'reward_Percentage'}
     ])
@@ -78,32 +98,56 @@ export default function ProductManager() {
                     <div className="setting-content-item">设置参数</div>
                     {/* <div className="setting-content-item">设置人</div> */}
                 </div>
-                <div className="setting-content-row">
-                    <div className="setting-content-item">金额设置</div>
-                    {
-                     editable
-                     ? <React.Fragment>
-                         <div className="setting-content-item"><Input placeholder="请设置参数" addonAfter="元" /></div>
-                        
-                     </React.Fragment>
-                     : <React.Fragment>
-                        <div className="setting-content-item">10 元</div>
-                     </React.Fragment>
-                    }
-
-                </div>
-                <div className="setting-content-row">
-                    <div className="setting-content-item">比例设置</div>
-                    {
-                     editable
-                     ? <React.Fragment>
-                          <div className="setting-content-item"><Input placeholder="请设置参数" addonAfter="%" /></div>
-                     </React.Fragment>
-                     : <React.Fragment>
-                        <div className="setting-content-item">10 %</div>
-                     </React.Fragment>
-                    }
-                </div>
+                {
+                    editable 
+                    ?   <div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">奖励方式</div>
+                                <div className="setting-content-item">
+                                    <Select style={{width: '100%'}} onChange={value => updateInfo('reward_Setting_Type', value)} defaultValue={setInfo.reward_Setting_Type} >
+                                        <Select.Option value="金额设置">金额设置</Select.Option>
+                                        <Select.Option value="比例设置">比例设置</Select.Option>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置参数</div>
+                                <div className="setting-content-item"><Input 
+                                style={{width: '100%'}}
+                                    placeholder="设置参数" 
+                                    addonAfter={setInfo.reward_Setting_Type === '金额设置' ? '元' : '%'} 
+                                    onChange={e => updateInfo( setInfo.reward_Setting_Type === '金额设置'? 'reward_Price' : 'reward_Percentage', e.target.value)}
+                                />
+                                </div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置时间</div>
+                                <div className="setting-content-item"><DatePicker style={{width: '100%'}} onChange={(date,dateString) => updateInfo('reward_Setting_Time', dateString)} /></div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置人</div>
+                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateInfo('reward_Setting_Person', e.target.value)} placeholder="设置人" /></div>
+                            </div>
+                        </div>
+                        : <div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">奖励方式</div>
+                                <div className="setting-content-item">{currentInfo.reward_Setting_Type}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">金额设置</div>
+                                <div className="setting-content-item">{currentInfo.reward_Setting_Type === '金额设置' ? currentInfo.reward_Price : currentInfo.reward_Percentage}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置时间</div>
+                                <div className="setting-content-item">{currentInfo.reward_Setting_Time}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置人</div>
+                                <div className="setting-content-item">{currentInfo.reward_Setting_Person}</div>
+                            </div>
+                        </div>
+                }
             </div>
             <div className="setting-content-buttons">
             {
@@ -120,7 +164,7 @@ export default function ProductManager() {
         <section className="product-manager-table">
             <div className="manager-table__title">设置记录</div>
             <Table 
-                rowKey="order_Id"
+                rowKey="volumer_Reward_Setting_Id"
                 dataSource={dataSource} 
                 columns={columns} 
                 pagination={{

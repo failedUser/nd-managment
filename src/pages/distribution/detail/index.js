@@ -43,12 +43,14 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestDistributionRewardList().then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestDistributionRewardList(_pageInfo).then(data => {
             if (!data) return ;
             setTableSize(data.totalElements);
             updateSource(data.content)
         })
-    }, [])
+    }, [pageInfo])
     const onPageChange = useCallback((page) => {
         if (page !== pageInfo.page) {
             pageInfo.page = page;

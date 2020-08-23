@@ -11,4 +11,18 @@ export function requestBonusSettingList(data) {
 }
 
 
+export function requestBonusSettingCreate(data) {
+    return request({
+        method: 'put',
+        url: '/newdreamer/volumeRewardConfig',
+        data: data
+    })
+}
 
+
+
+
+
+export function requestBonusSettingExport(data) {
+    return exportFile('/newdreamer/volumeRewardConfig/exportExcel', data);
+}

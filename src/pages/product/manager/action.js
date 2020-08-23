@@ -49,7 +49,7 @@ export function requestForProductCreate(data) {
 export function requestForProductDelete(data) {
     return request({
         method: 'post',
-        url: Url + '/newdreamer/batchUpdate',
+        url: Url + '/newdreamer/productInfo/batchUpdate',
         data: data
     })
 }

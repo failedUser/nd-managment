@@ -48,7 +48,7 @@ export function requestForFabricCreate(data) {
 export function requestForFabricDelete(data) {
     return request({
         method: 'post',
-        url: '/newdreamer/batchUpdate',
+        url: '/newdreamer/fabric/batchUpdate',
         data: data
     })
 }

@@ -22,7 +22,8 @@ let editConfig = [
     { title: '版型', dataIndex: 'type'},
     { title: '置顶顺序', dataIndex: 'is_Top'},
     { title: '颜色', dataIndex: 'color'},
-    { title: '启用', dataIndex: 'product_Status', type: ""},
+    { title: '显示', dataIndex: 'product_Status', type: ""},
+    { title: '启用', dataIndex: 'enable', type: ""},
     { title: '图片', dataIndex: 'images', type:"images"},
     { title: '尺码', dataIndex: 'size'},
     { title: '详情页', dataIndex: 'detailImages', type:"images"},
@@ -72,12 +73,13 @@ export default function ProductManager() {
     }, [pageInfo])
 
     const _delete = useCallback((item) => {
+        let status = item.enable === '禁用' ? '启用' : '禁用';
         requestForProductDelete({
             id: item.barcode,
-            enable: item.enable === '禁用' ? '启用' : '禁用'
+            enable: status
         })
         .then(() => {
-            message.info('操作成功');
+            message.info(status+'成功');
         })
         .then(pageData)
     }, [pageData]);
@@ -252,6 +254,15 @@ export default function ProductManager() {
                         <Select.Option value="隐藏">隐藏</Select.Option>
                       </Select>
                     }
+                    {
+                        col.dataIndex === 'enable' && <Select 
+                            style={{ width: 300 }}
+                            defaultValue={editInfo.enable} 
+                            onChange={value => updateEditInfo(col.dataIndex, value)}>
+                            <Select.Option value="禁用">禁用</Select.Option>
+                            <Select.Option value="启用">启用</Select.Option>
+                        </Select>
+                    }
                     {(col.type === 'images') 
                         && <div className="pm-edit__images">
                             {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
@@ -274,7 +285,7 @@ export default function ProductManager() {
                         </div>
                     }
 
-                    {(!col.type && col.dataIndex!=='product_Status') && <Input 
+                    {(!col.type && col.dataIndex!=='product_Status' && col.dataIndex!== 'enable') && <Input 
                             placeholder="输入你的数据" 
                             disabled={col.onlyRead && modelType === 'edit'}
                             value={editInfo && editInfo[col.dataIndex]}

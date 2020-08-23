@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import { Button, Table, Modal, Input, Upload, message } from 'antd';
+import { Button, Table, Modal, Input, Upload, message, Select } from 'antd';
 import { exportFile, dealOssImageUrl, previewImage } from '../../../assets/js/common';
 
 import { 
@@ -8,6 +8,8 @@ import {
     requestForFabricExport
  } from './action';
 
+
+ const appendEdit = [{title: '启用', dataIndex: 'enable', }]
 export default function FabricManager() {
     const [ isInit, updateInit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
@@ -42,11 +44,12 @@ export default function FabricManager() {
     }, [pageInfo])
 
     const _delete = useCallback((record) => {
+        let status = record.enable === '禁用' ? '启用' : '禁用';
         requestForFabricDelete({
             id: record.fabric_Id,
-            enable: record.enable
+            enable: status
         }).then(data => {
-            message.info('禁用成功');
+            message.info(status+'成功');
         }).then(pageData)
     }, [pageData]);
 
@@ -140,7 +143,7 @@ export default function FabricManager() {
             </div>},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >编辑</Button>
-               <Button type="primary" size="small" onClick={() => _delete(record)}>禁用</Button>
+               <Button type="primary" size="small" onClick={() => _delete(record)}>{record.enable === '禁用' ? '启用' : '禁用'}</Button>
                {/* <Upload
                     action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
                     method="post"
@@ -214,8 +217,17 @@ export default function FabricManager() {
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.slice(0, columns.length - 1).map(col => <div className="pm-edit-item">
+                {[...columns.slice(0, columns.length - 1), ...appendEdit].map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
+                    {
+                        col.dataIndex === 'enable' && <Select 
+                            style={{ width: 300 }}
+                            defaultValue={editInfo.enable} 
+                            onChange={value => updateEditInfo(col.dataIndex, value)}>
+                            <Select.Option value="禁用">禁用</Select.Option>
+                            <Select.Option value="启用">启用</Select.Option>
+                        </Select>
+                    }
                     {(col.type === 'image') 
                         && <div className="pm-edit__images">
                             {editInfo[col.dataIndex] &&  <img className="pm-edit__image" alt="edit" src={editInfo[col.dataIndex]} />}
@@ -237,7 +249,7 @@ export default function FabricManager() {
                             ><Button type="primary" size="small">替换</Button></Upload>
                         </div>
                     }
-                    {!col.type && <Input 
+                    {(!col.type && col.dataIndex !== 'enable') && <Input 
                             placeholder="输入你的数据" 
                             disabled={col.onRead && modelType === 'edit'}
                             value={editInfo && editInfo[col.dataIndex]}

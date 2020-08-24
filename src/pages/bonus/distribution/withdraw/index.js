@@ -1,11 +1,16 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList } from './action';
+import { requestBonusSettingList } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -37,12 +42,11 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestBonusSettingList(pageInfo).then(data => {
+            updateSource(data.content);
+            setTableSize(data.totalElements);
         })
-    }, [])
+    }, [pageInfo])
 
     useEffect(() => {
         if (isInit) return;
@@ -52,10 +56,10 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             { title: '量体师', dataIndex: 'customerame'},
-            { title: '申请时间', dataIndex: 'customerPhone'},
-            { title: '可提现余额', dataIndex: 'payment_Time'},
+            { title: '申请时间', dataIndex: 'application_Date'},
+            { title: '可提现余额', dataIndex: 'withdrawal_Amount'},
             { title: '本次体现金额', dataIndex: 'name5', key: 'name1',},
-            { title: '状态', dataIndex: 'volume_Name'},
+            { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" >确定</Button>
                <Button type="primary" size="small" >驳回</Button>

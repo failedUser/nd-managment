@@ -1,12 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestOrderList, requestOrderExport } from './action';
+import { requestPageVolumerRewardDetail, requestOrderExport } from './action';
 
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
     const [ isInit, setIsinit ] = useState(false);
+    const [ pageInfo, updatePageInfo ] = useState({
+        page: 1,
+        size: 10
+    })
+    const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
@@ -39,12 +44,11 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestOrderList().then(data => {
-            updateSource(source => {
-                return [...source || [], ...data.content]
-            })
+        requestPageVolumerRewardDetail(pageInfo).then(data => {
+            updateSource(data.content)
+            setTableSize(data.totalElements);
         })
-    }, [])
+    }, [pageInfo])
 
     useEffect(() => {
         if (isInit) return;

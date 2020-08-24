@@ -15,18 +15,14 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
     }, [])
 
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
 
     const export_data = useCallback(() => {
@@ -68,11 +64,11 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-            { title: '量体师', dataIndex: 'customerame'},
-            { title: '申请时间', dataIndex: 'customerPhone'},
-            { title: '可提现余额', dataIndex: 'payment_Time'},
-            { title: '本次体现金额', dataIndex: 'name5', key: 'name1',},
-            { title: '状态', dataIndex: 'volume_Name'},
+        { title: '量体师', dataIndex: 'customerame'},
+        { title: '申请时间', dataIndex: 'application_Date'},
+        { title: '可提现余额', dataIndex: 'withdrawal_Amount'},
+        { title: '本次体现金额', dataIndex: 'name5', key: 'name1',},
+        { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" >确定</Button>
                <Button type="primary" size="small" >驳回</Button>
@@ -88,11 +84,12 @@ export default function ProductManager() {
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
-                    updateSearch('order_Status', dateString.join('-'));
+                    updateSearch('startTime',dateString[0]);
+                    updateSearch('endTime',dateString[1]);
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

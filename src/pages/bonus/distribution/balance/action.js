@@ -1,12 +1,17 @@
 
-import { dataSource } from './data';
+import request from '../../../../assets/js/request';
 import { exportFile } from '../../../../assets/js/common'
 
-
-export function requestOrderList(data) {
-    return Promise.resolve(dataSource);
+export function requestPageVolumerRewardDetail(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backReward/pageVolumerRewardDetail',
+        params: data
+    })
 }
+// 
 
-export function requestOrderExport(data) {
 
+export function requestOrderExport() {
+    // exportFile()
 }

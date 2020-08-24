@@ -7,14 +7,14 @@ const { TextArea } = Input;
 
 
 const manConfig =  [
-    { enableKey: 'man-suits', keyName: 'suits', title: '男士西服横栏'},
-    { enableKey: 'man-shirt', keyName: 'shirt', title: '男士衬衫横栏'},
-    { enableKey: 'man-accessories', keyName: 'accessories', title: '男士配饰横栏'}
+    { enableKey: 'man-suits', keyName: 'suits', title: 'manSuitsTitle'},
+    { enableKey: 'man-shirt', keyName: 'shirt', title: 'manShirtTitle'},
+    { enableKey: 'man-accessories', keyName: 'accessories', title: 'manAccessoriesTitle'}
 ]
 const womanConfig =  [
-    { enableKey: 'woman-suits', keyName: 'suits', title: '女士西服横栏'},
-    { enableKey: 'woman-shirt', keyName: 'shirt', title: '女士衬衫横栏'},
-    { enableKey: 'woman-accessories', keyName: 'accessories', title: '女士配饰横栏'}
+    { enableKey: 'woman-suits', keyName: 'suits', title: 'womanSuitsTitle'},
+    { enableKey: 'woman-shirt', keyName: 'shirt', title: 'womanShirtTitle'},
+    { enableKey: 'woman-accessories', keyName: 'accessories', title: 'womanAccessoriesTitle'}
 ]
 
 const barcodeConfig = [{
@@ -36,7 +36,8 @@ export default class ShopHome extends React.Component {
         notice: [],
         editable: '',
         manModules: {},
-        womenModules: {}
+        womenModules: {},
+        titles: {}
     }
     componentDidMount() {
         this.PageData();
@@ -49,7 +50,8 @@ export default class ShopHome extends React.Component {
                 let notice = res.notice ? JSON.parse(res.notice) : [];
                 let manModules= res.manModules ? JSON.parse(res.manModules) : {};
                 let womenModules= res.womenModules ? JSON.parse(res.womenModules) : {};
-                this.setState({photos,notice, editable: '', womenModules, manModules })
+                let titles = res.titles ? JSON.parse(res.titles) : {};
+                this.setState({photos,notice, editable: '', womenModules, manModules, titles })
             }
 
         })
@@ -57,12 +59,13 @@ export default class ShopHome extends React.Component {
 
     updateInfo = () => {
         console.log('提交数据');
-        let { notice, photos, manModules, womenModules } = this.state;
+        let { notice, photos, manModules, womenModules, titles } = this.state;
         requestHomeSave({
             photos: JSON.stringify(photos), 
             notice: JSON.stringify(notice),
             manModules: JSON.stringify(manModules),
-            womenModules: JSON.stringify(womenModules)
+            womenModules: JSON.stringify(womenModules),
+            titles: JSON.stringify(titles)
         }).then(this.PageData)
             
     }
@@ -73,7 +76,7 @@ export default class ShopHome extends React.Component {
     // VOLUME("volume","量体数据图片目录"),
     // FABRIC("fabric","面料图片目录");
     render () {
-        let { photos, photosCount, notice, noticeCount, editable, manModules } = this.state;
+        let { photos, photosCount, notice, noticeCount, editable, titles } = this.state;
         return <div className="new-dream-home">
             <section className="home-section">
                 <div className="home-section__title">顶部滚动图</div>
@@ -136,7 +139,24 @@ export default class ShopHome extends React.Component {
                 {
                     barcode.conf.map(config => <div className="section-barcode-setting">
                     <div className="barcode-setting_title">
-                        <span>{config.title}</span>
+                        {
+                            editable === config.enableKey
+                            ? <Input 
+                                style={{width: 300}} 
+                                placeholder="输入标题" 
+                                value={this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName].title} 
+                                onChange={e => {
+                                    let modules = this.state[barcode.keyName];
+                                    if (!modules[config.keyName]) {
+                                        modules[config.keyName] = {};
+                                        modules[config.keyName].codes = [];
+                                    }
+                                    modules[config.keyName].title = e.target.value;
+                                    this.setState({[barcode.keyName]: {...modules}});
+                                }}
+                            />
+                            : <span>{(this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName].title) || '暂无标题'} </span>
+                        }
                         {
                             editable === config.enableKey
                             ? <div>
@@ -158,17 +178,18 @@ export default class ShopHome extends React.Component {
                             Array.from({length:4}).map((item, index) => <div className="man-row-eidt">
                                 {editable === config.enableKey  // 男西服
                                     ?   <Input 
-                                        value={this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName][index]}
+                                        value={this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName].codes[index]}
                                         onChange={e => {
                                         let _manModules = {...this.state[barcode.keyName]};
                                         if (!_manModules[config.keyName]) {
-                                            _manModules[config.keyName] = [];
+                                            _manModules[config.keyName] = {};
+                                            _manModules[config.keyName].codes = []
                                         }
-                                        _manModules[config.keyName][index] = e.target.value;
+                                        _manModules[config.keyName].codes[index] = e.target.value;
                                         this.setState({[barcode.keyName]: _manModules})
                                     }} />
                                             
-                                    :   <div>{(this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName][index]) || `条码${index}`}</div>}
+                                    :   <div>{(this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName].codes[index]) || `条码${index}`}</div>}
                             </div>)
                         }
                     </div>

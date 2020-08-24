@@ -5,6 +5,28 @@ import { requestHomeConfig, requestHomeSave } from './action';
 import { dealOssImageUrl } from '../../../assets/js/common';
 const { TextArea } = Input;
 
+
+const manConfig =  [
+    { enableKey: 'man-suits', keyName: 'suits', title: '男士西服横栏'},
+    { enableKey: 'man-shirt', keyName: 'shirt', title: '男士衬衫横栏'},
+    { enableKey: 'man-accessories', keyName: 'accessories', title: '男士配饰横栏'}
+]
+const womanConfig =  [
+    { enableKey: 'woman-suits', keyName: 'suits', title: '女士西服横栏'},
+    { enableKey: 'woman-shirt', keyName: 'shirt', title: '女士衬衫横栏'},
+    { enableKey: 'woman-accessories', keyName: 'accessories', title: '女士配饰横栏'}
+]
+
+const barcodeConfig = [{
+    conf: manConfig,
+    titile: '男士条码',
+    keyName: 'manModules'
+},{
+    conf: womanConfig,
+    titile: '女士条码',
+    keyName: 'womenModules'
+}]
+
 export default class ShopHome extends React.Component {
     state = {
         photos: [],
@@ -108,23 +130,25 @@ export default class ShopHome extends React.Component {
                </div>)
                }
             </section>
-            <section className="home-section">
-                <div className="home-section__title">男士条码</div>
-                <div className="section-barcode-setting">
+            {
+                barcodeConfig.map(barcode =>  <section className="home-section">
+                <div className="home-section__title">{barcode.titile}</div>
+                {
+                    barcode.conf.map(config => <div className="section-barcode-setting">
                     <div className="barcode-setting_title">
-                        <span>男士西服横栏</span>
+                        <span>{config.title}</span>
                         {
-                            editable === 'man-suits'
+                            editable === config.enableKey
                             ? <div>
                             <Button onClick={() => {
                                 this.updateInfo();
                             }} type="primary">保存</Button>
                             <Button onClick={() => {
-                                this.setState({editable: '', manModules: this.state.cacheManModules})
+                                this.setState({editable: '', [barcode.keyName]: this.state.cacheManModules})
                             }} type="primary">取消</Button>
                             </div>
                             :  <Button onClick={() => {
-                                this.setState({editable: 'man-suits', cacheManModules: JSON.parse(JSON.stringify(manModules))})
+                                this.setState({editable: config.enableKey, cacheManModules: JSON.parse(JSON.stringify(this.state[[barcode.keyName]]))})
                             }} type="primary">修改</Button>
                         }
 
@@ -132,27 +156,27 @@ export default class ShopHome extends React.Component {
                     <div className="edit-list">
                         {
                             Array.from({length:4}).map((item, index) => <div className="man-row-eidt">
-                                {editable === 'man-suits'  // 男西服
+                                {editable === config.enableKey  // 男西服
                                     ?   <Input 
-                                        value={manModules.suits && manModules.suits[index]}
+                                        value={this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName][index]}
                                         onChange={e => {
-                                        let _manModules = {...manModules};
-                                        if (!_manModules.suits) {
-                                            _manModules.suits = [];
+                                        let _manModules = {...this.state[barcode.keyName]};
+                                        if (!_manModules[config.keyName]) {
+                                            _manModules[config.keyName] = [];
                                         }
-                                        _manModules.suits[index] = e.target.value;
-                                        this.setState({manModules: _manModules})
+                                        _manModules[config.keyName][index] = e.target.value;
+                                        this.setState({[barcode.keyName]: _manModules})
                                     }} />
                                             
-                                    :   <div>{(manModules.suits && manModules.suits[index]) || `条码${index}`}</div>}
+                                    :   <div>{(this.state[barcode.keyName][config.keyName] && this.state[barcode.keyName][config.keyName][index]) || `条码${index}`}</div>}
                             </div>)
                         }
                     </div>
-                    
-                    
-                    
-                </div>
-            </section>
+                </div>)
+                }
+            </section>)
+            }
+           
         </div>
     }
 }

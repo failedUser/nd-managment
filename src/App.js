@@ -96,7 +96,7 @@ function App() {
                    
                 </Sider>
             </Layout>
-            <Layout className="site-layout" style={{ paddingLeft: 200, height: '100vh', width: '100vw' }}>
+            <Layout className="site-layout" style={{ paddingLeft: 200, height: '100vh', width: '100vw', overflow:'scroll' }}>
                 <Switch>
                     {renderRoute(Routes)}
                 </Switch>

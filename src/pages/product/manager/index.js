@@ -24,9 +24,9 @@ let editConfig = [
     { title: '颜色', dataIndex: 'color'},
     { title: '显示', dataIndex: 'product_Status', type: ""},
     { title: '启用', dataIndex: 'enable', type: ""},
-    { title: '图片', dataIndex: 'images', type:"images"},
+    { title: '图片', dataIndex: 'images', type:"images", limit: 3},
     { title: '尺码', dataIndex: 'size'},
-    { title: '详情页', dataIndex: 'detailImages', type:"images"},
+    { title: '详情页', dataIndex: 'detailImages', type:"images", limit:1},
     
 ]
 
@@ -279,9 +279,9 @@ export default function ProductManager() {
                                     }
                                 }}
                                 onChange={({ file, fileList }) => {
-                                    updateEditInfo(col.dataIndex, fileList);
+                                    updateEditInfo(col.dataIndex, fileList.slice(0, col.limit));
                                 }}
-                            >{editInfo[col.dataIndex] && editInfo[col.dataIndex].length >= 3 ? null : '上传'}</Upload>
+                            >{editInfo[col.dataIndex] && editInfo[col.dataIndex].length >= col.limit ? null : '上传'}</Upload>
                         </div>
                     }
 

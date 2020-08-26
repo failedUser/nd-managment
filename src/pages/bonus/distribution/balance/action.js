@@ -2,10 +2,10 @@
 import request from '../../../../assets/js/request';
 import { exportFile } from '../../../../assets/js/common'
 
-export function requestPageVolumerRewardDetail(data) {
+export function requestPageDistributorDetail(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/backReward/pageVolumerRewardDetail',
+        url: '/newdreamer/backReward/pageDistributorDetail',
         params: data
     })
 }

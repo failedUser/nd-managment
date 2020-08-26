@@ -9,3 +9,12 @@ export function requestWithDrawList(data) {
         params: data
     })
 }
+
+
+export function requestUpdateVolumerWithdraw(data) {
+    return request({
+        method: 'put',
+        url: '/newdreamer/backReward/updateVolumerWithdraw',
+        params: data
+    })
+}

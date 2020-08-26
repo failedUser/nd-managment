@@ -1,7 +1,28 @@
 
-import { dataSource } from './data';
+import request from '../../../assets/js/request';
 import { exportFile } from '../../../assets/js/common'
 
-export function requestOrderList(data) {
-    return Promise.resolve(dataSource);
+export function requestBonusSettingList(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/withdrawConfig',
+        params: data
+    })
+}
+
+
+export function requestBonusSettingCreate(data) {
+    return request({
+        method: 'put',
+        url: '/newdreamer/withdrawConfig',
+        data: data
+    })
+}
+
+
+
+
+
+export function requestBonusSettingExport(data) {
+    return exportFile('/newdreamer/withdrawConfig/exportExcel', data);
 }

@@ -74,19 +74,19 @@ export default function ProductManager() {
     const [ columns ] = useState([
             { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
             { title: '设置时间', dataIndex: 'reward_Setting_Time'},
-            { title: '设置内容', dataIndex: 'reward_Price'},
-            { title: '设置方式', dataIndex: 'reward_Setting_Type'},
+            // { title: '设置内容', dataIndex: 'reward_Price'},
+            { title: '设置方式', dataIndex: 'reward_Setting_Type', render: (item, record) => record.reward_Percentage ? '比例设置' : '金额设置'},
             { title: '设置人', dataIndex: 'reward_Setting_Person'},
-            { title: '设置参数', dataIndex: 'reward_Percentage'}
+            { title: '设置参数', dataIndex: 'reward_Percentage', render: (item, record) => `${record.reward_Percentage || record.reward_Price}${record.reward_Price ? '元' : '%'}`}
     ])
 
 
     
    
     return <div className="product-manager">
-        <section className="product-manager-operation">
+        {/* <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
-        </section>
+        </section> */}
         <section >
             <div className="manager-table__title">
                 <span>金额设置</span>       

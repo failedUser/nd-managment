@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestWithDrawList } from './action';
+import { requestWithDrawList, requestUpdateVolumerWithdraw } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -64,14 +64,28 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '量体师', dataIndex: 'customerame'},
+        { title: '量体师', dataIndex: 'volumer_Name'},
         { title: '申请时间', dataIndex: 'application_Date'},
-        { title: '可提现余额', dataIndex: 'withdrawal_Amount'},
-        { title: '本次体现金额', dataIndex: 'name5', key: 'name1',},
+        { title: '可提现余额', dataIndex: 'avaliable_amount'},
+        { title: '本次体现金额', dataIndex: 'withdrawal_Amount', key: 'name1',},
         { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >确定</Button>
-               <Button type="primary" size="small" >驳回</Button>
+               {
+                   record.withdraw_Status === '申请中' && <React.Fragment>
+                       <Button type="primary" onClick={() => {
+                        requestUpdateVolumerWithdraw({
+                            ids: record.volumer_Withdraw_Id,
+                            withdraw_Status: '同意'
+                        }).then(pageData)
+                    }} size="small" >确定</Button>
+                    <Button type="primary" onClick={() => {
+                        requestUpdateVolumerWithdraw({
+                            ids: record.volumer_Withdraw_Id,
+                            withdraw_Status: '驳回'
+                        }).then(pageData)
+                    }} size="small" >驳回</Button>
+                   </React.Fragment>
+               }
             </div>},
         ])
    
@@ -79,7 +93,7 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入的量体师姓名" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>

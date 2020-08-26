@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestBonusSettingList } from './action';
+import { requestDistributorWithdrawList } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -42,7 +42,7 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestBonusSettingList(pageInfo).then(data => {
+        requestDistributorWithdrawList(pageInfo).then(data => {
             updateSource(data.content);
             setTableSize(data.totalElements);
         })

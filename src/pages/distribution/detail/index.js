@@ -19,7 +19,7 @@ export default function ProductManager() {
     const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
@@ -69,6 +69,7 @@ export default function ProductManager() {
             { title: '单品编号', dataIndex: 'payment_Time',width: 100},
             { title: '销售金额', dataIndex: 'name5', key: 'name1',},
             { title: '下单时间', dataIndex: 'volume_Name'},
+            { title: '订单号', dataIndex: 'order_Id'},
             { title: '订单情况', dataIndex: 'order_Id', width: 80},
             { title: '分销奖励', dataIndex: 'reward_Price', width: 80 },
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
@@ -82,14 +83,14 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('distributor_Wechat_Id', e.target.value)} />
+                <Input size="small" placeholder="请输入微信id" onChange={e => updateSearch('distributor_Wechat_Id', e.target.value)} />
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">所属高校</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <div className="search-item__title">订单号</div>
+                <Input size="small" placeholder="请输入订单号" onChange={e => updateSearch('orderId', e.target.value)} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

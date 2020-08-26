@@ -12,8 +12,6 @@ export default function ProductManager() {
         page: 1,
         size: 10,
         name: '',
-        phone: '',
-        college: ''
     })
     const [ tableSize, setTableSize ] = useState(0);
     const [ dataSource, updateSource ] = useState(null);
@@ -88,7 +86,7 @@ export default function ProductManager() {
             { title: '订单号', dataIndex: 'order_Id'},
             { title: '订单金额', dataIndex: 'total_Received_Amount'},
             { title: '下单时间', dataIndex: 'creation_Time'},
-            { title: '量体时间', dataIndex: 'volume_Time'},
+            // { title: '量体时间', dataIndex: 'volume_Time'},
             { title: '完成情况', dataIndex: 'order_Status'},
             { title: '奖励金额', dataIndex: 'reward_Price'},
             { title: '返修扣款', dataIndex: 'deduction_Fee' },

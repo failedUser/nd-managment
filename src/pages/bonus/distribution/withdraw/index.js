@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestDistributorWithdrawList } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Select } from 'antd';
+import { requestDistributorWithdrawList, requestUpdateDistributorWithdraw, exportDistributorWithdraw } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -34,6 +34,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+        exportDistributorWithdraw(chooseItems);
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
@@ -42,7 +43,9 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestDistributorWithdrawList(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestDistributorWithdrawList(_pageInfo).then(data => {
             updateSource(data.content);
             setTableSize(data.totalElements);
         })
@@ -55,27 +58,52 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-            { title: '量体师', dataIndex: 'customerame'},
+            { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
+            { title: '手机号', dataIndex: 'volumer_Name'},
             { title: '申请时间', dataIndex: 'application_Date'},
-            { title: '可提现余额', dataIndex: 'withdrawal_Amount'},
-            { title: '本次体现金额', dataIndex: 'name5', key: 'name1',},
+            { title: '可提现余额', dataIndex: 'avaliable_amount'},
+            { title: '本次体现金额', dataIndex: 'withdrawal_Amount', key: 'name1',},
             { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               <Button type="primary" size="small" >确定</Button>
-               <Button type="primary" size="small" >驳回</Button>
+               {
+                   record.withdraw_Status === '申请中' && <React.Fragment>
+                       <Button type="primary" onClick={() => {
+                        requestUpdateDistributorWithdraw({
+                            ids: record.distributor_Withdraw_Id,
+                            withdraw_Status: '已同意'
+                        }).then(pageData)
+                    }} size="small" >确定</Button>
+                    <Button type="primary" onClick={() => {
+                        requestUpdateDistributorWithdraw({
+                            ids: record.distributor_Withdraw_Id,
+                            withdraw_Status: '已驳回'
+                        }).then(pageData)
+                    }} size="small" >驳回</Button>
+                   </React.Fragment>
+               }
             </div>},
         ])
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <div className="search-item__title">量体师姓名</div>
+                <Input size="small" placeholder="请输入量体师" onChange={e => updateSearch('name', e.target.value)} />
+            </div>
+            <div className="manager-search-item">
+                <div className="search-item__title">状态</div>
+                <Select defaultValue="" onChange={value => updateSearch('status', value)} >
+                    <Select.Option value="">全部</Select.Option>
+                    <Select.Option value="申请中">申请中</Select.Option>
+                    <Select.Option value="同意">同意</Select.Option>
+                    <Select.Option value="驳回">驳回</Select.Option>
+                </Select>
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
-                    updateSearch('order_Status', dateString.join('-'));
+                     updateSearch('startTime',dateString[0]);
+                     updateSearch('endTime',dateString[1]);
                 }} />
             </div>
             

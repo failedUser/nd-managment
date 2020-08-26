@@ -18,3 +18,7 @@ export function requestUpdateVolumerWithdraw(data) {
         params: data
     })
 }
+
+export function exportVolumerbutorWithdraw(data) {
+    exportFile('/newdreamer/backReward/exportVolumerWithdraw', data);
+}

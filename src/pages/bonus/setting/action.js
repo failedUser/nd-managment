@@ -15,7 +15,8 @@ export function requestBonusSettingCreate(data) {
     return request({
         method: 'put',
         url: '/newdreamer/withdrawConfig',
-        data: data
+        data: data,
+        type: 'json'
     })
 }
 

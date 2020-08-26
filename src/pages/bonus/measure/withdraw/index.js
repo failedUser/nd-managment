@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
-import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestWithDrawList, requestUpdateVolumerWithdraw } from './action';
+import { Button, Table, Modal, Input, Upload, message, DatePicker, Select } from 'antd';
+import { requestWithDrawList, requestUpdateVolumerWithdraw, exportVolumerbutorWithdraw } from './action';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -30,6 +30,7 @@ export default function ProductManager() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
+        exportVolumerbutorWithdraw(chooseItems);
         console.log('----开始批量导出-----', chooseItems)
     }, [chooseItems])
     const showOrderVoucher = useCallback((item) => {
@@ -75,13 +76,13 @@ export default function ProductManager() {
                        <Button type="primary" onClick={() => {
                         requestUpdateVolumerWithdraw({
                             ids: record.volumer_Withdraw_Id,
-                            withdraw_Status: '同意'
+                            withdraw_Status: '已同意'
                         }).then(pageData)
                     }} size="small" >确定</Button>
                     <Button type="primary" onClick={() => {
                         requestUpdateVolumerWithdraw({
                             ids: record.volumer_Withdraw_Id,
-                            withdraw_Status: '驳回'
+                            withdraw_Status: '已驳回'
                         }).then(pageData)
                     }} size="small" >驳回</Button>
                    </React.Fragment>
@@ -94,6 +95,15 @@ export default function ProductManager() {
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
                 <Input size="small" placeholder="请输入的量体师姓名" onChange={e => updateSearch('name', e.target.value)} />
+            </div>
+            <div className="manager-search-item">
+                <div className="search-item__title">状态</div>
+                <Select defaultValue="" onChange={value => updateSearch('status', value)} >
+                    <Select.Option value="">全部</Select.Option>
+                    <Select.Option value="申请中">申请中</Select.Option>
+                    <Select.Option value="同意">同意</Select.Option>
+                    <Select.Option value="驳回">驳回</Select.Option>
+                </Select>
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>
@@ -110,7 +120,7 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="order_Id"
+                rowKey="volumer_Withdraw_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

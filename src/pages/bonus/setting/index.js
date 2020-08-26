@@ -17,11 +17,6 @@ export default function ProductManager() {
     const [ editable, setEditable ] = useState(false);
     const [ currentInfo, setCurrentInfo ] = useState({});
     const [ setInfo, updateSetInfo ] = useState({
-        reward_Percentage: 0,
-        reward_Price: 0,
-        reward_Setting_Person: '',
-        reward_Setting_Time: '',
-        reward_Setting_Type: '金额设置'
     })
 
     const updateInfo = useCallback((key, value) => {
@@ -39,7 +34,7 @@ export default function ProductManager() {
     const pageData = useCallback(() => {
         let _pageInfo = {...pageInfo};
         _pageInfo.page -= 1;
-        requestBonusSettingList(pageInfo).then(data => {
+        requestBonusSettingList(_pageInfo).then(data => {
             if (data.content.length) {
                 setTableSize(data.totalElements)
                 updateSource(data.content);
@@ -72,12 +67,11 @@ export default function ProductManager() {
     }, [pageData, pageInfo])
 
     const [ columns ] = useState([
-            { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
-            { title: '设置时间', dataIndex: 'reward_Setting_Time'},
-            { title: '设置内容', dataIndex: 'reward_Price'},
-            { title: '设置方式', dataIndex: 'reward_Setting_Type'},
-            { title: '设置人', dataIndex: 'reward_Setting_Person'},
-            { title: '设置参数', dataIndex: 'reward_Percentage'}
+            { title: '设置编号', dataIndex: 'id'},
+            { title: '提现类型', dataIndex: 'amountConfigEnum'},
+            { title: '设置时间', dataIndex: 'createTime'},
+            { title: '最低金额', dataIndex: 'value'},
+            { title: '设置人', dataIndex: 'userName'},
     ])
 
 
@@ -102,49 +96,49 @@ export default function ProductManager() {
                     editable 
                     ?   <div>
                             <div className="setting-content-row">
-                                <div className="setting-content-item">奖励方式</div>
+                                <div className="setting-content-item">提现类型</div>
                                 <div className="setting-content-item">
-                                    <Select style={{width: '100%'}} onChange={value => updateInfo('reward_Setting_Type', value)} defaultValue={setInfo.reward_Setting_Type} >
-                                        <Select.Option value="金额设置">金额设置</Select.Option>
-                                        <Select.Option value="比例设置">比例设置</Select.Option>
+                                    <Select style={{width: '100%'}} onChange={value => updateInfo('amountConfigEnum', value)} defaultValue={setInfo.reward_Setting_Type} >
+                                        <Select.Option value="BONUS">奖励金</Select.Option>
+                                        <Select.Option value="DISTRIBUTION">分销金</Select.Option>
                                     </Select>
                                 </div>
                             </div>
                             <div className="setting-content-row">
-                                <div className="setting-content-item">设置参数</div>
+                                <div className="setting-content-item">最低金额</div>
                                 <div className="setting-content-item"><Input 
                                 style={{width: '100%'}}
                                     placeholder="设置参数" 
-                                    addonAfter={setInfo.reward_Setting_Type === '金额设置' ? '元' : '%'} 
-                                    onChange={e => updateInfo( setInfo.reward_Setting_Type === '金额设置'? 'reward_Price' : 'reward_Percentage', e.target.value)}
+                                    addonAfter="元"
+                                    onChange={e => updateInfo('value', e.target.value)}
                                 />
                                 </div>
                             </div>
-                            <div className="setting-content-row">
+                            {/* <div className="setting-content-row">
                                 <div className="setting-content-item">设置时间</div>
                                 <div className="setting-content-item"><DatePicker style={{width: '100%'}} onChange={(date,dateString) => updateInfo('reward_Setting_Time', dateString)} /></div>
-                            </div>
+                            </div> */}
                             <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
-                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateInfo('reward_Setting_Person', e.target.value)} placeholder="设置人" /></div>
+                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateInfo('userName', e.target.value)} placeholder="设置人" /></div>
                             </div>
                         </div>
                         : <div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">奖励方式</div>
-                                <div className="setting-content-item">{currentInfo.reward_Setting_Type}</div>
+                                <div className="setting-content-item">{currentInfo.amountConfigEnum}</div>
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">金额设置</div>
-                                <div className="setting-content-item">{currentInfo.reward_Setting_Type === '金额设置' ? currentInfo.reward_Price : currentInfo.reward_Percentage}</div>
+                                <div className="setting-content-item">{currentInfo.value }</div>
                             </div>
                             <div className="setting-content-row">
-                                <div className="setting-content-item">设置时间</div>
-                                <div className="setting-content-item">{currentInfo.reward_Setting_Time}</div>
+                                <div className="setting-content-item">最低金额</div>
+                                <div className="setting-content-item">{currentInfo.createTime}</div>
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
-                                <div className="setting-content-item">{currentInfo.reward_Setting_Person}</div>
+                                <div className="setting-content-item">{currentInfo.userName}</div>
                             </div>
                         </div>
                 }

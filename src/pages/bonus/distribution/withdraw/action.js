@@ -10,3 +10,15 @@ export function requestDistributorWithdrawList(data) {
     })
 }
 // 
+
+export function requestUpdateDistributorWithdraw(data) {
+    return request({
+        method: 'put',
+        url: '/newdreamer/backReward/updateDistributorWithdraw',
+        params: data
+    })
+}
+
+export function exportDistributorWithdraw(data) {
+    exportFile('/newdreamer/backReward/exportDistributorWithdraw', data);
+}

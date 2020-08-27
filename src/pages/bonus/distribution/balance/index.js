@@ -44,7 +44,9 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestPageDistributorDetail(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestPageDistributorDetail(_pageInfo).then(data => {
             updateSource(data.content)
             setTableSize(data.totalElements);
         })

@@ -68,7 +68,7 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             { title: '设置编号', dataIndex: 'id'},
-            { title: '提现类型', dataIndex: 'amountConfigEnum'},
+            { title: '提现类型', dataIndex: 'configTypeEnum', render: (item) => (item === 'BONUS' && '奖励金') || (item === 'DISTRIBUTION' && '分销金')},
             { title: '设置时间', dataIndex: 'createTime'},
             { title: '最低金额', dataIndex: 'value'},
             { title: '设置人', dataIndex: 'userName'},
@@ -78,9 +78,9 @@ export default function ProductManager() {
     
    
     return <div className="product-manager">
-        <section className="product-manager-operation">
+        {/* <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>
-        </section>
+        </section> */}
         <section >
             <div className="manager-table__title">
                 <span>金额设置</span>       
@@ -98,7 +98,7 @@ export default function ProductManager() {
                             <div className="setting-content-row">
                                 <div className="setting-content-item">提现类型</div>
                                 <div className="setting-content-item">
-                                    <Select style={{width: '100%'}} onChange={value => updateInfo('amountConfigEnum', value)} defaultValue={setInfo.reward_Setting_Type} >
+                                    <Select style={{width: '100%'}} onChange={value => updateInfo('configTypeEnum', value)} defaultValue={setInfo.reward_Setting_Type} >
                                         <Select.Option value="BONUS">奖励金</Select.Option>
                                         <Select.Option value="DISTRIBUTION">分销金</Select.Option>
                                     </Select>
@@ -126,7 +126,7 @@ export default function ProductManager() {
                         : <div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">奖励方式</div>
-                                <div className="setting-content-item">{currentInfo.amountConfigEnum}</div>
+                                <div className="setting-content-item">{(currentInfo.configTypeEnum === 'BONUS' && '奖励金') || (currentInfo.configTypeEnum === 'DISTRIBUTION' && '分销金')}</div>
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">金额设置</div>

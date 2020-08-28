@@ -12,11 +12,13 @@ export default [{
             path: '/balance',
             name: '余额查询',
             component: require('../pages/bonus/measure/balance').default
-        },{
-            path: '/withdrawDetail',
-            name: '提现明细',
-            component: require('../pages/bonus/measure/withdrawDetail').default
-        }]
+        }
+        // ,{
+        //     path: '/withdrawDetail',
+        //     name: '提现明细',
+        //     component: require('../pages/bonus/measure/withdrawDetail').default
+        // }
+    ]
     }, {
         path: '/distribution',
             name: '分销奖励',
@@ -28,11 +30,13 @@ export default [{
                 path: '/balance',
                 name: '余额查询',
                 component: require('../pages/bonus/distribution/balance').default
-            },{
-                path: '/withdrawDetail',
-                name: '提现明细',
-                component: require('../pages/bonus/distribution/withdrawDetail').default
-            }]
+            }
+            // ,{
+            //     path: '/withdrawDetail',
+            //     name: '提现明细',
+            //     component: require('../pages/bonus/distribution/withdrawDetail').default
+            // }
+        ]
     },{
         path: '/setting',
             name: '提现金额设置',

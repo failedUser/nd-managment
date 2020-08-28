@@ -66,11 +66,11 @@ export default function ProductManager() {
     }, [isInit, pageData])
     const [ columns ] = useState([
             { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
-            { title: '单品编号', dataIndex: 'payment_Time',width: 100},
-            { title: '销售金额', dataIndex: 'name5', key: 'name1',},
-            { title: '下单时间', dataIndex: 'volume_Name'},
+            { title: '单品编号', dataIndex: 'item_Id',width: 100},
+            { title: '销售金额', dataIndex: 'name5'},
+            // { title: '下单时间', dataIndex: 'volume_Name'},
             { title: '订单号', dataIndex: 'order_Id'},
-            { title: '订单情况', dataIndex: 'order_Id', width: 80},
+            { title: '单品状态', dataIndex: 'item_Status', width: 80},
             { title: '分销奖励', dataIndex: 'reward_Price', width: 80 },
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                

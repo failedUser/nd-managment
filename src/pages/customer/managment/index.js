@@ -67,11 +67,11 @@ export default function ProductManager() {
             { title: '微信昵称', dataIndex: 'customerPhone'},
             { title: '客户姓名', dataIndex: 'name'},
             { title: '手机号', dataIndex: 'phone',},
-            { title: '性别', dataIndex: 'volume_Name'},
-            { title: '购买次数', dataIndex: 'purchase_Count'},
+            { title: '性别', dataIndex: 'gender'},
+            { title: '购买次数', dataIndex: 'purchase_Count', render: item => item || 0},
             { title: '累计消费', dataIndex: 'total_Consumption'},
-            { title: '高校', dataIndex: 'gender'},
-            { title: '校区', dataIndex: 'college'},
+            { title: '高校', dataIndex: 'college'},
+            { title: '校区', dataIndex: 'part'},
             // { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
             //    <Button type="primary" size="small" >删除</Button>
             // </div>},

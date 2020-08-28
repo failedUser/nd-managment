@@ -100,11 +100,11 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="量体师" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="输入量体师" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">订单号</div>
-                <Input size="small" placeholder="高校" onChange={e => updateSearch('orderId', e.target.value)} />
+                <Input size="small" placeholder="输入订单号" onChange={e => updateSearch('orderId', e.target.value)} />
             </div>
             
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>

@@ -15,12 +15,21 @@ export default function ProductManager() {
     const [ dataSource, updateSource ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
     const [ editable, setEditable ] = useState(false);
+    const [ bounsInfo, setBounsInfo ] = useState({
+        configTypeEnum: 'BONUS'
+    })
+    const [ distributionInfo, setDistributionInfo ] = useState({
+        configTypeEnum: 'DISTRIBUTION'
+    })
     const [ currentInfo, setCurrentInfo ] = useState({});
     const [ setInfo, updateSetInfo ] = useState({
     })
 
-    const updateInfo = useCallback((key, value) => {
-        updateSetInfo(info => ({...info, ...{[key]: value}}));
+    const updateBounsInfo = useCallback((key, value) => {
+        setBounsInfo(info => ({...info, ...{[key]: value}}));
+    }, [])
+    const updateDistributionInfo = useCallback((key, value) => {
+        setDistributionInfo(info => ({...info, ...{[key]: value}}));
     }, [])
 
     const export_data = useCallback(() => {
@@ -38,19 +47,25 @@ export default function ProductManager() {
             if (data.content.length) {
                 setTableSize(data.totalElements)
                 updateSource(data.content);
-                setCurrentInfo(data.content[0])
+                if (data.content) {
+                    setDistributionInfo(data.content[0]);
+                    setBounsInfo(data.content[1])
+                }
             }
             
         })
     }, [pageInfo])
 
     const submit = useCallback(() => {
-        requestBonusSettingCreate(setInfo).then(e => {
-            message.info('修改成功');
+        requestBonusSettingCreate(distributionInfo).then(e => {
             setEditable(false);
             pageData();
         })
-    }, [pageData, setInfo])
+        requestBonusSettingCreate(bounsInfo).then(e => {
+            setEditable(false);
+            pageData();
+        })
+    }, [bounsInfo, distributionInfo, pageData])
 
     useEffect(() => {
         if (isInit) return;
@@ -94,14 +109,12 @@ export default function ProductManager() {
                 </div>
                 {
                     editable 
-                    ?   <div>
+                    ?   <React.Fragment>
+                        <div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">提现类型</div>
                                 <div className="setting-content-item">
-                                    <Select style={{width: '100%'}} onChange={value => updateInfo('configTypeEnum', value)} defaultValue={setInfo.reward_Setting_Type} >
-                                        <Select.Option value="BONUS">奖励金</Select.Option>
-                                        <Select.Option value="DISTRIBUTION">分销金</Select.Option>
-                                    </Select>
+                                    <div>奖励金</div>
                                 </div>
                             </div>
                             <div className="setting-content-row">
@@ -110,35 +123,70 @@ export default function ProductManager() {
                                 style={{width: '100%'}}
                                     placeholder="设置参数" 
                                     addonAfter="元"
-                                    onChange={e => updateInfo('value', e.target.value)}
+                                    onChange={e => updateBounsInfo('value', e.target.value)}
                                 />
                                 </div>
                             </div>
-                            {/* <div className="setting-content-row">
-                                <div className="setting-content-item">设置时间</div>
-                                <div className="setting-content-item"><DatePicker style={{width: '100%'}} onChange={(date,dateString) => updateInfo('reward_Setting_Time', dateString)} /></div>
-                            </div> */}
                             <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
-                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateInfo('userName', e.target.value)} placeholder="设置人" /></div>
+                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateBounsInfo('userName', e.target.value)} placeholder="设置人" /></div>
                             </div>
                         </div>
-                        : <div>
+                        <div>
                             <div className="setting-content-row">
-                                <div className="setting-content-item">奖励方式</div>
-                                <div className="setting-content-item">{(currentInfo.configTypeEnum === 'BONUS' && '奖励金') || (currentInfo.configTypeEnum === 'DISTRIBUTION' && '分销金')}</div>
-                            </div>
-                            <div className="setting-content-row">
-                                <div className="setting-content-item">金额设置</div>
-                                <div className="setting-content-item">{currentInfo.value }</div>
+                                <div className="setting-content-item">提现类型</div>
+                                <div className="setting-content-item">
+                                    <div>分销金</div>
+                                </div>
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">最低金额</div>
-                                <div className="setting-content-item">{currentInfo.createTime}</div>
+                                <div className="setting-content-item"><Input 
+                                style={{width: '100%'}}
+                                    placeholder="设置参数" 
+                                    addonAfter="元"
+                                    onChange={e => updateDistributionInfo('value', e.target.value)}
+                                />
+                                </div>
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
-                                <div className="setting-content-item">{currentInfo.userName}</div>
+                                <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateDistributionInfo('userName', e.target.value)} placeholder="设置人" /></div>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                        : <div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">奖励方式</div>
+                                <div className="setting-content-item">{(bounsInfo.configTypeEnum === 'BONUS' && '奖励金') || (bounsInfo.configTypeEnum === 'DISTRIBUTION' && '分销金')}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">金额设置</div>
+                                <div className="setting-content-item">{bounsInfo.value }</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置时间</div>
+                                <div className="setting-content-item">{bounsInfo.createTime}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置人</div>
+                                <div className="setting-content-item">{bounsInfo.userName}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">奖励方式</div>
+                                <div className="setting-content-item">{(distributionInfo.configTypeEnum === 'BONUS' && '奖励金') || (distributionInfo.configTypeEnum === 'DISTRIBUTION' && '分销金')}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">金额设置</div>
+                                <div className="setting-content-item">{distributionInfo.value }</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置时间</div>
+                                <div className="setting-content-item">{distributionInfo.createTime}</div>
+                            </div>
+                            <div className="setting-content-row">
+                                <div className="setting-content-item">设置人</div>
+                                <div className="setting-content-item">{distributionInfo.userName}</div>
                             </div>
                         </div>
                 }

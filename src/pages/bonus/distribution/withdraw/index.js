@@ -59,10 +59,11 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
-            { title: '手机号', dataIndex: 'volumer_Name'},
+            { title: '手机号', dataIndex: 'phone'},
             { title: '申请时间', dataIndex: 'application_Date'},
+            { title: '反馈时间', dataIndex: 'passion_Date'},
             { title: '可提现余额', dataIndex: 'avaliable_amount'},
-            { title: '本次体现金额', dataIndex: 'withdrawal_Amount', key: 'name1',},
+            { title: '本次提现金额', dataIndex: 'withdrawal_Amount'},
             { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                {
@@ -87,16 +88,16 @@ export default function ProductManager() {
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="请输入量体师" onChange={e => updateSearch('name', e.target.value)} />
+                <div className="search-item__title">微信ID</div>
+                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
                 <Select defaultValue="" onChange={value => updateSearch('status', value)} >
                     <Select.Option value="">全部</Select.Option>
                     <Select.Option value="申请中">申请中</Select.Option>
-                    <Select.Option value="同意">同意</Select.Option>
-                    <Select.Option value="驳回">驳回</Select.Option>
+                    <Select.Option value="已同意">已同意</Select.Option>
+                    <Select.Option value="已驳回">已驳回</Select.Option>
                 </Select>
             </div>
             <div className="manager-search-item">

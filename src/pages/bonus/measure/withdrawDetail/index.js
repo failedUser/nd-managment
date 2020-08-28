@@ -51,26 +51,27 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-            { title: '量体师', dataIndex: 'customerame'},
-            { title: '申请时间', dataIndex: 'customerPhone'},
-            { title: '反馈时间', dataIndex: 'payment_Time'},
-            { title: '可提现余额', dataIndex: 'name5', key: 'name1',},
-            { title: '本次提现金额', dataIndex: 'volume_Name'},
-            { title: '状态', dataIndex: 'shipment_Id'}
-        ])
+        { title: '量体师', dataIndex: 'customerame'},
+        { title: '申请时间', dataIndex: 'customerPhone'},
+        { title: '反馈时间', dataIndex: 'payment_Time'},
+        { title: '可提现余额', dataIndex: 'name5', key: 'name1',},
+        { title: '本次提现金额', dataIndex: 'volume_Name'},
+        { title: '状态', dataIndex: 'shipment_Id'}
+    ])
+
    
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入量体师姓名" onChange={e => updateSearch('customerame', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerPhone', e.target.value)} />
+                <Input size="small" placeholder="请输入状态" onChange={e => updateSearch('status', e.target.value)} />
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">时间范围</div>
+                <div className="search-item__title">申请时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
                     updateSearch('order_Status', dateString.join('-'));
                 }} />

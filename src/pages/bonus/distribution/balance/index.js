@@ -58,21 +58,21 @@ export default function ProductManager() {
         setIsinit(true);
     }, [isInit, pageData])
 
-    const [ columns ] = useState([
-            { title: '量体师', dataIndex: 'customerame'},
-            { title: '所属高校', dataIndex: 'customerPhone'},
-            { title: '累计量体人数', dataIndex: 'payment_Time'},
-            { title: '累计奖励金额', dataIndex: 'name5', key: 'name1',},
-            { title: '累计提现金额', dataIndex: 'volume_Name'},
-            { title: '可提现余额', dataIndex: 'shipment_Id'},
-            { title: '用户评价', dataIndex: 'remarks'},
-        ])
    
+        const [ columns ] = useState([
+            { title: '微信ID', dataIndex: 'customerame'},
+            { title: '有效分销次数', dataIndex: 'customerPhone'},
+            { title: '累计分销金额', dataIndex: 'payment_Time'},
+            { title: '累计分销奖励金', dataIndex: 'name5', key: 'name1',},
+            { title: '累计提现金额', dataIndex: 'volume_Name'},
+            { title: '可提现金额', dataIndex: 'shipment_Id'},
+            // { title: '操作', dataIndex: 'remarks'},
+        ])
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入要筛选的条码" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
         </section>

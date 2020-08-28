@@ -17,8 +17,8 @@ export default function ProductManager() {
     const [ editable, setEditable ] = useState(false);
     const [ currentInfo, setCurrentInfo ] = useState({});
     const [ setInfo, updateSetInfo ] = useState({
-        reward_Percentage: null,
-        reward_Price: null,
+        reward_Percentage: 0,
+        reward_Price: 0,
         reward_Setting_Person: '',
         reward_Setting_Time: '',
         reward_Setting_Type: '金额设置'
@@ -43,14 +43,34 @@ export default function ProductManager() {
             if (data.content.length) {
                 setTableSize(data.totalElements)
                 updateSource(data.content);
-                setCurrentInfo(data.content[0])
+               
+                let source =  data.content[0];
+                if (source) {
+                    source.reward_Setting_Type = source.reward_Price ? '金额设置' : '比例设置';
+                    setCurrentInfo(source);
+                }
+              
             }
             
         })
     }, [pageInfo])
 
     const submit = useCallback(() => {
-        requestBonusSettingCreate(setInfo).then(e => {
+        let _setInfo = setInfo;
+        _setInfo.reward_Setting_Time = new Date().toLocaleString();
+        if (_setInfo.reward_Setting_Type === '金额设置' && !_setInfo.reward_Price) {
+            message.info('请设置金额');
+            return ;
+        }
+        if (_setInfo.reward_Setting_Type === '比例设置' && !_setInfo.reward_Percentage) {
+            message.info('请设置比例');
+            return ;
+        }
+        if (!_setInfo.reward_Setting_Person) {
+            message.info('请输入设置人');
+            return ;
+        }
+        requestBonusSettingCreate(_setInfo).then(e => {
             message.info('修改成功');
             setEditable(false);
             pageData();
@@ -72,13 +92,13 @@ export default function ProductManager() {
     }, [pageData, pageInfo])
 
     const [ columns ] = useState([
-        { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
-        { title: '设置时间', dataIndex: 'reward_Setting_Time'},
-        // { title: '设置内容', dataIndex: 'reward_Price'},
-        { title: '设置方式', dataIndex: 'reward_Setting_Type', render: (item, record) => record.reward_Percentage ? '比例设置' : '金额设置'},
-        { title: '设置人', dataIndex: 'reward_Setting_Person'},
-        { title: '设置参数', dataIndex: 'reward_Percentage', render: (item, record) => `${record.reward_Percentage || record.reward_Price}${record.reward_Price ? '元' : '%'}`}
-])
+            { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
+            { title: '设置时间', dataIndex: 'reward_Setting_Time'},
+            // { title: '设置内容', dataIndex: 'reward_Price'},
+            { title: '设置方式', dataIndex: 'reward_Setting_Type', render: (item, record) => record.reward_Percentage ? '比例设置' : '金额设置'},
+            { title: '设置人', dataIndex: 'reward_Setting_Person'},
+            { title: '设置参数', dataIndex: 'reward_Percentage', render: (item, record) => `${record.reward_Percentage || record.reward_Price}${record.reward_Price ? '元' : '%'}`}
+    ])
 
 
     
@@ -121,10 +141,6 @@ export default function ProductManager() {
                                 </div>
                             </div>
                             <div className="setting-content-row">
-                                <div className="setting-content-item">设置时间</div>
-                                <div className="setting-content-item"><DatePicker style={{width: '100%'}} onChange={(date,dateString) => updateInfo('reward_Setting_Time', dateString)} /></div>
-                            </div>
-                            <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
                                 <div className="setting-content-item"><Input style={{width: '100%'}} onChange={e => updateInfo('reward_Setting_Person', e.target.value)} placeholder="设置人" /></div>
                             </div>
@@ -136,12 +152,12 @@ export default function ProductManager() {
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">金额设置</div>
-                                <div className="setting-content-item">{currentInfo.reward_Setting_Type === '金额设置' ? currentInfo.reward_Price : currentInfo.reward_Percentage}</div>
+                                <div className="setting-content-item">{(currentInfo.reward_Setting_Type === '金额设置' && `${currentInfo.reward_Price || ''}元`) || (currentInfo.reward_Price === '比例设置' && `${currentInfo.reward_Percentage || ''}%`)}</div>
                             </div>
-                            <div className="setting-content-row">
+                            {/* <div className="setting-content-row">
                                 <div className="setting-content-item">设置时间</div>
                                 <div className="setting-content-item">{currentInfo.reward_Setting_Time}</div>
-                            </div>
+                            </div> */}
                             <div className="setting-content-row">
                                 <div className="setting-content-item">设置人</div>
                                 <div className="setting-content-item">{currentInfo.reward_Setting_Person}</div>

@@ -2,60 +2,13 @@ import React, {useState, useEffect, useCallback} from 'react';
 import { Modal, Radio, Button, Input } from 'antd';
 import './index.less';
 
-// belly_Shape	string
-// allowEmptyValue: false
-// 胸型
-
-
-// body_Shape_Back	string
-// allowEmptyValue: false
-// 背面
-
-// body_Shape_Front	string
-// allowEmptyValue: false
-// 正面
-
-// body_Shape_Remark	string
-// allowEmptyValue: false
-// 体型备注
-
-// body_Shape_Side	string
-// allowEmptyValue: false
-// 侧面
-
-// buttocks	string
-// allowEmptyValue: false
-// 臀部
-
-
-// chest_Back	string
-// allowEmptyValue: false
-// 胸背部
-
-
-// customer_Gender	string
-// allowEmptyValue: false
-// 性别
-
-
-// customer_Wechat_Id	string
-// allowEmptyValue: false
-// 客户微信
-
-
-
-// volumer_Id	string
-// allowEmptyValue: false
-// 量体师id
-
-
 
 const customerInfo = [
     {title: '客户', key: 'customer_Name'},
     {title: '电话', key: 'customer_Phone'},
     {title: '量体时间', key: 'volume_Time'},
     {title: '量体师', key: 'volumer_Name'},
-    {title: '性别', key: 'volumer_Gender'},
+    {title: '性别', key: 'customer_Gender'},
     {title: '身高CM', key: 'height'},
     {title: '体重', key: 'weight'},
     {title: '量体地址', key: 'volume_Adress'}
@@ -213,13 +166,12 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal 
                         </div>)}
                     </div>
                 </div>
-
                 <div className="modal-figure-images">
                     <div className="figure-images-title">体型图</div>
                     <div className="figure-images-content">
-                        <img alt="figure" className="figure-image-item" src="http://static.caibeike.com/i/a69324297309b6b155e93d127c9613b0-55rA4W-bMMMwbMMMhj2" />
-                        <img alt="figure" className="figure-image-item" src="http://static.caibeike.com/i/a69324297309b6b155e93d127c9613b0-55rA4W-bMMMwbMMMhj2" />
-                        <img alt="figure" className="figure-image-item" src="http://static.caibeike.com/i/a69324297309b6b155e93d127c9613b0-55rA4W-bMMMwbMMMhj2" />
+                        {info.body_Shape_Back && <img alt="figure" className="figure-image-item" src={info.body_Shape_Back} />}
+                        {info.body_Shape_Front && <img alt="figure" className="figure-image-item" src={info.body_Shape_Front} />}
+                        {info.body_Shape_Remark && <img alt="figure" className="figure-image-item" src={info.body_Shape_Remark}/>}
                     </div>
                 </div>
             </div>

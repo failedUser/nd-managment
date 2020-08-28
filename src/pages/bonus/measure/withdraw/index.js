@@ -67,8 +67,9 @@ export default function ProductManager() {
     const [ columns ] = useState([
         { title: '量体师', dataIndex: 'volumer_Name'},
         { title: '申请时间', dataIndex: 'application_Date'},
+        { title: '反馈时间', dataIndex: 'passion_Date'},
         { title: '可提现余额', dataIndex: 'avaliable_amount'},
-        { title: '本次体现金额', dataIndex: 'withdrawal_Amount', key: 'name1',},
+        { title: '本次提现金额', dataIndex: 'withdrawal_Amount'},
         { title: '状态', dataIndex: 'withdraw_Status'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                {
@@ -101,12 +102,12 @@ export default function ProductManager() {
                 <Select defaultValue="" onChange={value => updateSearch('status', value)} >
                     <Select.Option value="">全部</Select.Option>
                     <Select.Option value="申请中">申请中</Select.Option>
-                    <Select.Option value="同意">同意</Select.Option>
-                    <Select.Option value="驳回">驳回</Select.Option>
+                    <Select.Option value="已同意">已同意</Select.Option>
+                    <Select.Option value="已驳回">已驳回</Select.Option>
                 </Select>
             </div>
             <div className="manager-search-item">
-                <div className="search-item__title">时间范围</div>
+                <div className="search-item__title">申请时间范围</div>
                 <RangePicker onChange={(date, dateString) => {
                     updateSearch('startTime',dateString[0]);
                     updateSearch('endTime',dateString[1]);

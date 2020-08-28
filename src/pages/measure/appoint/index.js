@@ -116,7 +116,7 @@ export default function ProductManager() {
             { title: '客户名称', dataIndex: 'name'},
             { title: '客户电话', dataIndex: 'phone'},
             { title: '性别', dataIndex: 'gender'},
-            { title: '订单号', dataIndex: 'volume_Id'}, // TODO: 订单号字段是不是这个
+            { title: '订单号', dataIndex: 'order_Id'}, // TODO: 订单号字段是不是这个
             { title: '预约时间', dataIndex: 'time'}, // TODO 预约时间和量体时间只有一个time字段
             { title: '量体地点', dataIndex: 'adress'},
             { title: '量体时间', dataIndex: 'volume_Time'},
@@ -151,10 +151,10 @@ export default function ProductManager() {
                 <div className="search-item__title">客户名称</div>
                 <Input size="small" placeholder="输入客户名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
-            <div className="manager-search-item">
+            {/* <div className="manager-search-item">
                 <div className="search-item__title">电话</div>
                 <Input size="small" placeholder="输入电话" onChange={e => updateSearch('phone', e.target.value)} />
-            </div>
+            </div> */}
             <div className="manager-search-item">
                 <div className="search-item__title">量体地点</div>
                 <Input size="small" placeholder="输入量体地点" onChange={e => updateSearch('address', e.target.value)} />
@@ -214,9 +214,9 @@ export default function ProductManager() {
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {columns.map(col => <div className="pm-edit-item">
+                {columns.slice(0, columns.length - 1).map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
-                    <Input value={modalInfo[col.dataIndex]} onChange={e => updateModalInfo(col.dataIndex, e.target.value)} />
+                    <Input value={modalInfo[col.dataIndex]} disabled={col.dataIndex === 'order_Id'} onChange={e => updateModalInfo(col.dataIndex, e.target.value)} />
                 </div>)}
                 </div>
             </Modal>}

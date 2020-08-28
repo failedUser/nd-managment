@@ -1,5 +1,9 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
+import {
+
+    DeleteOutlined
+  } from '@ant-design/icons';
 import { Button, Table, Modal, Input, Upload, message,Select } from 'antd';
 import { requestForProductList, requestForProductEdit, requestForProductCreate, requestForProductDelete, requestForProductExport } from './action';
 import {exportFile, dealOssImageUrl, UploadImages, previewImage } from '../../../assets/js/common';
@@ -131,6 +135,7 @@ export default function ProductManager() {
 
     // 更新编辑信息
     const updateEditInfo = useCallback((key, value) => {
+        console.log(key, value);
         setEditInfo(info => {
             return {...info, [key]: value};
         })
@@ -266,22 +271,47 @@ export default function ProductManager() {
                     {(col.type === 'images') 
                         && <div className="pm-edit__images">
                             {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
-                            <Upload
-                                action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
-                                method="post"
-                                multiple
-                                listType="picture-card"
-                                fileList={editInfo[col.dataIndex]||[]}
-                                data={(file) => {
-                                    return {
-                                        fileDirectorEnum: 'PRODUCT',
-                                        files: file
-                                    }
-                                }}
-                                onChange={({ file, fileList }) => {
-                                    updateEditInfo(col.dataIndex, fileList.slice(0, col.limit));
-                                }}
-                            >{editInfo[col.dataIndex] && editInfo[col.dataIndex].length >= col.limit ? null : '上传'}</Upload>
+                            {
+                                Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map((img, index) => {
+                                    console.log(img);
+                                    return <Upload
+                                        action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
+                                        method="post"
+                                        data={(file) => {
+                                            return {
+                                                fileDirectorEnum: 'PRODUCT',
+                                                files: file
+                                            }
+                                        }}
+                                        onChange={({ file, fileList }) => {
+                                            if (!file.response && file.status === 'error') {
+                                                message.info('上传失败');
+                                                return ;
+                                            }
+                                            const _images = [...editInfo.images || []]
+                                            file.url = file && file.response && dealOssImageUrl(file.response[0])
+                                            _images[index] = file;
+                                            updateEditInfo(col.dataIndex, _images);
+                                        }}
+                                    >
+                                        {
+                                            img && img.url
+                                            ? <div className="pm-edit__image">
+                                                    <img alt="1" className="" src={img.url} />
+                                                    {/* <div onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                         const _images = [...editInfo.images || []]
+                                                         _images[index] = null;
+                                                         updateEditInfo(col.dataIndex, _images);
+                                                    }} className="pm-edit__image--delete"><DeleteOutlined /></div> */}
+                                            </div>
+                                            : <div> <div className="pm-edit__imageBtn">Upload</div> </div>
+                                        }
+                                     </Upload>
+                                })
+                            }
+                            
                         </div>
                     }
 

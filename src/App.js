@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import Routes from './routes';
-import Login from './pages/user/login/login'
 import './App.less';
 
 const { Sider } = Layout;
@@ -67,14 +66,14 @@ function renderMenu(routes) {
 }
 
 function App() {
-    console.log(defaultKeys);
-    if (defaultKeys.indexOf('/nd/user/login')>=0) {
-        return <div className="App">
-         <BrowserRouter >
-            <Route path="/nd/user/login"><Login /> </Route>
-        </BrowserRouter>
-        </div>
-    }
+    // console.log(defaultKeys);
+    // if (defaultKeys.indexOf('/nd/user/login')>=0) {
+    //     return <div className="App">
+    //      <BrowserRouter >
+    //         <Route path="/nd/user/login"><Login /> </Route>
+    //     </BrowserRouter>
+    //     </div>
+    // }
     return (
         <div className="App">
             <BrowserRouter >

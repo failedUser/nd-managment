@@ -93,9 +93,10 @@ export default function OrderEvaluate() {
 
     const [ columns ] = useState([
         { title: '单品编号', dataIndex: 'item_Id'},
+        { title: '订单号', dataIndex: 'order_Id'},
         { title: '商品条码', dataIndex: 'productMain'},
         { title: '评价时间', dataIndex: 'evaluation_Time'},
-        { title: '微信昵称', dataIndex: 'customerName',width: 100},
+        { title: '微信id', dataIndex: 'customer_Wechat_Id',width: 100},
         { title: '尺寸', dataIndex: 'size'},
         { title: '面料', dataIndex: 'fabric'},
         { title: '做工', dataIndex: 'work',},
@@ -122,8 +123,8 @@ export default function OrderEvaluate() {
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">商品名称</div>
-                <Input size="small" placeholder="请输入商品名称" onChange={e => updateSearch('productName', e.target.value)} />
+                <div className="search-item__title">订单号</div>
+                <Input size="small" placeholder="请输入订单号" onChange={e => updateSearch('orderId', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">时间范围</div>

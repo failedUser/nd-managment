@@ -158,7 +158,7 @@ export default function OrderVoucher() {
                             <Select.Option value="">全部</Select.Option>
                             <Select.Option value="备货中">备货中</Select.Option>
                             <Select.Option value="待发货">待发货</Select.Option>
-                            <Select.Option value="已发货">已发货</Select.Option>
+                            <Select.Option value="已完成">已完成</Select.Option>
                       </Select>
             </div>
             <div className="manager-search-item">

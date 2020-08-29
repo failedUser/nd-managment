@@ -54,9 +54,9 @@ export default function ProductManager() {
         { title: '量体师', dataIndex: 'volumer_Name'},
         // { title: '所属高校', dataIndex: 'customerPhone'},
         // { title: '累计量体人数', dataIndex: 'payment_Time'},
-        { title: '累计奖励金额', dataIndex: 'name5', key: 'name1',},
+        { title: '累计奖励金额', dataIndex: 'deduction_Fee'},
         { title: '累计提现金额', dataIndex: 'withdrawal_Amount'},
-        { title: '可提现余额', dataIndex: 'avaliable_amount'},
+        { title: '可提现余额', dataIndex: 'avaliable_Withdrawal_Amount'},
         // { title: '用户评价', dataIndex: 'remarks'},
     ])
    
@@ -73,7 +73,7 @@ export default function ProductManager() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="order_Id"
+                rowKey="volumer_Id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {

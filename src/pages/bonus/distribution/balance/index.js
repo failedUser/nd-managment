@@ -19,7 +19,7 @@ export default function ProductManager() {
     const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
@@ -60,21 +60,21 @@ export default function ProductManager() {
 
    
         const [ columns ] = useState([
-            { title: '微信ID', dataIndex: 'customerame'},
-            { title: '有效分销次数', dataIndex: 'customerPhone'},
-            { title: '累计分销金额', dataIndex: 'payment_Time'},
-            { title: '累计分销奖励金', dataIndex: 'name5', key: 'name1',},
-            { title: '累计提现金额', dataIndex: 'volume_Name'},
-            { title: '可提现金额', dataIndex: 'shipment_Id'},
+            { title: '微信ID', dataIndex: 'distributor_Wechat_Id  '},
+            { title: '有效分销次数', dataIndex: 'count'},
+            { title: '累计分销金额', dataIndex: 'received_Amoun'},
+            { title: '累计分销奖励金', dataIndex: 'reward_Price', key: 'name1',},
+            { title: '累计提现金额', dataIndex: 'withdrawal_Amount'},
+            { title: '可提现金额', dataIndex: 'avaliable_Withdrawal_Amount'},
             // { title: '操作', dataIndex: 'remarks'},
         ])
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('wechatId', e.target.value)} />
             </div>
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

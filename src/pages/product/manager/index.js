@@ -272,8 +272,7 @@ export default function ProductManager() {
                         && <div className="pm-edit__images">
                             {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
                             {
-                                Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map((img, index) => {
-                                    console.log(img);
+                                (Array.isArray(editInfo[col.dataIndex]) && [...editInfo[col.dataIndex], ...Array.from({length: 3})].slice(0,col.limit)).map((img, index) => {
                                     return <Upload
                                         action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
                                         method="post"

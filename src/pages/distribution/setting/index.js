@@ -57,7 +57,7 @@ export default function ProductManager() {
 
     const submit = useCallback(() => {
         let _setInfo = setInfo;
-        _setInfo.reward_Setting_Time = new Date().toLocaleString();
+        _setInfo.reward_Setting_Time = new Date().toLocaleString('en-GB', { timeZone: 'UTC' })
         if (_setInfo.reward_Setting_Type === '金额设置' && !_setInfo.reward_Price) {
             message.info('请设置金额');
             return ;

@@ -73,14 +73,14 @@ export default function ProductManager() {
             { title: '单品状态', dataIndex: 'item_Status', width: 80},
             { title: '分销奖励', dataIndex: 'reward_Price', width: 80 },
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
-               
-               <Button onClick={() => {
-                   requestBonusSettingCancel(record.distributor_Reward_Id).then(pageData)
-               }} type="primary" size="small" >撤销</Button>
-               {/* <Button type="primary" size="small" >删除</Button> */}
+            {
+                record.status !== '已撤销' &&  <Button onClick={() => {
+                    requestBonusSettingCancel(record.distributor_Reward_Id).then(pageData)
+                }} type="primary" size="small" >撤销</Button>
+            }
             </div>},
         ])
-   
+        
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">

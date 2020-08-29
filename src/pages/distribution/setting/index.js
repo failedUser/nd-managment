@@ -39,7 +39,7 @@ export default function ProductManager() {
     const pageData = useCallback(() => {
         let _pageInfo = {...pageInfo};
         _pageInfo.page -= 1;
-        requestBonusSettingList(pageInfo).then(data => {
+        requestBonusSettingList(_pageInfo).then(data => {
             if (data.content.length) {
                 setTableSize(data.totalElements)
                 updateSource(data.content);
@@ -92,7 +92,7 @@ export default function ProductManager() {
     }, [pageData, pageInfo])
 
     const [ columns ] = useState([
-            { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
+            { title: '设置编号', dataIndex: 'distributor_Reward_Setting_Id'},
             { title: '设置时间', dataIndex: 'reward_Setting_Time'},
             // { title: '设置内容', dataIndex: 'reward_Price'},
             { title: '设置方式', dataIndex: 'reward_Setting_Type', render: (item, record) => record.reward_Percentage ? '比例设置' : '金额设置'},
@@ -152,7 +152,7 @@ export default function ProductManager() {
                             </div>
                             <div className="setting-content-row">
                                 <div className="setting-content-item">金额设置</div>
-                                <div className="setting-content-item">{(currentInfo.reward_Setting_Type === '金额设置' && `${currentInfo.reward_Price || ''}元`) || (currentInfo.reward_Price === '比例设置' && `${currentInfo.reward_Percentage || ''}%`)}</div>
+                                <div className="setting-content-item">{(currentInfo.reward_Setting_Type === '金额设置' && `${currentInfo.reward_Price || ''}元`) || (currentInfo.reward_Setting_Type === '比例设置' && `${currentInfo.reward_Percentage || ''}%`)}</div>
                             </div>
                             {/* <div className="setting-content-row">
                                 <div className="setting-content-item">设置时间</div>

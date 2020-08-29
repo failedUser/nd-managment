@@ -84,7 +84,7 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('name', e.target.value)} />
+                <Input size="small" placeholder="请输入微信ID" onChange={e => updateSearch('wechatId', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">状态</div>

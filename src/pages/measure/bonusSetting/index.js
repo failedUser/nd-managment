@@ -93,7 +93,7 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             { title: '设置编号', dataIndex: 'volumer_Reward_Setting_Id'},
-            { title: '设置时间', dataIndex: 'reward_Setting_Time'},
+            { title: '设置时间', dataIndex: 'rewardSettingTime'},
             // { title: '设置内容', dataIndex: 'reward_Price'},
             { title: '设置方式', dataIndex: 'reward_Setting_Type', render: (item, record) => record.reward_Percentage ? '比例设置' : '金额设置'},
             { title: '设置人', dataIndex: 'reward_Setting_Person'},

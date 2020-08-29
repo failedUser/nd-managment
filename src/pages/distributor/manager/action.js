@@ -9,7 +9,7 @@ import { exportFile } from '../../../assets/js/common'
 export function requestForFabricList(data) {
     return request({
         method: 'get',
-        url: '/newdreamer/fabric',
+        url: '/newdreamer/distributionTeam',
         params: data
     })
 }
@@ -21,7 +21,7 @@ export function requestForFabricList(data) {
 export function requestForFabricEdit(data) {
     return request({
         method: 'post',
-        url: '/newdreamer/fabric',
+        url: '/newdreamer/distributionTeam',
         data: data,
         type: 'json'
     })
@@ -59,5 +59,5 @@ export function requestForFabricDelete(data) {
  * @param {} data 
  */
 export function requestForFabricExport(data) {
-    return exportFile('/newdreamer/fabric/exportExcel', data);
+    return exportFile('/newdreamer/distributionTeam/exportExcel', data);
 }

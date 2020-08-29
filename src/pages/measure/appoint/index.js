@@ -168,7 +168,7 @@ export default function ProductManager() {
                         <Select.Option value="">全部</Select.Option>
                         <Select.Option value="预约中">预约中</Select.Option>
                         <Select.Option value="派单中">派单中</Select.Option>
-                        <Select.Option value="待量体">待量体</Select.Option>
+                        <Select.Option value="已接单">已接单</Select.Option>
                         <Select.Option value="已量体">已量体</Select.Option>
                         <Select.Option value="已取消">已取消</Select.Option>
                     </Select>

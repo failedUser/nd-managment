@@ -64,7 +64,7 @@ export default function ProductManager() {
 
     const [ columns ] = useState([
             { title: '微信ID', dataIndex: 'customer_Wechat_Id'},
-            { title: '微信昵称', dataIndex: 'customerPhone'},
+            { title: '微信昵称', dataIndex: 'customer_Wechat_Name'},
             { title: '客户姓名', dataIndex: 'name'},
             { title: '手机号', dataIndex: 'phone',},
             { title: '性别', dataIndex: 'gender'},

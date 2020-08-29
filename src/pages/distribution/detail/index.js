@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker } from 'antd';
-import { requestDistributionRewardList, requestDistributionRewardExport } from './action';
+import { requestDistributionRewardList, requestDistributionRewardExport, requestBonusSettingCancel } from './action';
 const { RangePicker } = DatePicker;
 
 // 分销没有数据， model也不对
@@ -67,14 +67,16 @@ export default function ProductManager() {
     const [ columns ] = useState([
             { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
             { title: '单品编号', dataIndex: 'item_Id',width: 100},
-            { title: '销售金额', dataIndex: 'name5'},
+            { title: '销售金额', dataIndex: 'received_Amount'},
             // { title: '下单时间', dataIndex: 'volume_Name'},
             { title: '订单号', dataIndex: 'order_Id'},
             { title: '单品状态', dataIndex: 'item_Status', width: 80},
             { title: '分销奖励', dataIndex: 'reward_Price', width: 80 },
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                
-               <Button type="primary" size="small" >撤销</Button>
+               <Button onClick={() => {
+                   requestBonusSettingCancel(record.distributor_Reward_Id).then(pageData)
+               }} type="primary" size="small" >撤销</Button>
                {/* <Button type="primary" size="small" >删除</Button> */}
             </div>},
         ])

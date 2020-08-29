@@ -101,26 +101,17 @@ export default function FabricManager() {
     const submitUpdate = useCallback((info) => {
         requestForFabricEdit(info).then(data => {
             if (data) {
-                message.info('修改成功');
+                message.info(modelType === 'edit' ? '修改成功' : '新建成功');
                 pageData();
                 setVisible(false);
             }
             
         })
-    }, [pageData])
+    }, [modelType, pageData])
 
     const submitModal = useCallback(() => {
-        if (modelType === 'edit') {
-            submitUpdate(editInfo)
-        }
-        if (modelType === 'create') {
-            requestForFabricCreate(editInfo).then(data => {
-                message.info('新建成功');
-                setVisible(false);
-                pageData();
-            })
-        }
-    }, [editInfo, modelType, pageData, submitUpdate])
+        submitUpdate(editInfo)
+    }, [editInfo, submitUpdate])
 
     // 初始化
     useEffect(() => {
@@ -128,15 +119,14 @@ export default function FabricManager() {
         pageData();
         updateInit(true);
     }, [isInit, pageData])
-
     const [ columns ] = useState([
-        { title: '微信ID', dataIndex: 'fabric_Id', onRead: true, render: text => <span style={{color: '#1890ff'}}>{text}</span> },
-            { title: '名称', dataIndex: 'fabric_Classsification'},
-            { title: '联系人', dataIndex: 'fabric_Color'},
-            { title: '手机号', dataIndex: 'material',width: 200},
-            { title: '订单数', dataIndex: 'thickness'},
-            { title: '分销折扣', dataIndex: 'elasticity'},
-            { title: '订单总金额', dataIndex: 'elasticity'},
+        { title: '微信ID', dataIndex: 'wechatId', onRead: true, render: text => <span style={{color: '#1890ff'}}>{text}</span> },
+            { title: '名称', dataIndex: 'name'},
+            { title: '联系人', dataIndex: 'contactPerson'},
+            { title: '手机号', dataIndex: 'phoneNumber',width: 200},
+            { title: '订单数', dataIndex: 'orderCount'},
+            { title: '分销折扣', dataIndex: 'distributionDiscount'},
+            { title: '订单总金额', dataIndex: 'orderAmount'},
             { title: '操作', dataIndex: 'name11', width: 300, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" size="small" onClick={() => _edit(record)} >修改</Button>
                {/* <Button type="primary" size="small" onClick={() => _delete(record)}>{record.enable === '禁用' ? '启用' : '禁用'}</Button> */}
@@ -164,8 +154,8 @@ export default function FabricManager() {
     return <div className="product-manager">
         <section className="product-manager-search">
             <div className="manager-search-item">
-                <div className="search-item__title">微信ID</div>
-                <Input size="small" placeholder="输入微信ID" onChange={e => updateSearch('fabricId', e.target.value)} />
+                <div className="search-item__title">名称</div>
+                <Input size="small" placeholder="输入名称" onChange={e => updateSearch('name', e.target.value)} />
             </div>
             <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
@@ -188,7 +178,7 @@ export default function FabricManager() {
         </section>
         <section className="product-manager-table">
             <Table 
-                rowKey="fabric_Id"
+                rowKey="id"
                 rowSelection={{
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
@@ -213,17 +203,8 @@ export default function FabricManager() {
                 onCancel={() => setVisible(false)}
             >
                 <div className="pm-edit-container">
-                {[...columns.slice(0, columns.length - 1), ...appendEdit].map(col => <div className="pm-edit-item">
+                {[...columns.slice(0, columns.length - 1)].map(col => <div className="pm-edit-item">
                     <span className="edit-item__title">{col.title}</span>
-                    {
-                        col.dataIndex === 'enable' && <Select 
-                            style={{ width: 300 }}
-                            defaultValue={editInfo.enable} 
-                            onChange={value => updateEditInfo(col.dataIndex, value)}>
-                            <Select.Option value="禁用">禁用</Select.Option>
-                            <Select.Option value="启用">启用</Select.Option>
-                        </Select>
-                    }
                     {(col.type === 'image') 
                         && <div className="pm-edit__images">
                             {editInfo[col.dataIndex] &&  <img className="pm-edit__image" alt="edit" src={editInfo[col.dataIndex]} />}

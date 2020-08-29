@@ -13,3 +13,11 @@ export function requestDistributionRewardList(data) {
 export function requestDistributionRewardExport(data) {
     alert('分销明细导出没有接口');
 }
+
+
+export function requestBonusSettingCancel(id) {
+    return request({
+        method: 'post',
+        url: `/newdreamer/backReward/cancelDistributorReward?ids=${id}`,
+    })
+}

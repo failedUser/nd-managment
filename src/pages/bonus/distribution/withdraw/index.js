@@ -15,18 +15,13 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
 
 
     const export_data = useCallback(() => {
@@ -108,7 +103,7 @@ export default function ProductManager() {
                 }} />
             </div>
             
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

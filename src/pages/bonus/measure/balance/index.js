@@ -15,19 +15,13 @@ export default function ProductManager() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
-    const [ search, setSearch ] = useState({});
 
     const updateSearch = useCallback((key, value) => {
-        setSearch(search => {
+        updatePageInfo(search => {
             search[key] = value;
             return {...search}
         });
     }, [])
-
-    const startSearch = useCallback(() => {
-        console.log('----开始筛选----', search);
-    }, [search])
-
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
@@ -42,7 +36,9 @@ export default function ProductManager() {
     }, []);
 
     const pageData = useCallback(() => {
-        requestPageVolumerRewardDetail(pageInfo).then(data => {
+        const _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestPageVolumerRewardDetail(_pageInfo).then(data => {
             updateSource(data.content)
             setTableSize(data.totalElements);
         })
@@ -55,12 +51,12 @@ export default function ProductManager() {
     }, [isInit, pageData])
 
     const [ columns ] = useState([
-        { title: '量体师', dataIndex: 'customerame'},
+        { title: '量体师', dataIndex: 'volumer_Name'},
         // { title: '所属高校', dataIndex: 'customerPhone'},
-        { title: '累计量体人数', dataIndex: 'payment_Time'},
+        // { title: '累计量体人数', dataIndex: 'payment_Time'},
         { title: '累计奖励金额', dataIndex: 'name5', key: 'name1',},
-        { title: '累计提现金额', dataIndex: 'volume_Name'},
-        { title: '可提现余额', dataIndex: 'shipment_Id'},
+        { title: '累计提现金额', dataIndex: 'withdrawal_Amount'},
+        { title: '可提现余额', dataIndex: 'avaliable_amount'},
         // { title: '用户评价', dataIndex: 'remarks'},
     ])
    
@@ -68,9 +64,9 @@ export default function ProductManager() {
         <section className="product-manager-search">
             <div className="manager-search-item">
                 <div className="search-item__title">量体师姓名</div>
-                <Input size="small" placeholder="请输入量体师" onChange={e => updateSearch('customerame', e.target.value)} />
+                <Input size="small" placeholder="请输入量体师" onChange={e => updateSearch('name', e.target.value)} />
             </div>
-            <div className="manager-search-btn"><Button onClick={startSearch} type="primary" >筛选</Button></div>
+            <div className="manager-search-btn"><Button onClick={pageData} type="primary" >筛选</Button></div>
         </section>
         <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

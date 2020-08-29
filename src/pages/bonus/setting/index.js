@@ -57,11 +57,11 @@ export default function ProductManager() {
     }, [pageInfo])
 
     const submit = useCallback(() => {
-        requestBonusSettingCreate(distributionInfo).then(e => {
+        requestBonusSettingCreate({...distributionInfo, id:''}).then(e => {
             setEditable(false);
             pageData();
         })
-        requestBonusSettingCreate(bounsInfo).then(e => {
+        requestBonusSettingCreate({...bounsInfo, id:''}).then(e => {
             setEditable(false);
             pageData();
         })

@@ -55,7 +55,6 @@ export default function ProductManager() {
             
         })
     }, [pageInfo])
-
     const submit = useCallback(() => {
         requestBonusSettingCreate({...distributionInfo, id:''}).then(e => {
             setEditable(false);
@@ -88,10 +87,7 @@ export default function ProductManager() {
             { title: '最低金额', dataIndex: 'value'},
             { title: '设置人', dataIndex: 'userName'},
     ])
-
-
     
-   
     return <div className="product-manager">
         {/* <section className="product-manager-operation">
             <Button onClick={export_data} type="primary">数据导出</Button>

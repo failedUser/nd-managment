@@ -28,7 +28,6 @@ export default function OrderVoucher() {
             message.info('请先选择商品, 再导出数据');
             return ;
         }
-
         requestForOrderExport(chooseItems);
     }, [chooseItems])
 
@@ -144,7 +143,7 @@ export default function OrderVoucher() {
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">收货人名称</div>
-                <Input size="small" placeholder="请输入收货人名称" onChange={e => updateSearch('receiver_Phone', e.target.value)} />
+                <Input size="small" placeholder="请输入收货人名称" onChange={e => updateSearch('customerName', e.target.value)} />
             </div>
             <div className="manager-search-item">
                 <div className="search-item__title">电话</div>

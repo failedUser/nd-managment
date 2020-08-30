@@ -17,8 +17,8 @@ export default function ProductManager() {
     const [ editable, setEditable ] = useState(false);
     const [ currentInfo, setCurrentInfo ] = useState({});
     const [ setInfo, updateSetInfo ] = useState({
-        reward_Percentage: 0,
-        reward_Price: 0,
+        reward_Percentage: null,
+        reward_Price: null,
         reward_Setting_Person: '',
         reward_Setting_Time: '',
         reward_Setting_Type: '金额设置'
@@ -39,7 +39,7 @@ export default function ProductManager() {
     const pageData = useCallback(() => {
         let _pageInfo = {...pageInfo};
         _pageInfo.page -= 1;
-        requestBonusSettingList(pageInfo).then(data => {
+        requestBonusSettingList(_pageInfo).then(data => {
             if (data.content.length) {
                 setTableSize(data.totalElements)
                 updateSource(data.content);

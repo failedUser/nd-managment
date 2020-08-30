@@ -25,5 +25,5 @@ export function requestForBonusEdit(data) {
 
 
 export function requestForBonusExport(data) {
-    exportFile('/newdreamer/volumeRewardConfig/exportExcel', data);
+    exportFile('/newdreamer/backVolumer/exportReward', data);
 }

@@ -2,8 +2,10 @@
 import request from '../../../assets/js/request';
 import { exportFile } from '../../../assets/js/common'
 
-export function requestForAppointExport() {
+export function requestForAppointExport(data) {
     alert('没有预约导出接口');
+    
+    exportFile('/newdreamer/backVolumer/exportReservation', data);
 }
 
 export function requestAppointList(data) {

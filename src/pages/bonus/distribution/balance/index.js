@@ -62,7 +62,7 @@ export default function ProductManager() {
         const [ columns ] = useState([
             { title: '微信ID', dataIndex: 'distributor_Wechat_Id'},
             { title: '有效分销次数', dataIndex: 'count'},
-            { title: '累计分销金额', dataIndex: 'received_Amoun'},
+            { title: '累计分销金额', dataIndex: 'received_Amount'},
             { title: '累计分销奖励金', dataIndex: 'reward_Price', key: 'name1',},
             { title: '累计提现金额', dataIndex: 'withdrawal_Amount'},
             { title: '可提现金额', dataIndex: 'avaliable_Withdrawal_Amount'},

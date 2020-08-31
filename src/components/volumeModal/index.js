@@ -79,7 +79,7 @@ const Figure = [
     }
 ]
 
-export default function VolumeModal({ info, editable, submit, cancel, showModal }) {
+export default function VolumeModal({ info, editable, submit, cancel, showModal, unEditable }) {
     const [ _info, updateInnfo ] = useState(info);
     const updateForm = useCallback((key, value) => {
         updateInnfo(obj => ({...obj, ...{[key]: value}}))
@@ -99,8 +99,13 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal 
         visible={showModal}
         width={1000}
         footer={<div>
-            <Button type="primary" onClick={() => setEditable(!_editable)} size="small" >{_editable ? '取消修改' : '修改'}</Button>
-            <Button type="primary" onClick={() => {submit(_info);setEditable(!_editable)}} size="small" >保存</Button>
+            {
+                !unEditable && <React.Fragment>
+                    <Button type="primary" onClick={() => setEditable(!_editable)} size="small" >{_editable ? '取消修改' : '修改'}</Button>
+                    <Button type="primary" onClick={() => {submit(_info);setEditable(!_editable)}} size="small" >保存</Button>
+                </React.Fragment>
+            }
+
             <Button type="primary" onClick={cancel} size="small" >取消</Button>
         </div>}
     >

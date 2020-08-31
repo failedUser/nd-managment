@@ -1,7 +1,11 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker,Select } from 'antd';
-import { requestOrderList, requestOrderDetail, requestForOrderExport, requestForOrdrStatusUpdate, requestForOrdrShip } from './action';
+import { requestOrderList, requestOrderDetail, requestForOrderExport,
+     requestForOrdrStatusUpdate, requestForOrdrShip,
+     requestFindSizeInfoByOrder
+} from './action';
+import VolumeModal from '../../../components/volumeModal';
 const { RangePicker } = DatePicker;
 
 export default function OrderVoucher() {
@@ -15,6 +19,8 @@ export default function OrderVoucher() {
     const [ visible, setVisible ] = useState(false);
     const [ modalInfo, setModalInfo ] = useState(null);
     const [ chooseItems, setChooseItems ] = useState(null);
+    const [ VolumeModalVisible, setVolumeModalVisible ] = useState(false);
+    const [ VolumeModalInfo, setVolumeModalInfo ] = useState(null);
 
     const updateSearch = useCallback((key, value) => {
         updatePageInfo(info => {
@@ -133,6 +139,7 @@ export default function OrderVoucher() {
                 { title: '折后价', render: (item, record) => <span>{record.received_Amount / record.amounts}</span>},
                 { title: '折后总金额', dataIndex: 'received_Amount'},
                 { title: '状态', dataIndex: 'item_Status'},
+                {title: '退款状态', dataIndex: 'refund_Status'}
             ])
    
     return <div className="product-manager">
@@ -216,11 +223,25 @@ export default function OrderVoucher() {
                     <span className="edit-item__value">{modalInfo.fabric_Id}</span>
                 </div>
                 <div className="order-edit-item">
-                    <Button >量体信息</Button>
+                    <Button onClick={() => {
+                        requestFindSizeInfoByOrder({orderId: modalInfo.order_Id}).then(data => {
+                            if (data) {
+                                setVolumeModalVisible(true);
+                                setVolumeModalInfo(data);
+                            } else {
+                                message.info('暂无量体信息');
+                            }
+                        })
+                    }} >量体信息</Button>
                 </div>
                 </div>
                 </div>
             </Modal>}
-        
+            <VolumeModal 
+                showModal={VolumeModalVisible}
+                info={VolumeModalInfo}
+                cancel={() => setVolumeModalVisible(false)}
+                unEditable={true}
+            />
         </div>
 }

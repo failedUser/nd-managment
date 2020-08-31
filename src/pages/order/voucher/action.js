@@ -59,3 +59,12 @@ export function requestForOrdrShip(data) {
         params: data
     })
 }
+
+
+export function requestFindSizeInfoByOrder(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backOrder/findSizeInfoByOrder',
+        params: data
+    })
+}

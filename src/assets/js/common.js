@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal } from 'antd';
 const { confirm } = Modal;
 export function exportFile(url, data) {
-    let params = Object.entries(data).reduce((Result, [key, value], index) => {
+    let params = (data && typeof data === 'object') ? Object.entries(data).reduce((Result, [key, value], index) => {
         if (index === 0) {
             Result += `ids=${value}`
         } else {
@@ -11,7 +11,7 @@ export function exportFile(url, data) {
         }
         return Result;
         
-    }, '')
+    }, '') : ''
     const link = document.createElement('a');
     link.target ='_blank';
     link.href = `https://newdreamer.cn${url}?${params}`;

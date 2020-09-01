@@ -63,8 +63,8 @@ export default function FabricManager() {
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
-            message.info('请先选择商品, 再导出数据');
-            return ;
+            //message.info('请先选择商品, 再导出数据');
+//            return ;
         }
         requestForFabricExport(chooseItems);
     }, [chooseItems])

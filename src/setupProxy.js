@@ -8,7 +8,7 @@ module.exports = function (app) {
             "target": "https://newdreamer.cn",
             changeOrigin: true,
             onProxyReq(proxyReq, req, res) {
-                proxyReq.setHeader('cookie', 'JSESSIONID=7014AC5F4AD6CDD02BB456D2EED2AE12');
+                proxyReq.setHeader('cookie', 'JSESSIONID=26F928BAC76E4A52DFD5C3536067F3A7');
             }
         })
     );

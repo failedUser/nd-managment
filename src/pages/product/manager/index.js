@@ -102,8 +102,8 @@ export default function ProductManager() {
 
     const export_data = useCallback(() => {
         if (!chooseItems || chooseItems.length <= 0) {
-            message.info('请先选择商品, 再导出数据');
-            return ;
+            //message.info('请先选择商品, 再导出数据');
+//            return ;
         }
         requestForProductExport(chooseItems);
     }, [chooseItems])
@@ -272,7 +272,7 @@ export default function ProductManager() {
                         && <div className="pm-edit__images">
                             {/* {Array.isArray(editInfo[col.dataIndex]) && editInfo[col.dataIndex].map(img => <img className="pm-edit__image" alt="edit" src={img} />)} */}
                             {
-                                (Array.isArray(editInfo[col.dataIndex]) && [...editInfo[col.dataIndex], ...Array.from({length: 3})].slice(0,col.limit)).map((img, index) => {
+                                [...editInfo[col.dataIndex] || [], ...Array.from({length: 3})].slice(0, col.limit).map((img, index) => {
                                     return <Upload
                                         action="/newdreamer/file/upload?FileDirectorEnum=PRODUCT"
                                         method="post"
@@ -290,7 +290,7 @@ export default function ProductManager() {
                                             const _images = [...editInfo.images || []]
                                             file.url = file && file.response && dealOssImageUrl(file.response[0])
                                             _images[index] = file;
-                                            updateEditInfo(col.dataIndex, _images);
+                                            updateEditInfo(col.dataIndex, _images.slice(0, col.limit));
                                         }}
                                     >
                                         {

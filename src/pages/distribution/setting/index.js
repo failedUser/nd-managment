@@ -25,7 +25,18 @@ export default function ProductManager() {
     })
 
     const updateInfo = useCallback((key, value) => {
-        updateSetInfo(info => ({...info, ...{[key]: value}}));
+        let reset = {};
+        if (key === 'reward_Percentage') {
+            reset = {reward_Price: null}
+        }
+        if (key === 'reward_Price') {
+            reset = {reward_Percentage: null}
+        }
+        if (key === 'reward_Setting_Type') {
+            console.log(222);
+            reset = {reward_Percentage: null, reward_Price: null}
+        }
+        updateSetInfo(info => ({...info, ...{[key]: value}, ...reset}));
     }, [])
 
     const export_data = useCallback(() => {
@@ -134,6 +145,7 @@ export default function ProductManager() {
                                 <div className="setting-content-item">设置参数</div>
                                 <div className="setting-content-item"><Input 
                                 style={{width: '100%'}}
+                                    value={setInfo[setInfo.reward_Setting_Type === '金额设置'? 'reward_Price' : 'reward_Percentage']}
                                     placeholder="设置参数" 
                                     addonAfter={setInfo.reward_Setting_Type === '金额设置' ? '元' : '%'} 
                                     onChange={e => updateInfo( setInfo.reward_Setting_Type === '金额设置'? 'reward_Price' : 'reward_Percentage', e.target.value)}

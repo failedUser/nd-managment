@@ -150,6 +150,7 @@ export default function ProductManager() {
                 if (data) {
                     message.info('修改成功');
                     setVisible(false);
+                    setEditInfo(null);
                     pageData();
                 }
                 
@@ -159,6 +160,7 @@ export default function ProductManager() {
             requestForProductCreate(_editInfo).then(data => {
                 message.info('新建成功');
                 setVisible(false);
+                setEditInfo(null);
                 pageData();
             })
         }

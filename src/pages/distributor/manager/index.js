@@ -36,7 +36,7 @@ export default function FabricManager() {
         _pageInfo.page -= 1;
         requestForFabricList(_pageInfo).then(data => {
             if (!data) return ;
-            setTableSize(data.size);
+            setTableSize(data.totalElements);
             if (data && Array.isArray(data.content)) {
                 setDataSource([...data.content]);
             }

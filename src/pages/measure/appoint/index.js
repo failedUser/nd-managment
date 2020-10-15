@@ -118,7 +118,7 @@ export default function ProductManager() {
             { title: '性别', dataIndex: 'gender'},
             { title: '订单号', dataIndex: 'order_Id'}, // TODO: 订单号字段是不是这个
             { title: '预约时间', dataIndex: 'time'}, // TODO 预约时间和量体时间只有一个time字段
-            { title: '量体地点', dataIndex: 'adress'},
+            { title: '量体地点', dataIndex: 'address'},
             { title: '量体时间', dataIndex: 'volume_Time'},
             { title: '量体师', dataIndex: 'volumer_Name'},
             { title: '完成情况', dataIndex: 'reservation_Status'}, 

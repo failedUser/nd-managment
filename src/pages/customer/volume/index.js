@@ -86,7 +86,7 @@ export default function ProductManager() {
             { title: '电话', dataIndex: 'customer_Phone'},
             { title: '量体师', dataIndex: 'volumer_Name'},
             { title: '量体时间', dataIndex: 'volume_Time'},
-            { title: '性别', dataIndex: 'volumer_Gender', key: 'name1',},
+            { title: '性别', dataIndex: 'customer_Gender', key: 'name1',},
             { title: '身高', dataIndex: 'height'},
             { title: '体重', dataIndex: 'weight'},
             { title: '胸围', dataIndex: 'bust'},

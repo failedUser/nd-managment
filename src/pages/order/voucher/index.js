@@ -72,6 +72,11 @@ export default function OrderVoucher() {
         }
     }, [pageData, pageInfo])
 
+    const closeModalInfo = useCallback(() => {
+        setVisible(false);
+        setModalInfo(null);
+    }, [])
+
     useEffect(() => {
         if (isInit) return;
         pageData();
@@ -202,8 +207,8 @@ export default function OrderVoucher() {
                 title={`单据信息-${modalInfo.order_Id}-${modalInfo.customerame || ''}`}
                 visible={visible}
                 width={1000}
-                onOk={() => setVisible(false)}
-                onCancel={() => setVisible(false)}
+                onOk={closeModalInfo}
+                onCancel={closeModalInfo}
             >
                 <div className="pm-edit-container">
                 {modalMap.map(col => <div className="order-edit-item">

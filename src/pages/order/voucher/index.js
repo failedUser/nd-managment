@@ -88,6 +88,7 @@ export default function OrderVoucher() {
             { title: '收货人', dataIndex: 'receiver_Name'},
             { title: '收货人电话', dataIndex: 'receiver_Phone'},
             { title: '付款时间', dataIndex: 'payment_Time'},
+            { title: '发货时间', dataIndex: 'delivery_Time'},
             { title: '收款金额', dataIndex: 'total_Received_Amount', key: 'name1',},
             { title: '量体师', dataIndex: 'volume_Name'},
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {

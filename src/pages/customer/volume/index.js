@@ -96,6 +96,8 @@ export default function ProductManager() {
             { title: '腰围', dataIndex: 'waistline'},
             { title: '臀围', dataIndex: 'hips'},
             { title: '裤长', dataIndex: 'pants_Length'},
+            { title: '喜好', dataIndex: 'favorite'},
+            { title: '使用时间', dataIndex: 'use_Time'},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
                {/* <Button type="primary" size="small" >删除</Button> */}

@@ -176,7 +176,7 @@ export default function VolumeModal({ info, editable, submit, cancel, showModal,
                     <div className="figure-images-content">
                         {info.body_Shape_Back && <img alt="figure" className="figure-image-item" src={info.body_Shape_Back} />}
                         {info.body_Shape_Front && <img alt="figure" className="figure-image-item" src={info.body_Shape_Front} />}
-                        {info.body_Shape_Remark && <img alt="figure" className="figure-image-item" src={info.body_Shape_Remark}/>}
+                        {info.body_Shape_Remark && <div>量体备注: {info.body_Shape_Remark}</div>}
                     </div>
                 </div>
             </div>

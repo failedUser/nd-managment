@@ -92,7 +92,7 @@ export default function OrderVoucher() {
             { title: '量体师', dataIndex: 'volume_Name'},
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
                 if (!text) {
-                    return <Button type="primary" onClick={() => {
+                    return <Button style={{background: 'blue', borderColor: 'blue'}} type="primary" onClick={() => {
                         if (record.order_Status === '待发货') {
                             message.info('请先备货，再发货哦');
                             return ;
@@ -108,12 +108,12 @@ export default function OrderVoucher() {
             { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160},
             { title: '操作', dataIndex: 'name11', width: 150, render: (item, record) => <div className="product-table-operations">
                {
-                   !record.shipment_Id && record.order_Status === '待发货' && <Button onClick={() => {
+                   !record.shipment_Id && record.order_Status === '待发货' && <Button style={{background: 'orange', borderColor: 'orange'}} onClick={() => {
                     updateOrderStatus(record, '备货中');
                 }} type="primary" size="small" >备货</Button>
                }
                {
-                 !record.shipment_Id && <Button onClick={() => {
+                 !record.shipment_Id && <Button danger onClick={() => {
                     updateOrderStatus(record, '待发货');
                 }} type="primary" size="small" >撤销</Button>
                }

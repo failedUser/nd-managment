@@ -58,6 +58,16 @@ export function requestForAppointCreate(data) {
     })
 }
 
+export function requestForAppointCancel(data) {
+    // TODO: 预约单删除
+   return request({
+       method: 'get',
+       url: '/newdreamer/Reservation/delete',
+       params: data,
+    //    type: 'json'
+   })
+}
+
 export function requestForAppointDelete(data) {
      // TODO: 预约单删除
     // return request({

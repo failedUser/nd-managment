@@ -3,7 +3,7 @@ import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover, Radio, Select } from 'antd';
 import { requestAppointList, requestForAppointCreate, requestForAppointEdit,
      requestForAppointUpdateStatus, requestForAppointExport,
-     requestForVolumerList
+     requestForVolumerList, requestForAppointCancel
     } from './action';
 const { RangePicker } = DatePicker;
 
@@ -124,7 +124,7 @@ export default function ProductManager() {
             { title: '完成情况', dataIndex: 'reservation_Status'}, 
             { title: '操作', dataIndex: 'name11', render: (item, record) => <div className="product-table-operations">
                 {
-                   record.reservation_Status === '预约中' && <Button onClick={() => {
+                    record.reservation_Status === '预约中' && <Button onClick={() => {
                         showVolumerList(record);
                 }} type="primary" size="small" >派单{volumerList && volumerList.length}</Button>
                 }
@@ -132,10 +132,23 @@ export default function ProductManager() {
                 {
                     record.reservation_Status !== '已量体' && record.reservation_Status !== '已取消' && 
                     <React.Fragment>
-                         <Button onClick={() => {
-                            let _record = {...record};
-                            _record.reservation_Status = '已取消'
-                            updateStatus(_record);
+                        <Button onClick={() => {
+                            Modal.confirm({
+                                title: '取消预约',
+                                content: '确定取消预约?',
+                                onOk() {
+                                    //  _record.reservation_Status = '已取消'
+                                    // updateStatus(_record);
+                                    requestForAppointCancel({
+                                        Customer_Wechat_Id: record.customer_Wechat_Id,
+                                        reservation_Id: record.reservation_Id
+                                    }).then(pageData)
+                                },
+                                onCancel() {
+                                    console.log('Cancel');
+                                },
+                            });
+                            
                         }}  type="primary" size="small" >取消</Button>
                         <Button type="primary" onClick={() => edit(record)} size="small" >修改</Button>
                     </React.Fragment>
@@ -195,7 +208,7 @@ export default function ProductManager() {
                     type: 'checkbox',
                     onChange: (selectedRowKeys, selectedRows) => {
                         setChooseItems((selectedRowKeys + '').split(',').filter(item => item));
-                      }
+                    }
                 }}
                 dataSource={dataSource} 
                 columns={columns} 

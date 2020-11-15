@@ -7,7 +7,6 @@ import { requestOrderList, requestOrderDetail, requestForOrderExport,
 } from './action';
 import VolumeModal from '../../../components/volumeModal';
 const { RangePicker } = DatePicker;
-
 export default function OrderVoucher() {
     const [ isInit, setIsinit ] = useState(false);
     const [ pageInfo, updatePageInfo ] = useState({
@@ -21,6 +20,7 @@ export default function OrderVoucher() {
     const [ chooseItems, setChooseItems ] = useState(null);
     const [ VolumeModalVisible, setVolumeModalVisible ] = useState(false);
     const [ VolumeModalInfo, setVolumeModalInfo ] = useState(null);
+    const [ updateIndex, setUpdateIndex ] = useState(0);
 
     const updateSearch = useCallback((key, value) => {
         updatePageInfo(info => {
@@ -44,25 +44,44 @@ export default function OrderVoucher() {
             item.dataSource = data;
             setModalInfo({...item});
         })
+        requestFindSizeInfoByOrder({orderId: item.order_Id}).then(data => {
+            if (data) {
+                setVolumeModalInfo(data);
+                item.volume_Time = data.volume_Time;
+                setModalInfo({...item});
+            }
+        })
         
     }, []);
 
-    const updateOrderStatus = function (record, status) {
+    const updateOrderStatus = useCallback(function (record, status) {
         // TODO Required List parameter 'ids' is not presen 
         requestForOrdrStatusUpdate({
             id: record.order_Id,
             status
-        }).then(pageData);
-    }
+        }).then(data => {
+            setUpdateIndex(index => {
+                return index+ 1;
+            });
+        }).catch(e => {
+            setUpdateIndex(index => index++);
+        })
+    }, [])
+   
 
     const pageData = useCallback(() => {
-        let _pageInfo = {...pageInfo};
-        _pageInfo.page -= 1;
-;        requestOrderList(_pageInfo).then(data => {
+        // let _pageInfo = {...pageInfo};
+        // _pageInfo.page -= 1;
+        requestOrderList(pageInfo).then(data => {
             setTableSize(data.totalElements);
             updateSource(data.content)
         })
     }, [pageInfo])
+    useEffect(() => {
+        if (updateIndex >= 0) {
+            pageData();
+        }
+    }, [pageData, updateIndex])
 
     const onPageChange = useCallback((page) => {
         if (page !== pageInfo.page) {
@@ -91,15 +110,61 @@ export default function OrderVoucher() {
             { title: '发货时间', dataIndex: 'delivery_Time'},
             { title: '收款金额', dataIndex: 'total_Received_Amount', key: 'name1',},
             { title: '量体师', dataIndex: 'volume_Name'},
+            { title: '量体时间', dataIndex: 'volume_Time'},
             { title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
                 if (!text) {
-                    return <Button style={{background: 'blue', borderColor: 'blue'}} type="primary" onClick={() => {
+                    return <React.Fragment>
+                        <Button style={{background: 'blue', borderColor: 'blue'}} type="primary" onClick={() => {
                         if (record.order_Status === '待发货') {
                             message.info('请先备货，再发货哦');
                             return ;
                         }
-                        requestForOrdrShip({orderId: record.order_Id}).then(pageData);
-                    }} >发货</Button>
+                        requestForOrdrShip({
+                            orderId: record.order_Id,
+                            delivery_Time: new Date()
+                        }).then(pageData);
+                    }} >一键发货</Button>
+                    <Button style={{background: 'blue', borderColor: 'blue'}} type="primary" onClick={() => {
+                        if (record.order_Status === '待发货') {
+                            message.info('请先备货，再发货哦');
+                            return ;
+                        }
+                        let value = '';
+                        Modal.confirm({
+                            title: '请输入物流单号',
+                            content: <Input size="small" placeholder="请输入物流单号" onChange={e => value = e.target.value} />,
+                            onOk() {
+                                if (!value) {
+                                    message.info('请输入物流单号哦');
+                                    return ;
+                                }
+                                requestForOrdrStatusUpdate({
+                                    id: record.order_Id,
+                                    shipment_Id: value,
+                                    delivery_Time: new Date(),
+                                    status: '待收货'
+                                }).then(data => {
+                                    setUpdateIndex(index => {
+                                        return index+ 1;
+                                    });
+                                }).catch(e => {
+                                    setUpdateIndex(index => index++);
+                                })
+                            //   requestForOrdrShip({
+                            //       orderId: record.order_Id,
+                                  
+                            //     }).then(() => {
+                            //         setUpdateIndex(index => {
+                            //             return index+ 1;
+                            //         });
+                            //     });
+                            },
+                            onCancel() {
+                              console.log('Cancel');
+                            },
+                          });
+                    }} >物流单号发货</Button>
+                    </React.Fragment>
                 } else {
                     return <span>{text}</span>
                 }
@@ -129,6 +194,8 @@ export default function OrderVoucher() {
                 { title: '收款金额', dataIndex: 'total_Received_Amount'},
                 { title: '备注', dataIndex: 'remarks', },
                 { title: '量体师', dataIndex: 'volume_Name'},
+                { title: '量体时间', dataIndex: 'volume_Time'},
+                { title: '收货地址', dataIndex: 'receiver_Adress'},
                 { title: '分销人手机号', dataIndex: 'retail_Price'},
                 { title: '快递单号', dataIndex: 'shipment_Id'},
                 { title: '状态', dataIndex: 'order_Status'},
@@ -230,14 +297,11 @@ export default function OrderVoucher() {
                 </div>
                 <div className="order-edit-item">
                     <Button onClick={() => {
-                        requestFindSizeInfoByOrder({orderId: modalInfo.order_Id}).then(data => {
-                            if (data) {
-                                setVolumeModalVisible(true);
-                                setVolumeModalInfo(data);
-                            } else {
-                                message.info('暂无量体信息');
-                            }
-                        })
+                        if (VolumeModalInfo) {
+                            setVolumeModalVisible(true);
+                        } else {
+                            message.info('暂无量体信息');
+                        }
                     }} >量体信息</Button>
                 </div>
                 </div>

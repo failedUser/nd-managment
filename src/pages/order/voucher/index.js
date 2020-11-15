@@ -145,7 +145,7 @@ export default function OrderVoucher() {
                                 requestForOrdrStatusUpdate({
                                     id: record.order_Id,
                                     shipment_Id: value,
-                                    delivery_Time: new Date(),
+                                    delivery_Time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString('it-IT'),
                                     status: '待收货'
                                 }).then(data => {
                                     setUpdateIndex(index => {

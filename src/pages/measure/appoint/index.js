@@ -3,8 +3,9 @@ import './index.less';
 import { Button, Table, Modal, Input, Upload, message, DatePicker, Popover, Radio, Select } from 'antd';
 import { requestAppointList, requestForAppointCreate, requestForAppointEdit,
      requestForAppointUpdateStatus, requestForAppointExport,
-     requestForVolumerList, requestForAppointCancel
+     requestForVolumerList, requestForAppointCancel,requestOrderDetail,requestFindSizeInfoByOrder
     } from './action';
+import VolumeModal from '../../../components/volumeModal';
 const { RangePicker } = DatePicker;
 
 export default function ProductManager() {
@@ -24,6 +25,9 @@ export default function ProductManager() {
     const [ volumerList, setVolumerList ] = useState(null);
     const [ dispatchOrder, setDispatchOrder ] = useState(null);
     const [ selectedVolumer, setSelectedVolumer ] = useState(null);
+    const [ VolumeModalInfo, setVolumeModalInfo ] = useState(null);
+    const [ VolumeModalVisible, setVolumeModalVisible ] = useState(false);
+
 
     const updateSearch = useCallback((key, value) => {
         updatePageInfo(search => {
@@ -50,6 +54,23 @@ export default function ProductManager() {
     const create = useCallback(() => {
         setVisible('create');
         setModalInfo({});
+    }, []);
+
+    const showOrderVoucher = useCallback((item) => {
+        requestOrderDetail({orderId:item.order_Id}).then(data => {
+            setVisible(true);
+            item.dataSource = data;
+            setModalInfo({...item});
+        })
+        requestFindSizeInfoByOrder({orderId: item.order_Id}).then(data => {
+            if (data) {
+                setVolumeModalInfo(data);
+                item.volume_Time = data.volume_Time;
+                item.use_Time = data.use_Time;
+                setModalInfo({...item});
+            }
+        })
+        
     }, []);
 
     const updateModalInfo = useCallback((key, value) => {
@@ -106,17 +127,55 @@ export default function ProductManager() {
         })
     }, [])
 
+    const closeModalInfo = useCallback(() => {
+        setVisible(false);
+        setModalInfo(null);
+    }, [])
+
+
     useEffect(() => {
         if (isInit) return;
         pageData();
         setIsinit(true);
     }, [isInit, pageData])
+
+    const [ modalMap ] = useState([
+        { title: '收货人', dataIndex: 'receiver_Name', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+            { title: '收货人电话', dataIndex: 'receiver_Phone'},
+            { title: '付款时间', dataIndex: 'payment_Time'},
+            { title: '收款金额', dataIndex: 'total_Received_Amount'},
+            { title: '备注', dataIndex: 'remarks', },
+            { title: '量体师', dataIndex: 'volume_Name'},
+            { title: '量体时间', dataIndex: 'volume_Time'},
+            { title: '收货地址', dataIndex: 'receiver_Adress'},
+            { title: '发货时间', dataIndex: 'delivery_Time'},
+            { title: '使用时间', dataIndex: 'use_Time'},
+            { title: '分销人手机号', dataIndex: 'retail_Price'},
+            { title: '快递单号', dataIndex: 'shipment_Id'},
+            { title: '状态', dataIndex: 'order_Status'},
+        ])
+    const [ ModalColumns ] = useState([
+        { title: '单品编号', dataIndex: 'item_Id' },
+            { title: '商品', dataIndex: 'name'},
+            { title: '条码', dataIndex: 'barcode'},
+            { title: '颜色', dataIndex: 'style'},
+            { title: '尺码', dataIndex: 'size', },
+            { title: '数量', dataIndex: 'amounts'},
+            { title: '单价', dataIndex: 'retail_Price'},
+            { title: '折扣', dataIndex: 'discount'},
+            { title: '折后价', render: (item, record) => <span>{record.received_Amount / record.amounts}</span>},
+            { title: '折后总金额', dataIndex: 'received_Amount'},
+            { title: '状态', dataIndex: 'item_Status'},
+            {title: '退款状态', dataIndex: 'refund_Status'}
+        ])
+
      // TODO 修改有问题
     const [ columns, updateColumns ] = useState([
             { title: '客户名称', dataIndex: 'name'},
             { title: '客户电话', dataIndex: 'phone'},
             { title: '性别', dataIndex: 'gender'},
-            { title: '订单号', dataIndex: 'order_Id'}, // TODO: 订单号字段是不是这个
+            { title: '订单号', dataIndex: 'order_Id', render: (text, record) => <span onClick={() => showOrderVoucher(record)} style={{color: '#1890ff'}}>{text}</span> },
+            // { title: '订单号', dataIndex: 'order_Id'}, // TODO: 订单号字段是不是这个
             { title: '预约时间', dataIndex: 'time'}, // TODO 预约时间和量体时间只有一个time字段
             { title: '量体地点', dataIndex: 'address'},
             { title: '量体时间', dataIndex: 'volume_Time'},
@@ -268,5 +327,47 @@ export default function ProductManager() {
                     </Radio.Group>
                 </div>
             </Modal>}
+            {modalInfo && <Modal
+                title={`单据信息-${modalInfo.order_Id}-${modalInfo.customerame || ''}`}
+                visible={visible}
+                width={1000}
+                onOk={closeModalInfo}
+                onCancel={closeModalInfo}
+            >
+                <div className="pm-edit-container">
+                {modalMap.map(col => <div className="order-edit-item">
+                    <span className="edit-item__title">{col.title}</span>
+                    <span className="edit-item__value">{modalInfo[col.dataIndex]}</span>
+                </div>)}
+                
+                <Table 
+                    rowKey="order_Id"
+                    dataSource={modalInfo.dataSource} 
+                    columns={ModalColumns} 
+                    pagination={false}
+                />
+                <div style={{marginTop: '20px'}}>
+                <div className="order-edit-item">
+                    <span className="edit-item__title">面料编号</span>
+                    <span className="edit-item__value">{modalInfo.fabric_Id}</span>
+                </div>
+                <div className="order-edit-item">
+                    <Button onClick={() => {
+                        if (VolumeModalInfo) {
+                            setVolumeModalVisible(true);
+                        } else {
+                            message.info('暂无量体信息');
+                        }
+                    }} >量体信息</Button>
+                </div>
+                </div>
+                </div>
+            </Modal>}
+            <VolumeModal 
+                showModal={VolumeModalVisible}
+                info={VolumeModalInfo}
+                cancel={() => setVolumeModalVisible(false)}
+                unEditable={true}
+            />
         </div>
 }

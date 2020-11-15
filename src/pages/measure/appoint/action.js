@@ -68,6 +68,25 @@ export function requestForAppointCancel(data) {
    })
 }
 
+
+export function requestOrderDetail(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backOrder/orderDetails',
+        params: data
+    })
+    
+}
+
+
+export function requestFindSizeInfoByOrder(data) {
+    return request({
+        method: 'get',
+        url: '/newdreamer/backOrder/findSizeInfoByOrder',
+        params: data
+    })
+}
+
 export function requestForAppointDelete(data) {
      // TODO: 预约单删除
     // return request({

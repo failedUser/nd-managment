@@ -48,6 +48,7 @@ export default function OrderVoucher() {
             if (data) {
                 setVolumeModalInfo(data);
                 item.volume_Time = data.volume_Time;
+                item.use_Time = data.use_Time;
                 setModalInfo({...item});
             }
         })
@@ -107,7 +108,7 @@ export default function OrderVoucher() {
             { title: '收货人', dataIndex: 'receiver_Name'},
             { title: '收货人电话', dataIndex: 'receiver_Phone'},
             { title: '付款时间', dataIndex: 'payment_Time'},
-            { title: '发货时间', dataIndex: 'delivery_Time'},
+            { title: '使用时间', dataIndex: 'use_Time'},
             { title: '收款金额', dataIndex: 'total_Received_Amount', key: 'name1',},
             { title: '量体师', dataIndex: 'volume_Name'},
             { title: '量体时间', dataIndex: 'volume_Time'},
@@ -189,6 +190,8 @@ export default function OrderVoucher() {
                 { title: '量体师', dataIndex: 'volume_Name'},
                 { title: '量体时间', dataIndex: 'volume_Time'},
                 { title: '收货地址', dataIndex: 'receiver_Adress'},
+                { title: '发货时间', dataIndex: 'delivery_Time'},
+                { title: '使用时间', dataIndex: 'use_Time'},
                 { title: '分销人手机号', dataIndex: 'retail_Price'},
                 { title: '快递单号', dataIndex: 'shipment_Id'},
                 { title: '状态', dataIndex: 'order_Status'},

@@ -70,9 +70,9 @@ export default function OrderVoucher() {
    
 
     const pageData = useCallback(() => {
-        // let _pageInfo = {...pageInfo};
-        // _pageInfo.page -= 1;
-        requestOrderList(pageInfo).then(data => {
+        let _pageInfo = {...pageInfo};
+        _pageInfo.page -= 1;
+        requestOrderList(_pageInfo).then(data => {
             setTableSize(data.totalElements);
             updateSource(data.content)
         })
@@ -120,9 +120,12 @@ export default function OrderVoucher() {
                             return ;
                         }
                         requestForOrdrShip({
-                            orderId: record.order_Id,
-                            delivery_Time: new Date()
-                        }).then(pageData);
+                            orderId: record.order_Id
+                        }).then(() => {
+                            setUpdateIndex(index => {
+                                return index+ 1;
+                            });
+                        })
                     }} >一键发货</Button>
                     <Button style={{background: 'blue', borderColor: 'blue'}} type="primary" onClick={() => {
                         if (record.order_Status === '待发货') {
@@ -147,17 +150,7 @@ export default function OrderVoucher() {
                                     setUpdateIndex(index => {
                                         return index+ 1;
                                     });
-                                }).catch(e => {
-                                    setUpdateIndex(index => index++);
                                 })
-                            //   requestForOrdrShip({
-                            //       orderId: record.order_Id,
-                                  
-                            //     }).then(() => {
-                            //         setUpdateIndex(index => {
-                            //             return index+ 1;
-                            //         });
-                            //     });
                             },
                             onCancel() {
                               console.log('Cancel');

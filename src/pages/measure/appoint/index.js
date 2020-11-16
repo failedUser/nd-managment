@@ -58,7 +58,7 @@ export default function ProductManager() {
 
     const showOrderVoucher = useCallback((item) => {
         requestOrderDetail({orderId:item.order_Id}).then(data => {
-            setVisible(true);
+            setVisible('order');
             item.dataSource = data;
             setModalInfo({...item});
         })
@@ -279,8 +279,8 @@ export default function ProductManager() {
             />
         </section>
         {modalInfo && <Modal
-                title="商品编辑"
-                visible={visible}
+                title="预约信息编辑"
+                visible={visible === 'edit'}
                 width={1000}
                 onOk={submit}
                 onCancel={() => setVisible(false)}
@@ -329,7 +329,7 @@ export default function ProductManager() {
             </Modal>}
             {modalInfo && <Modal
                 title={`单据信息-${modalInfo.order_Id}-${modalInfo.customerame || ''}`}
-                visible={visible}
+                visible={visible === 'order'}
                 width={1000}
                 onOk={closeModalInfo}
                 onCancel={closeModalInfo}

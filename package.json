@@ -13,9 +13,11 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "source-map-explorer": "^2.5.0"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "craco start",
     "start:production": "npm run build && npm run start:prod",
     "start:prod": "NODE_ENV=production PUBLIC_URL=/nd node server.js",
@@ -40,11 +42,11 @@
     ]
   },
   "devDependencies": {
-    "express": "^4.14.0",
     "autoprefixer": "9.8.0",
     "babel-plugin-import": "^1.13.0",
     "craco-less": "^1.17.0",
     "css-loader": "^3.6.0",
+    "express": "^4.14.0",
     "http-proxy-middleware": "^0.18.0"
   }
 }

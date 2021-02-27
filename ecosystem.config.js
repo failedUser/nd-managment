@@ -17,7 +17,7 @@ module.exports = {
         {
             user: 'root',//服务器用户名 
             host: '106.15.230.101',//服务器ip 
-            ref: 'origin/master',
+            ref: 'master',
             repo: 'git@github.com:failedUser/nd-managment.git',
             path: '/var/www/nd',//项目部署到服务器目录 
             ssh_options: ['ForwardAgent=yes'], 'post-deploy': 'git pull origin master && npm install && pm2 reload ecosystem.config.js --env production'

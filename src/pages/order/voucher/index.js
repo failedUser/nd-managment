@@ -198,7 +198,7 @@ export default function OrderVoucher() {
         { title: '发货时间', dataIndex: 'delivery_Time' },
         { title: '使用时间', dataIndex: 'use_Time' },
         { title: '分销人手机号', dataIndex: 'retail_Price' },
-        // { title: '快递单号', dataIndex: 'shipment_Id'},
+        { title: '快递单号', dataIndex: 'shipment_Id' },
         { title: '状态', dataIndex: 'order_Status' },
     ])
     const [ModalColumns] = useState([

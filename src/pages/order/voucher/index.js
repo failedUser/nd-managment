@@ -113,59 +113,59 @@ export default function OrderVoucher() {
         { title: '收款金额', dataIndex: 'total_Received_Amount', key: 'name1', },
         { title: '量体师', dataIndex: 'volume_Name' },
         { title: '量体时间', dataIndex: 'volume_Time' },
-        // {
-        //     title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
-        //         if (!text) {
-        //             return <React.Fragment>
-        //                 <Button style={{ background: 'blue', borderColor: 'blue' }} type="primary" onClick={() => {
-        //                     if (record.order_Status === '待发货') {
-        //                         message.info('请先备货，再发货哦');
-        //                         return;
-        //                     }
-        //                     requestForOrdrShip({
-        //                         orderId: record.order_Id
-        //                     }).then(() => {
-        //                         setUpdateIndex(index => {
-        //                             return index + 1;
-        //                         });
-        //                     })
-        //                 }} >一键发货</Button>
-        //                 <Button style={{ background: 'blue', borderColor: 'blue' }} type="primary" onClick={() => {
-        //                     if (record.order_Status === '待发货') {
-        //                         message.info('请先备货，再发货哦');
-        //                         return;
-        //                     }
-        //                     let value = '';
-        //                     Modal.confirm({
-        //                         title: '请输入物流单号',
-        //                         content: <Input size="small" placeholder="请输入物流单号" onChange={e => value = e.target.value} />,
-        //                         onOk() {
-        //                             if (!value) {
-        //                                 message.info('请输入物流单号哦');
-        //                                 return;
-        //                             }
-        //                             requestForOrdrStatusUpdate({
-        //                                 id: record.order_Id,
-        //                                 shipment_Id: value,
-        //                                 delivery_Time: new Date().toLocaleDateString().replace(/\//g, '-') + ' ' + new Date().toLocaleTimeString('it-IT'),
-        //                                 status: '待收货'
-        //                             }).then(data => {
-        //                                 setUpdateIndex(index => {
-        //                                     return index + 1;
-        //                                 });
-        //                             })
-        //                         },
-        //                         onCancel() {
-        //                             console.log('Cancel');
-        //                         },
-        //                     });
-        //                 }} >物流单号发货</Button>
-        //             </React.Fragment>
-        //         } else {
-        //             return <span>{text}</span>
-        //         }
-        //     }
-        // },
+        {
+            title: '物流单号', dataIndex: 'shipment_Id', width: 80, render: (text, record) => {
+                if (!text) {
+                    return <React.Fragment>
+                        <Button style={{ background: 'blue', borderColor: 'blue' }} type="primary" onClick={() => {
+                            if (record.order_Status === '待发货') {
+                                message.info('请先备货，再发货哦');
+                                return;
+                            }
+                            requestForOrdrShip({
+                                orderId: record.order_Id
+                            }).then(() => {
+                                setUpdateIndex(index => {
+                                    return index + 1;
+                                });
+                            })
+                        }} >一键发货</Button>
+                        <Button style={{ background: 'blue', borderColor: 'blue' }} type="primary" onClick={() => {
+                            if (record.order_Status === '待发货') {
+                                message.info('请先备货，再发货哦');
+                                return;
+                            }
+                            let value = '';
+                            Modal.confirm({
+                                title: '请输入物流单号',
+                                content: <Input size="small" placeholder="请输入物流单号" onChange={e => value = e.target.value} />,
+                                onOk() {
+                                    if (!value) {
+                                        message.info('请输入物流单号哦');
+                                        return;
+                                    }
+                                    requestForOrdrStatusUpdate({
+                                        id: record.order_Id,
+                                        shipment_Id: value,
+                                        delivery_Time: new Date().toLocaleDateString().replace(/\//g, '-') + ' ' + new Date().toLocaleTimeString('it-IT'),
+                                        status: '待收货'
+                                    }).then(data => {
+                                        setUpdateIndex(index => {
+                                            return index + 1;
+                                        });
+                                    })
+                                },
+                                onCancel() {
+                                    console.log('Cancel');
+                                },
+                            });
+                        }} >物流单号发货</Button>
+                    </React.Fragment>
+                } else {
+                    return <span>{text}</span>
+                }
+            }
+        },
         { title: '备注', dataIndex: 'remarks', width: 80 },
         { title: '状态', dataIndex: 'order_Status', width: 80 },
         { title: '分销人手机号', dataIndex: 'receiver_Phone', width: 160 },
